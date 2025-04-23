@@ -35,10 +35,17 @@ import {
 } from "@/components/ui/card";
 import { useRouter } from "next/navigation";
 import { Textarea } from "./ui/textarea";
+import { generateOTP } from "@/lib/utils";
+import {
+  InputOTP,
+  InputOTPGroup,
+  InputOTPSeparator,
+  InputOTPSlot,
+} from "./ui/input-otp";
 
 const signupSchema = z
   .object({
-    name: z.string().min(2, "Name must be at least 2 characters"),
+    fullName: z.string().min(2, "Name must be at least 2 characters"),
     bio: z.string().optional(),
     email: z.string().email("Invalid email address"),
     password: z.string().min(8, "Password must be at least 8 characters"),
@@ -58,7 +65,7 @@ type VerificationFormData = z.infer<typeof verificationSchema>;
 export default function SignUpForm() {
   const [showPassword, setShowPassword] = React.useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = React.useState(false);
-  const [isVerifying, setIsVerifying] = React.useState(false);
+  const [isVerifying, setIsVerifying] = React.useState(true);
   const [formData, setFormData] = React.useState<SignupFormData | null>(null);
   const [generatedOTP, setGeneratedOTP] = React.useState<string>("");
   const [otpValue, setOtpValue] = React.useState("");
@@ -68,7 +75,7 @@ export default function SignUpForm() {
   const signupForm = useForm<SignupFormData>({
     resolver: zodResolver(signupSchema),
     defaultValues: {
-      name: "",
+      fullName: "",
       bio: "",
       email: "",
       password: "",
@@ -83,10 +90,6 @@ export default function SignUpForm() {
     },
   });
 
-  const generateOTP = () => {
-    return Math.floor(100000 + Math.random() * 900000).toString();
-  };
-
   const onSignupSubmit = async (values: SignupFormData) => {
     try {
       const otp = generateOTP();
@@ -100,7 +103,7 @@ export default function SignUpForm() {
         },
         body: JSON.stringify({
           email: values.email,
-          name: values.name,
+          fullName: values.fullName,
           otp: otp,
         }),
       });
@@ -197,7 +200,7 @@ export default function SignUpForm() {
         },
         body: JSON.stringify({
           email: formData.email,
-          name: formData.name,
+          fullName: formData.fullName,
           otp: newOTP,
         }),
       });
@@ -220,158 +223,246 @@ export default function SignUpForm() {
   };
 
   return (
-    <Card className="w-sm mt-16 lg:mt-0">
+    <Card className="w-sm mt-16">
       <CardHeader className="text-center">
         <CardTitle className="text-2xl md:text-3xl font-bold">
           {isVerifying ? "Verify Email" : "Create an Account"}
         </CardTitle>
-        <CardDescription>Start sharing your cooking skills</CardDescription>
+        <CardDescription>
+          {isVerifying
+            ? "Enter the verification code sent to your email"
+            : "Join us for a delicious journey"}
+        </CardDescription>
       </CardHeader>
       <CardContent>
-        <Form {...signupForm}>
-          <form
-            onSubmit={signupForm.handleSubmit(onSignupSubmit)}
-            className="mt-2 space-y-6"
-          >
-            <FormField
-              control={signupForm.control}
-              name="name"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Full Name</FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder="John Doe"
-                      {...field}
-                      className="rounded-full"
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={signupForm.control}
-              name="bio"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Bio</FormLabel>
-                  <FormControl>
-                    <Textarea
-                      placeholder="Tell us about yourself"
-                      {...field}
-                      className="rounded-2xl"
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={signupForm.control}
-              name="email"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Email</FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder="you@example.com"
-                      {...field}
-                      type="email"
-                      className="rounded-full"
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={signupForm.control}
-              name="password"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Password</FormLabel>
-                  <FormControl>
-                    <div className="relative">
-                      <Input
-                        placeholder="••••••••••••••••"
-                        {...field}
-                        type={showPassword ? "text" : "password"}
-                        className="pr-10 rounded-full"
-                      />
-                      <button
-                        type="button"
-                        onClick={() => setShowPassword(!showPassword)}
-                        className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
-                      >
-                        {showPassword ? (
-                          <Eye className="h-4 w-4" />
-                        ) : (
-                          <EyeOff className="h-4 w-4" />
-                        )}
-                      </button>
-                    </div>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={signupForm.control}
-              name="confirmPassword"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Confirm Password</FormLabel>
-                  <FormControl>
-                    <div className="relative">
-                      <Input
-                        placeholder="••••••••••••••••"
-                        {...field}
-                        type={showConfirmPassword ? "text" : "password"}
-                        className="pr-10 rounded-full"
-                      />
-                      <button
-                        type="button"
-                        onClick={() =>
-                          setShowConfirmPassword(!showConfirmPassword)
-                        }
-                        className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
-                      >
-                        {showConfirmPassword ? (
-                          <Eye className="h-4 w-4" />
-                        ) : (
-                          <EyeOff className="h-4 w-4" />
-                        )}
-                      </button>
-                    </div>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <Button
-              type="submit"
-              className="w-full rounded-full"
-              disabled={signupForm.formState.isSubmitting}
+        {isVerifying ? (
+          <Form {...verificationForm}>
+            <form
+              onSubmit={verificationForm.handleSubmit(onVerificationSubmit)}
+              className="space-y-4"
             >
-              {signupForm.formState.isSubmitting ? (
-                <>
-                  <span>Sending otp</span>
-                  <span className="animate-spin">
-                    <Loader2 className="h-4 w-4" />
-                  </span>
-                </>
-              ) : (
-                "Continue"
-              )}
-            </Button>
-          </form>
-        </Form>
+              <FormField
+                control={verificationForm.control}
+                name="otp"
+                render={({ field }) => (
+                  <FormItem className="flex items-center flex-col">
+                    {/* <FormLabel className="hidden">Verification Code</FormLabel> */}
+                    <FormControl>
+                      <InputOTP
+                        maxLength={6}
+                        onChange={(value) => {
+                          field.onChange(value);
+                          setOtpValue(value);
+                        }}
+                      >
+                        <InputOTPGroup>
+                          <InputOTPSlot
+                            className="h-12 w-12 text-md"
+                            index={0}
+                          />
+                          <InputOTPSlot
+                            className="h-12 w-12 text-md"
+                            index={1}
+                          />
+                          <InputOTPSlot
+                            className="h-12 w-12 text-md"
+                            index={2}
+                          />
+                          <InputOTPSeparator />
+                          <InputOTPSlot
+                            className="h-12 w-12 text-md"
+                            index={3}
+                          />
+                          <InputOTPSlot
+                            className="h-12 w-12 text-md"
+                            index={4}
+                          />
+                          <InputOTPSlot
+                            className="h-12 w-12 text-md"
+                            index={5}
+                          />
+                        </InputOTPGroup>
+                      </InputOTP>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <Button
+                type="submit"
+                className="w-full"
+                disabled={verificationForm.formState.isSubmitting}
+              >
+                {verificationForm.formState.isSubmitting ? (
+                  <>
+                    <span className="">Verifying</span>
+                    <span className="animate-spin">
+                      <Loader2 className="h-4 w-4" />
+                    </span>
+                  </>
+                ) : (
+                  "Verify and Create Account"
+                )}
+              </Button>
+
+              <div className="text-center">
+                <button
+                  type="button"
+                  onClick={resendVerificationCode}
+                  className="text-sm text-amber-600 hover:text-amber-700"
+                >
+                  Resend verification code
+                </button>
+              </div>
+            </form>
+          </Form>
+        ) : (
+          <Form {...signupForm}>
+            <form
+              onSubmit={signupForm.handleSubmit(onSignupSubmit)}
+              className="mt-2 space-y-6"
+            >
+              <FormField
+                control={signupForm.control}
+                name="fullName"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Full Name</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="John Doe"
+                        {...field}
+                        className="rounded-full"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={signupForm.control}
+                name="bio"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Bio</FormLabel>
+                    <FormControl>
+                      <Textarea
+                        placeholder="Tell us about yourself"
+                        {...field}
+                        className="rounded-2xl"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={signupForm.control}
+                name="email"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Email</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="you@example.com"
+                        {...field}
+                        type="email"
+                        className="rounded-full"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={signupForm.control}
+                name="password"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Password</FormLabel>
+                    <FormControl>
+                      <div className="relative">
+                        <Input
+                          placeholder="••••••••••••••••"
+                          {...field}
+                          type={showPassword ? "text" : "password"}
+                          className="pr-10 rounded-full"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => setShowPassword(!showPassword)}
+                          className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                        >
+                          {showPassword ? (
+                            <Eye className="h-4 w-4" />
+                          ) : (
+                            <EyeOff className="h-4 w-4" />
+                          )}
+                        </button>
+                      </div>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={signupForm.control}
+                name="confirmPassword"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Confirm Password</FormLabel>
+                    <FormControl>
+                      <div className="relative">
+                        <Input
+                          placeholder="••••••••••••••••"
+                          {...field}
+                          type={showConfirmPassword ? "text" : "password"}
+                          className="pr-10 rounded-full"
+                        />
+                        <button
+                          type="button"
+                          onClick={() =>
+                            setShowConfirmPassword(!showConfirmPassword)
+                          }
+                          className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                        >
+                          {showConfirmPassword ? (
+                            <Eye className="h-4 w-4" />
+                          ) : (
+                            <EyeOff className="h-4 w-4" />
+                          )}
+                        </button>
+                      </div>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <Button
+                type="submit"
+                className="w-full rounded-full"
+                disabled={signupForm.formState.isSubmitting}
+              >
+                {signupForm.formState.isSubmitting ? (
+                  <>
+                    <span>Sending otp</span>
+                    <span className="animate-spin">
+                      <Loader2 className="h-4 w-4" />
+                    </span>
+                  </>
+                ) : (
+                  "Continue"
+                )}
+              </Button>
+            </form>
+          </Form>
+        )}
 
         <div className="mt-4 text-center text-sm">
           Already have an account?{" "}

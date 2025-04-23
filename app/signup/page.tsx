@@ -55,7 +55,7 @@ export default function Page() {
             ></path>
           </g>
         </svg>
-        <div className="flex h-full justify-center items-center">
+        <div className="flex h-full justify-center items-center ">
           <SignUpForm />
         </div>
       </div>

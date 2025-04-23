@@ -19,11 +19,11 @@ async function main() {
   });
 
   //routes
-  //   const UserRoutes = require("./src/routes/UserRoute");
+  const UserRoutes = require("./src/routes/UserRoutes");
   const RecipeRoutes = require("./src/routes/RecipeRoutes");
   //   const ProductsRoutes = require("./src/routes/productRoute");
 
-  //   app.use("/api/user", UserRoutes);
+  app.use("/api/users", UserRoutes);
   app.use("/api/recipes", RecipeRoutes);
   //   app.use("/api/minimart", ProductsRoutes);
 
