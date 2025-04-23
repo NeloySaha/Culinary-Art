@@ -59,34 +59,52 @@ const getRecipesByUser = async (req, res) => {
   }
 };
 
-const getCategory = async (req, res) => {
+const getRecipesByCategory = async (req, res) => {
   const { category } = req.params;
-  console.log(`Fetching data for category: ${category}`);
 
   try {
-    const recipes = await Recipe.find({ category });
-    console.log(`Items found: ${recipes.length}`);
+    const recipes = await Recipe.find({ category: category.toLowerCase() });
+
     if (recipes.length === 0) {
       return res.status(404).json({ message: "Category not found" });
     }
-    res.status(200).json(recipes);
+    res.status(200).json({
+      success: true,
+      message: "Recipes fetched successfully",
+      data: recipes,
+    });
   } catch (error) {
-    console.error(`Error: ${error.message}`);
-    res.status(500).json({ message: "Server error", error: error.message });
+    res
+      .status(500)
+      .json({ success: false, message: "Server error", error: error.message });
   }
 };
 
-const getSearchedRecipe = async (req, res) => {
+const getSearchedRecipes = async (req, res) => {
   const { q } = req.params;
-  console.log("search working");
+
   try {
     let recipes = [];
     if (q) {
-      recipes = await Recipe.find({ name: { $regex: q, $options: "i" } });
+      recipes = await Recipe.find({
+        $or: [
+          { name: { $regex: q, $options: "i" } },
+          { keywords: { $elemMatch: { $regex: q, $options: "i" } } },
+        ],
+      });
     }
-    res.status(200).json(recipes);
+    res.status(200).json({
+      success: true,
+      message: "Recipes fetched successfully",
+      data: recipes,
+    });
   } catch (error) {
-    res.status(500).json({ message: "No items found!" });
+    console.error(error);
+    res.status(500).json({
+      success: false,
+      message: "Server error",
+      error: error.message,
+    });
   }
 };
 
@@ -295,8 +313,8 @@ module.exports = {
   getAllRecipes,
   createRecipe,
   getRecipesByUser,
-  getCategory,
-  getSearchedRecipe,
+  getRecipesByCategory,
+  getSearchedRecipes,
   addComment,
   addLike,
   getRecipe,

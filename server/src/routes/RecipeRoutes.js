@@ -7,8 +7,8 @@ const router = express.Router();
 const {
   createRecipe,
   getRecipesByUser,
-  getCategory,
-  getSearchedRecipe,
+  getRecipesByCategory,
+  getSearchedRecipes,
   addComment,
   addLike,
   getRecipe,
@@ -56,9 +56,9 @@ router.post("/create", createRecipe);
 //fetch all recipes in a certain category
 router.get("/all-recipes", getAllRecipes);
 
-// router.get("/category/:category", getCategory);
+router.get("/categories/:category", getRecipesByCategory);
 
-// router.get("/search/:q", getSearchedRecipe);
+router.get("/search/:q", getSearchedRecipes);
 
 // router.post("/comments", addComment);
 
