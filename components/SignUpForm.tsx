@@ -35,6 +35,7 @@ import {
 } from "./ui/input-otp";
 import { Textarea } from "./ui/textarea";
 import { toast, useSonner } from "sonner";
+import { getSession } from "@/lib/actions";
 
 const signupSchema = z
   .object({
@@ -165,9 +166,16 @@ export default function SignUpForm() {
       if (data.success) {
         Cookies.set("session", data.token);
 
-        toast.success(`Logged in as ${data.data.fullName.split(" ")[0]}`, {
-          description: "Your account has been created successfully.",
-        });
+        const session = await getSession();
+
+        if (session === null) throw new Error("Invalid Session");
+
+        toast.success(
+          `Logged in as ${(session.fullName as string).split(" ")[0]}`,
+          {
+            description: "Your account has been created successfully.",
+          }
+        );
 
         setIsVerifying(false);
         setFormData(null);
@@ -177,7 +185,11 @@ export default function SignUpForm() {
         verificationForm.reset();
 
         //redirect
-        router.push("/");
+        if (session.role === "admin") {
+          router.push("/admin");
+        } else {
+          router.push("/user");
+        }
       } else {
         toast.error("Sign up failed", {
           description: data.message,

@@ -1,10 +1,34 @@
-import { ChefHat } from "lucide-react";
+import { ChefHat, LogOut, Pencil, Settings, User } from "lucide-react";
 import Link from "next/link";
 import { Button } from "./ui/button";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+import { UserInfo } from "@/lib/types";
+import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
+import { JWTPayload } from "jose";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuPortal,
+  DropdownMenuSeparator,
+  DropdownMenuShortcut,
+  DropdownMenuSub,
+  DropdownMenuSubContent,
+  DropdownMenuSubTrigger,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { logout } from "@/lib/actions";
 
-export default function DesktopNavbar() {
+export default function DesktopNavbar({ userInfo }: { userInfo: JWTPayload }) {
   const pathName = usePathname();
+  const router = useRouter();
+
+  async function handleLogout() {
+    await logout();
+    router.push("/");
+  }
 
   return (
     <nav className="hidden lg:max-w-7xl lg:mx-auto px-4 lg:flex lg:items-center lg:justify-between">
@@ -47,15 +71,66 @@ export default function DesktopNavbar() {
         </Link>
       </div>
 
-      <div className="flex gap-4">
-        <Button asChild>
-          <Link href="/login">Log in</Link>
-        </Button>
+      {userInfo ? (
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <div className="flex gap-2 items-center">
+              <Avatar>
+                <AvatarImage
+                  src={
+                    (userInfo?.imageUrl as string) ??
+                    "https://github.com/shadcn.png"
+                  }
+                  alt="@shadcn"
+                />
+                <AvatarFallback>
+                  {(userInfo?.fullName as string).split(" ")[0][0]}
+                </AvatarFallback>
+              </Avatar>
 
-        <Button variant={"outline"} asChild>
-          <Link href="/signup">Sign up</Link>
-        </Button>
-      </div>
+              <p className="text-md font-medium">
+                {(userInfo?.fullName as string).split(" ")[0]}
+              </p>
+            </div>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent className="w-56">
+            <DropdownMenuLabel>My Account</DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            <DropdownMenuGroup>
+              <DropdownMenuItem>
+                <User />
+                <span>Profile</span>
+              </DropdownMenuItem>
+
+              <DropdownMenuItem>
+                <Pencil />
+                <span>Upload recipe</span>
+              </DropdownMenuItem>
+
+              <DropdownMenuItem>
+                <Settings />
+                <span>Settings</span>
+              </DropdownMenuItem>
+            </DropdownMenuGroup>
+
+            <DropdownMenuSeparator />
+            <DropdownMenuItem onClick={handleLogout}>
+              <LogOut />
+              <span>Log out</span>
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      ) : (
+        <div className="flex gap-4">
+          <Button asChild>
+            <Link href="/login">Log in</Link>
+          </Button>
+
+          <Button variant={"outline"} asChild>
+            <Link href="/signup">Sign up</Link>
+          </Button>
+        </div>
+      )}
     </nav>
   );
 }

@@ -101,29 +101,29 @@ const signUpVerification = async (req, res) => {
 //   }
 // };
 
-// const getUser = async (req, res) => {
-//   const { id } = req.params;
+const getUser = async (req, res) => {
+  const { id } = req.params;
 
-//   try {
-//     const user = await User.findById(id).select("-password");
+  try {
+    const user = await User.findById(id).select("-password");
 
-//     if (!user) {
-//       return res
-//         .status(404)
-//         .json({ success: false, message: "User not found" });
-//     }
+    if (!user) {
+      return res
+        .status(404)
+        .json({ success: false, message: "User not found" });
+    }
 
-//     res.status(200).json({
-//       success: true,
-//       message: "User fetched successfully",
-//       data: user,
-//     });
-//   } catch (error) {
-//     res
-//       .status(500)
-//       .json({ success: false, message: "Server error", error: error.message });
-//   }
-// };
+    res.status(200).json({
+      success: true,
+      message: "User fetched successfully",
+      data: user,
+    });
+  } catch (error) {
+    res
+      .status(500)
+      .json({ success: false, message: "Server error", error: error.message });
+  }
+};
 
 // const getmyuser = async (req, res) => {
 //   const id = req.user.id;
@@ -218,6 +218,8 @@ const loginUser = async (req, res) => {
     const userInfo = {
       id: user._id,
       role: user.role,
+      fullName: user.fullName,
+      imageUrl: user.imageUrl,
     };
 
     const token = await encrypt({ ...userInfo, expiresAt });
@@ -521,4 +523,5 @@ module.exports = {
   createUser,
   loginUser,
   signUpVerification,
+  getUser,
 };

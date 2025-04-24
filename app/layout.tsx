@@ -1,8 +1,8 @@
+import NavWrapper from "@/components/NavWrapper";
+import { Toaster } from "@/components/ui/sonner";
 import type { Metadata } from "next";
 import { Bricolage_Grotesque } from "next/font/google";
 import "./globals.css";
-import Navbar from "@/components/Navbar";
-import { Toaster } from "@/components/ui/sonner";
 
 const bricolage = Bricolage_Grotesque({
   subsets: ["latin"],
@@ -21,7 +21,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${bricolage.className}  antialiased`}>
-        <Navbar />
+        <NavWrapper />
         <main>{children}</main>
         <Toaster theme="light" />
       </body>

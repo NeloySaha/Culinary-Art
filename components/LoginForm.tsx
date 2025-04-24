@@ -38,6 +38,7 @@ import {
 } from "@/components/ui/card";
 import Link from "next/link";
 import { Card } from "./ui/card";
+import { getSession } from "@/lib/actions";
 
 export default function LoginForm() {
   const [showPassword, setShowPassword] = useState(false);
@@ -70,7 +71,11 @@ export default function LoginForm() {
       if (data.success) {
         Cookies.set("session", data.token);
 
-        toast.success(`Welcome to Culinary Art`, {
+        const session = await getSession();
+
+        if (session === null) throw new Error("Invalid Session");
+
+        toast.success(`Welcome ${session.fullName}`, {
           description: data.message,
         });
 
@@ -79,7 +84,12 @@ export default function LoginForm() {
           password: "",
         });
 
-        router.push("/user");
+        if (session.role === "admin") {
+          router.push("/admin");
+        } else {
+          router.push("/user");
+        }
+        // router.push("/user");
       } else {
         toast.error("Error Occurred", {
           description: data.message,
