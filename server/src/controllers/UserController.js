@@ -11,21 +11,38 @@ const transporter = nodemailer.createTransport({
 });
 
 const signUpVerification = async (req, res) => {
-  const { msg, email } = req.body;
+  const { otp, firstName, email } = req.body;
 
   const mailOptions = {
     from: process.env.EMAIL,
     to: email,
-    subject: "Your Culinary Art signup OTP",
-    text: msg,
+    subject: `${otp} Culinary Art signup OTP`,
+    html: `
+    <div style="font-family: sans-serif; padding: 20px; max-width: 600px; margin: 0 auto;">
+      <h2 style="color: #f97316;">Welcome to Culinary Art!</h2>
+      <p>Hello ${firstName},</p>
+      <p>Thank you for signing up. Please use the following verification code to complete your registration:</p>
+      <div style="background: #fff4e6; padding: 20px; border-radius: 8px; margin-top: 20px; margin-bottom: 20px; text-align: center;">
+        <span style="font-size: 32px; font-weight: bold; letter-spacing: 8px; color: #f97316;">${otp}</span>
+      </div>
+      <p>This code will expire in 10 minutes.</p>
+      <p>If you didn't request this code, please ignore this email.</p>
+    </div>
+  `,
   };
 
   transporter.sendMail(mailOptions, (error, info) => {
     if (error) {
-      return res.send("Couldn't send the email!");
+      return res.status(500).json({
+        success: false,
+        msg: "Sorry, couldn't send the email! Please try again.",
+      });
     }
 
-    return res.send("Email sent successfully");
+    return res.status(200).json({
+      success: true,
+      msg: "Email sent successfully",
+    });
   });
 
   // return res.send("Email Sending is currently paused");
