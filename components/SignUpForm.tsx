@@ -1,5 +1,5 @@
 "use client";
-
+import Cookies from "js-cookie";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -9,45 +9,38 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-// import {
-//   InputOTP,
-//   InputOTPGroup,
-//   InputOTPSlot,
-// } from "@/components/ui/input-otp";
-import { Input } from "@/components/ui/input";
-// import { useToast } from "@/hooks/use-toast";
-// import { registerUser } from "@/lib/actions";
-import { toast } from "sonner";
 
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Eye, EyeOff, Loader2, Users } from "lucide-react";
-import Link from "next/link";
-import React from "react";
-import { useForm } from "react-hook-form";
-import * as z from "zod";
+import { Input } from "@/components/ui/input";
+
 import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { useRouter } from "next/navigation";
-import { Textarea } from "./ui/textarea";
 import { generateOTP } from "@/lib/utils";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Eye, EyeOff, Loader2 } from "lucide-react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import * as z from "zod";
 import {
   InputOTP,
   InputOTPGroup,
   InputOTPSeparator,
   InputOTPSlot,
 } from "./ui/input-otp";
+import { Textarea } from "./ui/textarea";
+import { toast, useSonner } from "sonner";
 
 const signupSchema = z
   .object({
     fullName: z.string().min(2, "Name must be at least 2 characters"),
     bio: z.string().optional(),
-    email: z.string().email("Invalid email address"),
+    email: z.string().email("Please enter a valid email!"),
     password: z.string().min(8, "Password must be at least 8 characters"),
     confirmPassword: z.string(),
   })
@@ -62,14 +55,16 @@ const verificationSchema = z.object({
 
 type SignupFormData = z.infer<typeof signupSchema>;
 type VerificationFormData = z.infer<typeof verificationSchema>;
+
 export default function SignUpForm() {
-  const [showPassword, setShowPassword] = React.useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = React.useState(false);
-  const [isVerifying, setIsVerifying] = React.useState(true);
-  const [formData, setFormData] = React.useState<SignupFormData | null>(null);
-  const [generatedOTP, setGeneratedOTP] = React.useState<string>("");
-  const [otpValue, setOtpValue] = React.useState("");
-  //   const { toast } = useToast();
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [isVerifying, setIsVerifying] = useState(false);
+  const [formData, setFormData] = useState<SignupFormData | null>(null);
+  const [generatedOTP, setGeneratedOTP] = useState<string>("");
+  const [otpValue, setOtpValue] = useState("");
+  const [isResending, setIsResending] = useState(false);
+
   const router = useRouter();
 
   const signupForm = useForm<SignupFormData>({
@@ -96,93 +91,103 @@ export default function SignUpForm() {
       setGeneratedOTP(otp);
       setFormData(values);
 
-      const response = await fetch("/api/send", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          email: values.email,
-          fullName: values.fullName,
-          otp: otp,
-        }),
-      });
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_PREFIX}/users/signup-verification`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            email: values.email,
+            firstName: values.fullName.split(" ")[0],
+            otp,
+          }),
+        }
+      );
 
-      if (!response.ok) {
-        throw new Error("Failed to send verification email");
+      const data = await response.json();
+
+      if (!data.success) {
+        toast.error("An Error Occurred", {
+          description: `${data.message}`,
+        });
+
+        return;
+      } else {
+        setIsVerifying(true);
+        toast.success("Verification Code", {
+          description: `${data.message}`,
+        });
       }
-
-      setIsVerifying(true);
-      //   toast({
-      //     title: "Verification Code Sent",
-      //     description: "Please check your email for the verification code.",
-      //   });
     } catch (error) {
-      //   toast({
-      //     title: "Error",
-      //     description: "Failed to send verification email. Please try again.",
-      //     variant: "destructive",
-      //   });
+      toast.error("An Error Occurred", {
+        description: `${(error as Error).message}`,
+      });
     }
   };
 
   const onVerificationSubmit = async () => {
     try {
       if (otpValue !== generatedOTP) {
-        // toast({
-        //   title: "Error",
-        //   description: "Invalid verification code. Please try again.",
-        //   variant: "destructive",
-        // });
+        toast.error("Error", {
+          description: "Invalid verification code. Please try again.",
+        });
         return;
       }
 
       if (!formData) {
-        // toast({
-        //   title: "Error",
-        //   description: "Something went wrong. Please try again.",
-        //   variant: "destructive",
-        // });
+        toast.error("Error", {
+          description: "Something went wrong. Please try again.",
+        });
         return;
       }
 
-      const submitFormData = new FormData();
-      Object.entries(formData).forEach(([key, value]) => {
-        if (value !== null && key !== "confirmPassword") {
-          submitFormData.append(key, value);
+      const submitFormData = {
+        ...formData,
+      };
+
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_PREFIX}/users/create-user`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(submitFormData),
         }
-      });
+      );
+
+      const data = await response.json();
 
       //   const result = await registerUser(submitFormData);
 
-      //   if (result.success) {
-      //     toast({
-      //       title: `Logged in as ${result.name}`,
-      //       description: "Your account has been created successfully.",
-      //     });
+      if (data.success) {
+        Cookies.set("session", data.token);
 
-      //     setIsVerifying(false);
-      //     setFormData(null);
-      //     setGeneratedOTP("");
-      //     setOtpValue("");
-      //     signupForm.reset();
-      //     verificationForm.reset();
+        toast.success(`Logged in as ${data.data.fullName.split(" ")[0]}`, {
+          description: "Your account has been created successfully.",
+        });
 
-      //     //redirect
-      //     router.push("/");
-      //   } else {
-      //     toast({
-      //       title: "Sign up failed",
-      //       description: result.errorMsg,
-      //       variant: "destructive",
-      //     });
-      //   }
+        setIsVerifying(false);
+        setFormData(null);
+        setGeneratedOTP("");
+        setOtpValue("");
+        signupForm.reset();
+        verificationForm.reset();
+
+        //redirect
+        router.push("/");
+      } else {
+        toast.error("Sign up failed", {
+          description: data.message,
+        });
+        return;
+      }
     } catch (error) {
-      //   toast({
-      //     title: "Sign up failed",
-      //     description: "An unknown error occurred",
-      //     variant: "destructive",
-      //   });
+      toast.error("Sign up failed", {
+        description: (error as Error).message,
+      });
     }
   };
 
@@ -190,35 +195,45 @@ export default function SignUpForm() {
     if (!formData) return;
 
     try {
+      setIsResending(true);
       const newOTP = generateOTP();
       setGeneratedOTP(newOTP);
 
-      const response = await fetch("/api/send", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          email: formData.email,
-          fullName: formData.fullName,
-          otp: newOTP,
-        }),
-      });
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_PREFIX}/users/signup-verification`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            email: formData.email,
+            firstName: formData.fullName.split(" ")[0],
+            otp: newOTP,
+          }),
+        }
+      );
 
-      if (!response.ok) {
-        throw new Error("Failed to resend verification code");
+      const data = await response.json();
+
+      if (!data.success) {
+        toast.error("An Error Occurred", {
+          description: `${data.message}`,
+        });
+
+        return;
+      } else {
+        setIsVerifying(true);
+        toast.success("Verification Code Resent", {
+          description: "Please check your email for the new verification code.",
+        });
       }
-
-      //   toast({
-      //     title: "Verification Code Resent",
-      //     description: "Please check your email for the new verification code.",
-      //   });
     } catch (error) {
-      //   toast({
-      //     title: "Error",
-      //     description: "Failed to resend verification code. Please try again.",
-      //     variant: "destructive",
-      //   });
+      toast.error("Error", {
+        description: (error as Error).message,
+      });
+    } finally {
+      setIsResending(false);
     }
   };
 
@@ -249,6 +264,7 @@ export default function SignUpForm() {
                     {/* <FormLabel className="hidden">Verification Code</FormLabel> */}
                     <FormControl>
                       <InputOTP
+                        autoFocus
                         maxLength={6}
                         onChange={(value) => {
                           field.onChange(value);
@@ -307,13 +323,26 @@ export default function SignUpForm() {
               </Button>
 
               <div className="text-center">
-                <button
+                <Button
+                  variant={"ghost"}
                   type="button"
                   onClick={resendVerificationCode}
-                  className="text-sm text-amber-600 hover:text-amber-700"
+                  disabled={
+                    verificationForm.formState.isSubmitting || isResending
+                  }
+                  className="w-full"
                 >
-                  Resend verification code
-                </button>
+                  {isResending ? (
+                    <>
+                      <span className="">Sending code</span>
+                      <span className="animate-spin">
+                        <Loader2 className="h-4 w-4" />
+                      </span>
+                    </>
+                  ) : (
+                    "Resend verification code"
+                  )}
+                </Button>
               </div>
             </form>
           </Form>

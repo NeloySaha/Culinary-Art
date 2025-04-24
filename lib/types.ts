@@ -18,3 +18,8 @@ export type Comment = {
   commentedBy: string;
   comment: string;
 };
+
+export type UserSessionInfo = {
+  id: string;
+  role: "customer" | "admin";
+};

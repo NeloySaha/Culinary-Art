@@ -23,7 +23,7 @@ export default function RootLayout({
       <body className={`${bricolage.className}  antialiased`}>
         <Navbar />
         <main>{children}</main>
-        <Toaster />
+        <Toaster theme="light" />
       </body>
     </html>
   );

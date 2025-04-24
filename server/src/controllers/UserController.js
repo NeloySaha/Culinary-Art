@@ -1,6 +1,20 @@
-// const bcrypt = require("bcryptjs");
-// const jwt = require("jsonwebtoken");
+const bcrypt = require("bcryptjs");
+
 const nodemailer = require("nodemailer");
+const User = require("../models/UserModel");
+const { SignJWT } = require("jose-node-cjs-runtime/jwt/sign");
+// library for verifying jwt
+const { jwtVerify } = require("jose-node-cjs-runtime/jwt/verify");
+
+const encodedKey = new TextEncoder().encode(process.env.SESSION_SECRET_KEY);
+
+async function encrypt(payload) {
+  return new SignJWT(payload)
+    .setProtectedHeader({ alg: "HS256" })
+    .setIssuedAt()
+    .setExpirationTime("5 minutes")
+    .sign(encodedKey);
+}
 
 const transporter = nodemailer.createTransport({
   service: "gmail",
@@ -13,11 +27,20 @@ const transporter = nodemailer.createTransport({
 const signUpVerification = async (req, res) => {
   const { otp, firstName, email } = req.body;
 
-  const mailOptions = {
-    from: process.env.EMAIL,
-    to: email,
-    subject: `${otp} Culinary Art signup OTP`,
-    html: `
+  try {
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      return res.status(400).json({
+        success: false,
+        message: "An account with this email already exists!",
+      });
+    }
+
+    const mailOptions = {
+      from: process.env.EMAIL,
+      to: email,
+      subject: `${otp} Culinary Art signup OTP`,
+      html: `
     <div style="font-family: sans-serif; padding: 20px; max-width: 600px; margin: 0 auto;">
       <h2 style="color: #f97316;">Welcome to Culinary Art!</h2>
       <p>Hello ${firstName},</p>
@@ -29,23 +52,30 @@ const signUpVerification = async (req, res) => {
       <p>If you didn't request this code, please ignore this email.</p>
     </div>
   `,
-  };
+    };
 
-  transporter.sendMail(mailOptions, (error, info) => {
-    if (error) {
-      return res.status(500).json({
-        success: false,
-        msg: "Sorry, couldn't send the email! Please try again.",
+    transporter.sendMail(mailOptions, (error, info) => {
+      if (error) {
+        return res.status(500).json({
+          success: false,
+          message: "Sorry, couldn't send the email! Please try again.",
+        });
+      }
+
+      return res.status(200).json({
+        success: true,
+        message:
+          "A verification code has been sent to your Email. Please check.",
       });
-    }
-
-    return res.status(200).json({
-      success: true,
-      msg: "Email sent successfully",
     });
-  });
 
-  // return res.send("Email Sending is currently paused");
+    // return res.send("Email Sending is currently paused");
+  } catch (err) {
+    res.status(500).json({
+      success: false,
+      message: err.message,
+    });
+  }
 };
 
 // const multer = require("multer");
@@ -121,7 +151,7 @@ const signUpVerification = async (req, res) => {
 
 // Create new user
 const createUser = async (req, res) => {
-  const { fullName, email, password } = req.body;
+  const { fullName, email, password, bio } = req.body;
 
   try {
     const existingUser = await User.findOne({ email });
@@ -131,28 +161,34 @@ const createUser = async (req, res) => {
         .json({ success: false, message: "Username or email already exists" });
     }
 
-    const salt = await bcrypt.genSalt(process.env.JWT_SALT_ROUNDS);
+    const salt = await bcrypt.genSalt(Number(process.env.JWT_SALT_ROUNDS));
     const hashedPassword = await bcrypt.hash(password, salt);
 
     const newUser = new User({
       fullName,
       email,
       password: hashedPassword,
+      bio,
     });
 
     await newUser.save();
 
-    const token = jwt.sign({ id: newUser._id, role: newUser.role }, "secret", {
-      expiresIn: "24h",
-    });
+    const expiresAt = new Date(Date.now() + 5 * 60);
+    const user = {
+      id: newUser._id,
+      role: newUser.role,
+    };
+
+    const sessionToken = await encrypt({ ...user, expiresAt });
 
     res.status(200).json({
       success: true,
       message: "User created successfully",
       data: newUser,
-      token: token,
+      token: sessionToken,
     });
   } catch (error) {
+    console.log(error);
     res
       .status(500)
       .json({ success: false, message: "Server error", error: error.message });
@@ -160,44 +196,46 @@ const createUser = async (req, res) => {
 };
 
 // // Login a user
-// const loginUser = async (req, res) => {
-//   const { email, password } = req.body;
+const loginUser = async (req, res) => {
+  const { email, password } = req.body;
 
-//   console.log(email, password);
+  try {
+    const user = await User.findOne({ email: email });
+    if (!user) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Sorry, User not found!" });
+    }
 
-//   try {
-//     const user = await User.findOne({ email: email });
-//     if (!user) {
-//       console.log("User not found");
-//       return res.status(400).json({ success: false, message: "Invalid email" });
-//     }
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Invalid password" });
+    }
 
-//     const isMatch = await bcrypt.compare(password, user.password);
-//     if (!isMatch) {
-//       console.log("Password does not match");
-//       return res
-//         .status(400)
-//         .json({ success: false, message: "Invalid password" });
-//     }
+    const expiresAt = new Date(Date.now() + 5 * 60);
+    const userInfo = {
+      id: user._id,
+      role: user.role,
+    };
 
-//     const token = jwt.sign({ id: user._id, role: user.role }, "secret", {
-//       expiresIn: "24h",
-//     });
+    const token = await encrypt({ ...userInfo, expiresAt });
 
-//     res.status(200).json({
-//       success: true,
-//       message: "User logged in successfully",
-//       token,
-//     });
-//   } catch (error) {
-//     console.error("Error in loginUser:", error);
-//     res
-//       .status(500)
-//       .json({ success: false, message: "Server error", error: error.message });
-//   }
-// };
+    res.status(200).json({
+      success: true,
+      message: `Logged in as ${user.fullName.split(" ")[0]} successfully`,
+      token,
+    });
+  } catch (error) {
+    console.error("Error in loginUser:", error);
+    res
+      .status(500)
+      .json({ success: false, message: "Server error", error: error.message });
+  }
+};
 
-// //  Verfication email
+//  Verfication email
 // const sendverifyemail = async (req, res) => {
 //   console.log("Sending Verification Email");
 
@@ -481,5 +519,6 @@ const createUser = async (req, res) => {
 // };
 module.exports = {
   createUser,
+  loginUser,
   signUpVerification,
 };

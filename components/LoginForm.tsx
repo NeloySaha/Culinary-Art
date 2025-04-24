@@ -1,6 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import Cookies from "js-cookie";
 import {
   Form,
   FormControl,
@@ -51,36 +52,44 @@ export default function LoginForm() {
     },
   });
 
-  const onUserSubmit = async (data: LoginFormValues) => {
+  const onUserSubmit = async (formValues: LoginFormValues) => {
     try {
-      // const formData = new FormData();
-      // Object.entries(data).forEach(([key, value]) => {
-      //   if (value !== null) {
-      //     formData.append(key, value);
-      //   }
-      // });
-      // const { success, errorMsg } = await userLogin(formData);
-      // if (success) {
-      //   const session = await getSession();
-      //   if (session === null) throw new Error("Invalid Session");
-      //   toast({
-      //     title: `Logged in as ${session.name} successfully`,
-      //     description: "Welcome back to Duos Eats!",
-      //   });
-      //   if (session.role === "admin") {
-      //     router.push("/admin/Dashboard");
-      //   } else {
-      //     router.push("/");
-      //   }
-      // } else {
-      //   toast({
-      //     title: "Login failed",
-      //     description: errorMsg,
-      //     variant: "destructive",
-      //   });
-      // }
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_PREFIX}/users/login`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(formValues),
+        }
+      );
+
+      const data = await response.json();
+
+      if (data.success) {
+        Cookies.set("session", data.token);
+
+        toast.success(`Welcome to Culinary Art`, {
+          description: data.message,
+        });
+
+        userForm.reset({
+          email: "",
+          password: "",
+        });
+
+        router.push("/user");
+      } else {
+        toast.error("Error Occurred", {
+          description: data.message,
+        });
+        return;
+      }
     } catch (error) {
-      toast("Login failed");
+      toast.error("Error Occurred", {
+        description: (error as Error).message,
+      });
     } finally {
       userForm.reset({
         email: "",
