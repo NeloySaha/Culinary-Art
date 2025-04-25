@@ -1,5 +1,7 @@
+import { redirect } from "next/navigation";
+
 function Page() {
-  return <div className="py-32">User after login</div>;
+  return redirect("/user/profile");
 }
 
 export default Page;

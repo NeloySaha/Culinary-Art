@@ -101,7 +101,7 @@ export default function MobileNavbar({ userInfo }: { userInfo: JWTPayload }) {
 
                 <Button
                   variant={"ghost"}
-                  onClick={() => handleNavigation("/signup")}
+                  onClick={() => handleNavigation("/user/profile")}
                 >
                   <User />
                   <span>Profile</span>
@@ -109,7 +109,7 @@ export default function MobileNavbar({ userInfo }: { userInfo: JWTPayload }) {
 
                 <Button
                   variant={"ghost"}
-                  onClick={() => handleNavigation("/signup")}
+                  onClick={() => handleNavigation("/user/upload-recipe")}
                 >
                   <Pencil />
                   <span>Upload recipe</span>
@@ -117,7 +117,7 @@ export default function MobileNavbar({ userInfo }: { userInfo: JWTPayload }) {
 
                 <Button
                   variant={"ghost"}
-                  onClick={() => handleNavigation("/signup")}
+                  onClick={() => handleNavigation("/user/settings")}
                 >
                   <Settings />
                   <span>Settings</span>

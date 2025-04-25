@@ -231,6 +231,9 @@ const createUser = async (req, res) => {
     const user = {
       id: newUser._id,
       role: newUser.role,
+      email: newUser.email,
+      fullName: newUser.fullName,
+      imageUrl: newUser.imageUrl,
     };
 
     const sessionToken = await encrypt({ ...user, expiresAt });
@@ -272,6 +275,7 @@ const loginUser = async (req, res) => {
     const userInfo = {
       id: user._id,
       role: user.role,
+      email: user.email,
       fullName: user.fullName,
       imageUrl: user.imageUrl,
     };
@@ -443,6 +447,7 @@ const resetPassword = async (req, res) => {
       role: user.role,
       fullName: user.fullName,
       imageUrl: user.imageUrl,
+      email: user.email,
     };
 
     const token = await encrypt({ ...userInfo, expiresAt });

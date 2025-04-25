@@ -25,6 +25,10 @@ export default function DesktopNavbar({ userInfo }: { userInfo: JWTPayload }) {
   const pathName = usePathname();
   const router = useRouter();
 
+  async function handleNavigation(link: string) {
+    router.push(link);
+  }
+
   async function handleLogout() {
     await logout();
     router.push("/");
@@ -97,17 +101,23 @@ export default function DesktopNavbar({ userInfo }: { userInfo: JWTPayload }) {
             <DropdownMenuLabel>My Account</DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              <DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() => handleNavigation("/user/profile")}
+              >
                 <User />
                 <span>Profile</span>
               </DropdownMenuItem>
 
-              <DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() => handleNavigation("/user/upload-recipe")}
+              >
                 <Pencil />
                 <span>Upload recipe</span>
               </DropdownMenuItem>
 
-              <DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() => handleNavigation("/user/settings")}
+              >
                 <Settings />
                 <span>Settings</span>
               </DropdownMenuItem>
