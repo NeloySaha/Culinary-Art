@@ -78,6 +78,60 @@ const signUpVerification = async (req, res) => {
   }
 };
 
+const forgetPassVerification = async (req, res) => {
+  const { otp, email } = req.body;
+
+  try {
+    const existingUser = await User.findOne({ email });
+    if (!existingUser) {
+      return res.status(400).json({
+        success: false,
+        message: "This account doesn't exist!",
+      });
+    }
+
+    const mailOptions = {
+      from: process.env.EMAIL,
+      to: email,
+      subject: `${otp} Culinary Art reset password OTP`,
+      html: `
+    <div style="font-family: sans-serif; padding: 20px; max-width: 600px; margin: 0 auto;">
+      <h2 style="color: #f97316;">For updating your Culinary Art password</h2>
+      <p>Hello ${existingUser.fullName.split(" ")[0]},</p>
+      <p>Please use the following verification code to reset your account password:</p>
+      <div style="background: #fff4e6; padding: 20px; border-radius: 8px; margin-top: 20px; margin-bottom: 20px; text-align: center;">
+        <span style="font-size: 32px; font-weight: bold; letter-spacing: 8px; color: #f97316;">${otp}</span>
+      </div>
+      <p>This code will expire in 10 minutes.</p>
+      <p>If you didn't request this action, please ignore this email.</p>
+    </div>
+  `,
+    };
+
+    transporter.sendMail(mailOptions, (error, info) => {
+      if (error) {
+        return res.status(500).json({
+          success: false,
+          message: "Sorry, couldn't send the email! Please try again.",
+        });
+      }
+
+      return res.status(200).json({
+        success: true,
+        message:
+          "A verification code has been sent to your Email. Please check.",
+      });
+    });
+
+    // return res.send("Email Sending is currently paused");
+  } catch (err) {
+    res.status(500).json({
+      success: false,
+      message: err.message,
+    });
+  }
+};
+
 // const multer = require("multer");
 // const path = require("path");
 
@@ -364,33 +418,47 @@ const loginUser = async (req, res) => {
 //   }
 // };
 
-// const resetPassword = async (req, res) => {
-//   const { token, password } = req.body;
+const resetPassword = async (req, res) => {
+  const { email, password } = req.body;
 
-//   try {
-//     const decoded = jwt.verify(token, "I_forgOt");
-//     const user = await User.findById(decoded.id);
+  try {
+    const user = await User.findOne({ email });
 
-//     if (!user) {
-//       return res.status(400).json({ success: false, message: "Invalid token" });
-//     }
+    if (!user) {
+      return res.status(400).json({
+        success: false,
+        message: "User doesn't exist. Please try again!",
+      });
+    }
 
-//     // console.log(user)
+    // console.log(user)
 
-//     const salt = await bcrypt.genSalt(10);
-//     user.password = await bcrypt.hash(password, salt);
-//     await user.save();
+    const salt = await bcrypt.genSalt(Number(process.env.JWT_SALT_ROUNDS));
+    user.password = await bcrypt.hash(password, salt);
+    await user.save();
 
-//     console.log("USER password changed");
-//     res
-//       .status(200)
-//       .json({ success: true, message: "Password reset successfully" });
-//   } catch (error) {
-//     res
-//       .status(400)
-//       .json({ success: false, message: "Invalid or expired token", error });
-//   }
-// };
+    const expiresAt = new Date(Date.now() + 5 * 60);
+    const userInfo = {
+      id: user._id,
+      role: user.role,
+      fullName: user.fullName,
+      imageUrl: user.imageUrl,
+    };
+
+    const token = await encrypt({ ...userInfo, expiresAt });
+
+    res.status(200).json({
+      success: true,
+      message: "Your account password has been updated successfully",
+      token,
+    });
+  } catch (error) {
+    res.status(400).json({
+      success: false,
+      message: "Sorry, couldn't update your password. Please try again!",
+    });
+  }
+};
 
 // //Edit Users
 // const editUser = async (req, res) => {
@@ -523,5 +591,7 @@ module.exports = {
   createUser,
   loginUser,
   signUpVerification,
+  forgetPassVerification,
+  resetPassword,
   getUser,
 };

@@ -8,14 +8,12 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from "@/components/ui/drawer";
-import Cookies from "js-cookie";
+import { logout } from "@/lib/actions";
+import { JWTPayload } from "jose";
 import { ChefHat, Menu, Pencil, Settings, User } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
-import { Button } from "./ui/button";
-import { UserInfo } from "@/lib/types";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
-import { JWTPayload } from "jose";
-import { logout } from "@/lib/actions";
+import { Button } from "./ui/button";
 import { Separator } from "./ui/separator";
 
 export default function MobileNavbar({ userInfo }: { userInfo: JWTPayload }) {

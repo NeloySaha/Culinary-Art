@@ -146,7 +146,7 @@ export default function LoginForm() {
                   <div className="flex justify-between items-center">
                     <FormLabel>Password</FormLabel>
                     <Link
-                      href="/resetAccountPassword"
+                      href="/forgot-password"
                       className="text-sm text-muted-foreground hover:underline"
                     >
                       Forgot your password?
