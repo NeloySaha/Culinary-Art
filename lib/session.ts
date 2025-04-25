@@ -2,6 +2,7 @@ import "server-only";
 import { SignJWT, jwtVerify } from "jose";
 import { cookies } from "next/headers";
 import { UserSessionInfo } from "./types";
+import { logout } from "./actions";
 
 const encodedKey = new TextEncoder().encode(process.env.SESSION_SECRET_KEY);
 
@@ -13,6 +14,11 @@ export async function encrypt(payload: UserSessionInfo & { expiresAt: Date }) {
     .sign(encodedKey);
 }
 
+export async function deleteSession() {
+  const cookieStore = await cookies();
+  cookieStore.delete("session");
+}
+
 export async function decrypt(session: string | undefined = "") {
   try {
     const { payload } = await jwtVerify(session, encodedKey, {
@@ -21,6 +27,7 @@ export async function decrypt(session: string | undefined = "") {
     return payload;
   } catch (error) {
     console.log("Failed to verify session");
+    await deleteSession();
     return null;
   }
 }
@@ -55,9 +62,4 @@ export async function updateSession() {
     sameSite: "lax",
     path: "/",
   });
-}
-
-export async function deleteSession() {
-  const cookieStore = await cookies();
-  cookieStore.delete("session");
 }

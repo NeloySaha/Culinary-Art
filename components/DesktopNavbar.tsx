@@ -61,12 +61,7 @@ export default function DesktopNavbar({ userInfo }: { userInfo: JWTPayload }) {
         >
           Shop Item
         </Link>
-        <Link
-          href="/"
-          className="hover:text-primary transition-all duration-300"
-        >
-          Upload Recipe
-        </Link>
+
         <Link
           href="/about"
           className="hover:text-primary transition-all duration-300"
@@ -75,7 +70,7 @@ export default function DesktopNavbar({ userInfo }: { userInfo: JWTPayload }) {
         </Link>
       </div>
 
-      {userInfo ? (
+      {userInfo !== null ? (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <div className="flex gap-2 items-center">

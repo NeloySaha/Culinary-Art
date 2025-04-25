@@ -60,6 +60,8 @@ router.get("/categories/:category", getRecipesByCategory);
 
 router.get("/search/:q", getSearchedRecipes);
 
+router.get("/user-recipes/:createdBy", getRecipesByUser);
+
 // router.post("/comments", addComment);
 
 // router.post("/addlike", addLike);

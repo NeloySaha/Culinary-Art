@@ -64,9 +64,7 @@ export default function MobileNavbar({ userInfo }: { userInfo: JWTPayload }) {
             <Button onClick={() => handleNavigation("/")} variant={"ghost"}>
               Shop Item
             </Button>
-            <Button onClick={() => handleNavigation("/")} variant={"ghost"}>
-              Upload Recipe
-            </Button>
+
             <Button
               onClick={() => handleNavigation("/about")}
               variant={"ghost"}

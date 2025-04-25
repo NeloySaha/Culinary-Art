@@ -18,8 +18,7 @@ const userSchema = new mongoose.Schema(
 
     imageUrl: {
       type: String,
-      default:
-        "https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.flaticon.com%2Ffree-icon%2Fuser-profile_10337609&psig=AOvVaw2UthBJ9hYgpN1j45Ux8Dz4&ust=1745467848729000&source=images&cd=vfe&opi=89978449&ved=0CBQQjRxqFwoTCOCy7syk7YwDFQAAAAAdAAAAABAE",
+      default: "https://github.com/shadcn.png",
     },
 
     bio: {

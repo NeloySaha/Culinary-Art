@@ -1,3 +1,4 @@
+const { default: mongoose } = require("mongoose");
 const Recipe = require("../models/RecipeModel");
 
 // const User = require("../models/User");
@@ -48,10 +49,15 @@ const createRecipe = async (req, res) => {
 };
 
 const getRecipesByUser = async (req, res) => {
-  const { createdBy } = req.body;
+  const { createdBy } = req.params;
   try {
-    const recipes = await Recipe.find({ createdBy });
-    res.status(200).json(recipes);
+    const recipes = await Recipe.find({
+      createdBy: new mongoose.Types.ObjectId(createdBy),
+    });
+    res.status(200).json({
+      success: true,
+      data: recipes,
+    });
   } catch (error) {
     res
       .status(500)
