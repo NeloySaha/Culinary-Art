@@ -8,22 +8,25 @@ export async function middleware(request: NextRequest) {
   const session = await decrypt(cookie);
 
   if (!session?.id) {
-    return NextResponse.redirect(new URL("/login", request.url));
+    const response = NextResponse.redirect(new URL("/login", request.url));
+    response.headers.set("x-middleware-cache", "no-cache");
+    response.cookies.delete("session");
+    return response;
   }
 
   const pathname = request.nextUrl.pathname;
 
   if (pathname.startsWith("/user")) {
     if (session.role !== "customer") {
-      // If not a restaurant user, redirect to home
-      return NextResponse.redirect(new URL("/", request.url));
+      // If not a restaurant user, rewrite to home
+      return NextResponse.rewrite(new URL("/", request.url));
     }
   }
 
   if (pathname.startsWith("/admin")) {
     if (session.role !== "admin") {
-      // If not an admin user, redirect to home
-      return NextResponse.redirect(new URL("/", request.url));
+      // If not an admin user, rewrite to home
+      return NextResponse.rewrite(new URL("/", request.url));
     }
   }
 

@@ -6,6 +6,7 @@ import {
   SidebarTrigger,
 } from "@/components/ui/sidebar";
 import UserSidebarWrapper from "@/components/UserSidebarWrapper";
+import { Menu } from "lucide-react";
 
 export default function RestaurantDashboardLayout({
   children,
@@ -17,15 +18,9 @@ export default function RestaurantDashboardLayout({
       <UserSidebarWrapper />
 
       <SidebarInset>
-        <header className="flex h-16 shrink-0 items-center gap-2 border-b px-4">
-          <SidebarTrigger className="-ml-1" />
-          <Separator orientation="vertical" className="mr-2 h-4" />
-          <Breadcrumb>
-            <BreadcrumbItem className="font-semibold text-base">
-              Dashboard
-            </BreadcrumbItem>
-          </Breadcrumb>
-        </header>
+        <div className="mt-4 flex justify-end md:justify-start px-2">
+          <SidebarTrigger className="[&_svg]:!size-6 size-10" />
+        </div>
 
         <main className="flex-1 py-16 px-3">
           <div className="max-w-7xl mx-auto">{children}</div>

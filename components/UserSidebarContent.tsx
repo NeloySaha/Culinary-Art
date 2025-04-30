@@ -1,5 +1,5 @@
 "use client";
-import { Home, Info, Pencil, Settings, Utensils } from "lucide-react";
+import { Edit, Home, Info, Pencil, Settings, Utensils } from "lucide-react";
 
 import {
   SidebarGroup,
@@ -33,6 +33,11 @@ const items = [
     title: "Upload recipe",
     url: "/user/upload-recipe",
     icon: Pencil,
+  },
+  {
+    title: "Manage recipes",
+    url: "/user/manage-recipes",
+    icon: Edit,
   },
   {
     title: "Settings",

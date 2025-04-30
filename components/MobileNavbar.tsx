@@ -16,7 +16,11 @@ import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { Button } from "./ui/button";
 import { Separator } from "./ui/separator";
 
-export default function MobileNavbar({ userInfo }: { userInfo: JWTPayload }) {
+export default function MobileNavbar({
+  userInfo,
+}: {
+  userInfo: JWTPayload | null;
+}) {
   const [isOpen, setIsOpen] = useState(false);
   const router = useRouter();
   const pathName = usePathname();
@@ -110,7 +114,7 @@ export default function MobileNavbar({ userInfo }: { userInfo: JWTPayload }) {
                   onClick={() => handleNavigation("/user/upload-recipe")}
                 >
                   <Pencil />
-                  <span>Upload recipe</span>
+                  <span>Dashboard</span>
                 </Button>
 
                 <Button

@@ -1,27 +1,25 @@
-import { ChefHat, LogOut, Pencil, Settings, User } from "lucide-react";
-import Link from "next/link";
-import { Button } from "./ui/button";
-import { usePathname, useRouter } from "next/navigation";
-import { UserInfo } from "@/lib/types";
-import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
-import { JWTPayload } from "jose";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
-  DropdownMenuPortal,
   DropdownMenuSeparator,
-  DropdownMenuShortcut,
-  DropdownMenuSub,
-  DropdownMenuSubContent,
-  DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { logout } from "@/lib/actions";
+import { JWTPayload } from "jose";
+import { ChefHat, LogOut, Pencil, Settings, User } from "lucide-react";
+import Link from "next/link";
+import { usePathname, useRouter } from "next/navigation";
+import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
+import { Button } from "./ui/button";
 
-export default function DesktopNavbar({ userInfo }: { userInfo: JWTPayload }) {
+export default function DesktopNavbar({
+  userInfo,
+}: {
+  userInfo: JWTPayload | null;
+}) {
   const pathName = usePathname();
   const router = useRouter();
 
@@ -107,7 +105,7 @@ export default function DesktopNavbar({ userInfo }: { userInfo: JWTPayload }) {
                 onClick={() => handleNavigation("/user/upload-recipe")}
               >
                 <Pencil />
-                <span>Upload recipe</span>
+                <span>Dashboard</span>
               </DropdownMenuItem>
 
               <DropdownMenuItem

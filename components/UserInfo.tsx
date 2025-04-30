@@ -27,43 +27,45 @@ export default async function UserInfo() {
   }
 
   return (
-    <div className="flex gap-8 items-center mb-6">
-      <Avatar className="size-48">
-        <AvatarImage
-          src={(user?.imageUrl as string) ?? "https://github.com/shadcn.png"}
-          alt="@shadcn"
-        />
-        <AvatarFallback>
-          {(user?.fullName as string).split(" ")[0][0]}
-        </AvatarFallback>
-      </Avatar>
+    <div>
+      <div className="flex items-center gap-8 mb-6">
+        <Avatar className="size-28 md:size-36 lg:size-48">
+          <AvatarImage
+            src={(user?.imageUrl as string) ?? "https://github.com/shadcn.png"}
+            alt="@shadcn"
+          />
+          <AvatarFallback>
+            {(user?.fullName as string).split(" ")[0][0]}
+          </AvatarFallback>
+        </Avatar>
 
-      <div className="space-y-4 w-full">
-        <div className="space-y-2">
-          <h3 className="text-2xl font-semibold">{user.fullName}</h3>
-          <p className="text-muted-foreground">{user.bio}</p>
+        <div className="space-y-4 w-full">
+          <div className="space-y-2">
+            <h3 className="text-2xl font-semibold">{user.fullName}</h3>
+            <p className="text-muted-foreground">{user.bio}</p>
+          </div>
         </div>
-
-        <Card>
-          <CardContent className="flex justify-around">
-            <div className="flex gap-2 items-center">
-              <ChefHat className="h-10 w-10 text-primary" />
-              <div className="text-5xl">
-                {user.totalRecipes}
-                <span className="text-sm text-muted-foreground">Recipes</span>
-              </div>
-            </div>
-
-            <div className="flex gap-2 items-center">
-              <Heart className="h-10 w-10 text-primary" />
-              <div className="text-5xl">
-                {user.userLikeCount}
-                <span className="text-sm text-muted-foreground">Likes</span>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
       </div>
+
+      <Card>
+        <CardContent className="flex justify-around">
+          <div className="flex gap-2 items-center">
+            <ChefHat className="h-10 w-10 text-primary" />
+            <div className="text-5xl">
+              {user.totalRecipes}
+              <span className="text-sm text-muted-foreground">Recipes</span>
+            </div>
+          </div>
+
+          <div className="flex gap-2 items-center">
+            <Heart className="h-10 w-10 text-primary" />
+            <div className="text-5xl">
+              {user.userLikeCount}
+              <span className="text-sm text-muted-foreground">Likes</span>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
 }

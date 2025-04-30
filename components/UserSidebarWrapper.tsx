@@ -9,6 +9,7 @@ import {
   SidebarContent,
   SidebarFooter,
   SidebarHeader,
+  SidebarTrigger,
 } from "./ui/sidebar";
 import UserSidebarContent from "./UserSidebarContent";
 
@@ -18,10 +19,10 @@ export default async function UserSidebarWrapper() {
   if (!session) return null;
   return (
     <Sidebar>
-      <SidebarHeader className="mb-10">
+      <SidebarHeader className="flex gap-3 mb-10">
         <Link
           href="/"
-          className="flex justify-center gap-2 text-primary items-center mt-3"
+          className="flex justify-center gap-2 text-primary items-center mt-4"
         >
           <ChefHat className="h-5 w-5" />
           <p className="text-2xl font-semibold">Culinary Art</p>

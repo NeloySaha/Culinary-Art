@@ -2,7 +2,6 @@ import "server-only";
 import { SignJWT, jwtVerify } from "jose";
 import { cookies } from "next/headers";
 import { UserSessionInfo } from "./types";
-import { logout } from "./actions";
 
 const encodedKey = new TextEncoder().encode(process.env.SESSION_SECRET_KEY);
 

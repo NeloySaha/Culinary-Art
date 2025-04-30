@@ -12,7 +12,7 @@ async function encrypt(payload) {
   return new SignJWT(payload)
     .setProtectedHeader({ alg: "HS256" })
     .setIssuedAt()
-    .setExpirationTime("5 minutes")
+    .setExpirationTime("30 secs")
     .sign(encodedKey);
 }
 
@@ -227,7 +227,7 @@ const createUser = async (req, res) => {
 
     await newUser.save();
 
-    const expiresAt = new Date(Date.now() + 5 * 60);
+    const expiresAt = new Date(Date.now() + 30);
     const user = {
       id: newUser._id,
       role: newUser.role,
@@ -271,7 +271,7 @@ const loginUser = async (req, res) => {
         .json({ success: false, message: "Invalid password" });
     }
 
-    const expiresAt = new Date(Date.now() + 5 * 60);
+    const expiresAt = new Date(Date.now() + 30);
     const userInfo = {
       id: user._id,
       role: user.role,
@@ -441,7 +441,7 @@ const resetPassword = async (req, res) => {
     user.password = await bcrypt.hash(password, salt);
     await user.save();
 
-    const expiresAt = new Date(Date.now() + 5 * 60);
+    const expiresAt = new Date(Date.now() + 30);
     const userInfo = {
       id: user._id,
       role: user.role,

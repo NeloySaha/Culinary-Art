@@ -2,6 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { ArrowDown, Pencil } from "lucide-react";
+import Link from "next/link";
 import { useEffect, useState } from "react";
 
 {
@@ -73,9 +74,13 @@ export default function HeroSection() {
               </p>
 
               <div className="flex flex-wrap gap-3 justify-center lg:justify-start">
-                <Button size={"lg"}>
-                  Upload a recipe
-                  <Pencil className="ml-2 h-5 w-5" />
+                <Button size={"lg"} asChild>
+                  <Link href="/user/upload-recipe">
+                    <>
+                      <Pencil className="ml-2 h-5 w-5" />
+                      Upload a recipe
+                    </>
+                  </Link>
                 </Button>
                 <Button variant={"outline"} size={"lg"}>
                   Explore recipes
