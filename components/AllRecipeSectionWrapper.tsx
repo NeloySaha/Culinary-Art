@@ -5,9 +5,11 @@ import { Recipe } from "@/lib/types";
 export default async function AllRecipeSectionWrapper({
   category,
   query,
+  keyword,
 }: {
   category: string;
   query: string | undefined;
+  keyword: string | undefined;
 }) {
   const currentCategory = category;
   let allRecipesData: { success: boolean; data: Recipe[]; message: string } = {
@@ -19,6 +21,21 @@ export default async function AllRecipeSectionWrapper({
   if (query) {
     const allRecipesRes = await fetch(
       `${process.env.NEXT_PUBLIC_API_PREFIX}/recipes/search/${query}`
+    );
+
+    allRecipesData = await allRecipesRes.json();
+  } else if (keyword) {
+    const allRecipesRes = await fetch(
+      `${process.env.NEXT_PUBLIC_API_PREFIX}/recipes/keyword-recipes`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          keyword,
+        }),
+      }
     );
 
     allRecipesData = await allRecipesRes.json();

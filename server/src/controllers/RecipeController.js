@@ -283,6 +283,61 @@ const getAllRecipes = async (req, res) => {
   }
 };
 
+async function getUniqueKeywords(req, res) {
+  try {
+    const result = await Recipe.aggregate([
+      { $unwind: "$keywords" },
+      {
+        $project: {
+          keyword: { $toLower: "$keywords" }, // normalize to lowercase
+        },
+      },
+      {
+        $group: {
+          _id: "$keyword",
+        },
+      },
+      {
+        $sort: { _id: 1 }, // sort alphabetically
+      },
+      {
+        $project: {
+          _id: 0,
+          keyword: "$_id",
+        },
+      },
+    ]);
+
+    const uniqueKeywords = result.map((entry) => entry.keyword);
+
+    res.status(200).json({
+      success: true,
+      data: uniqueKeywords,
+    });
+  } catch (error) {
+    res
+      .status(500)
+      .json({ success: false, message: "Server error", error: error.message });
+  }
+}
+
+async function getRecipeByKeywords(req, res) {
+  const { keyword } = req.body;
+
+  try {
+    const recipes = await Recipe.find({
+      keywords: { $regex: new RegExp(`^${keyword}$`, "i") },
+    });
+    res.status(200).json({
+      success: true,
+      data: recipes,
+    });
+  } catch (err) {
+    console.error("Error fetching recipes by keyword:", err);
+    res.status(500).json({ success: false, message: "Server error" });
+  }
+}
+
 const adeleterecipe = async (req, res) => {
   const delrecipeId = req.params.id;
   const userId = req.user.id;
@@ -327,4 +382,6 @@ module.exports = {
   getMostLikedRecipes,
   getLatestRecipes,
   adeleterecipe,
+  getUniqueKeywords,
+  getRecipeByKeywords,
 };

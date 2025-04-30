@@ -15,6 +15,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { Button } from "./ui/button";
 import { Separator } from "./ui/separator";
+import Link from "next/link";
 
 export default function MobileNavbar({
   userInfo,
@@ -38,17 +39,17 @@ export default function MobileNavbar({
 
   return (
     <nav className="lg:hidden px-4 flex items-center justify-between">
-      <div
+      <Link
         className={`${
           pathName === "/login" || pathName === "/signup"
             ? "text-primary-foreground"
             : "text-primary"
         } text-primary flex gap-1 items-center hover:cursor-pointer`}
-        onClick={() => handleNavigation("/")}
+        href={pathName === "/" ? "#home" : "/"}
       >
         <ChefHat className="h-5 w-5" />
         <p className="text-2xl font-semibold">Culinary Art</p>
-      </div>
+      </Link>
 
       <Drawer open={isOpen} onOpenChange={setIsOpen}>
         <DrawerTrigger>

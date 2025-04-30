@@ -5,37 +5,15 @@ import { ArrowDown, Pencil } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
-{
-  /* <svg
-  preserveAspectRatio="none"
-  viewBox="0 0 960 540"
-  width="100%"
-  height="100%"
-  xmlns="http://www.w3.org/2000/svg"
-  xmlnsXlink="http://www.w3.org/1999/xlink"
-  version="1.1"
-  className="absolute top-0 left-0 right-0 w-full h-full"
->
-  <rect x="0" y="0" width="960" height="540" fill="#fdf2e9"></rect>
-  <path
-    d="M0 470L14.5 473.2C29 476.3 58 482.7 87.2 482.8C116.3 483 145.7 477 174.8 466.3C204 455.7 233 440.3 262 442.7C291 445 320 465 349 476.5C378 488 407 491 436.2 480.2C465.3 469.3 494.7 444.7 523.8 433.5C553 422.3 582 424.7 611 433.8C640 443 669 459 698 468.7C727 478.3 756 481.7 785.2 479C814.3 476.3 843.7 467.7 872.8 461.2C902 454.7 931 450.3 945.5 448.2L960 446L960 541L945.5 541C931 541 902 541 872.8 541C843.7 541 814.3 541 785.2 541C756 541 727 541 698 541C669 541 640 541 611 541C582 541 553 541 523.8 541C494.7 541 465.3 541 436.2 541C407 541 378 541 349 541C320 541 291 541 262 541C233 541 204 541 174.8 541C145.7 541 116.3 541 87.2 541C58 541 29 541 14.5 541L0 541Z"
-    fill="#FFF"
-    stroke-linecap="round"
-    stroke-linejoin="miter"
-  ></path>
-</svg>; */
-}
-
 export default function HeroSection() {
   const [mounted, setMounted] = useState(false);
 
-  // This ensures the SVG is rendered with the same dimensions after hydration
   useEffect(() => {
     setMounted(true);
   }, []);
 
   return (
-    <section className="relative overflow-hidden">
+    <section className="relative overflow-hidden" id="home">
       {/* Background SVG that starts from the top */}
       <div className="absolute inset-0 -z-10 w-full overflow-hidden">
         <svg
@@ -82,9 +60,11 @@ export default function HeroSection() {
                     </>
                   </Link>
                 </Button>
-                <Button variant={"outline"} size={"lg"}>
-                  Explore recipes
-                  <ArrowDown className="ml-2 h-5 w-5" />
+                <Button variant={"outline"} size={"lg"} asChild>
+                  <Link href="#recipes">
+                    Explore recipes
+                    <ArrowDown className="ml-2 h-5 w-5" />
+                  </Link>
                 </Button>
               </div>
             </div>

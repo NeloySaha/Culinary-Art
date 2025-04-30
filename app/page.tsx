@@ -1,6 +1,8 @@
 import AllRecipeSectionWrapper from "@/components/AllRecipeSectionWrapper";
+import { CategorySelector } from "@/components/CategorySelector";
 import Footer from "@/components/Footer";
 import HeroSection from "@/components/HeroSection";
+import KeywordsWrapper from "@/components/KeywordsWrapper";
 import PopularRecipeSectionWrapper from "@/components/PopularRecipeSectionWrapper";
 import RecipeSearchbar from "@/components/RecipeSearchbar";
 import RecipesFilter from "@/components/RecipesFilter";
@@ -17,6 +19,7 @@ export default async function Page({
   const searchParamsData = await searchParams;
   const category = searchParamsData.category ?? "All";
   const query = searchParamsData.query;
+  const keyword = searchParamsData.keyword;
 
   return (
     <div>
@@ -26,12 +29,24 @@ export default async function Page({
         <PopularRecipeSectionWrapper />
       </Suspense>
 
-      <section className="max-w-7xl px-4 mx-auto py-10">
-        <RecipeSearchbar />
+      <section
+        className="max-w-7xl px-4 mx-auto py-10 scroll-mt-16"
+        id="recipes"
+      >
+        <div className="flex flex-col md:flex-row gap-4 w-full">
+          <RecipeSearchbar />
+          <CategorySelector />
+        </div>
+        <KeywordsWrapper />
+
         <RecipesFilter />
 
         <Suspense fallback={<Spinner />} key={category}>
-          <AllRecipeSectionWrapper category={category} query={query} />
+          <AllRecipeSectionWrapper
+            category={category}
+            query={query}
+            keyword={keyword}
+          />
         </Suspense>
       </section>
 

@@ -13,6 +13,7 @@ export default function RecipeSearchbar() {
   const handleQuery = (Query: string) => {
     const params = new URLSearchParams(searchParams);
     params.delete("category");
+    params.delete("keyword");
     params.set("query", Query);
 
     router.push(currentPath + "?" + params.toString(), { scroll: false });
@@ -25,6 +26,7 @@ export default function RecipeSearchbar() {
         e.preventDefault();
         handleQuery(query);
       }}
+      className="w-full"
     >
       <div className="relative">
         <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-primary h-4 w-4" />

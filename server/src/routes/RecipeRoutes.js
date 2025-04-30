@@ -9,6 +9,7 @@ const {
   getRecipesByUser,
   getRecipesByCategory,
   getSearchedRecipes,
+  getUniqueKeywords,
   addComment,
   addLike,
   getRecipe,
@@ -16,6 +17,7 @@ const {
   getLatestRecipes,
   getAllRecipes,
   adeleterecipe,
+  getRecipeByKeywords,
 } = require("../controllers/RecipeController");
 
 // const RPstorage = multer.diskStorage({
@@ -57,6 +59,8 @@ router.post("/create", createRecipe);
 router.get("/all-recipes", getAllRecipes);
 
 router.get("/categories/:category", getRecipesByCategory);
+router.get("/keywords", getUniqueKeywords);
+router.post("/keyword-recipes", getRecipeByKeywords);
 
 router.get("/search/:q", getSearchedRecipes);
 
