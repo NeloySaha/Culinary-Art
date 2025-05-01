@@ -1,12 +1,9 @@
-import { Breadcrumb, BreadcrumbItem } from "@/components/ui/breadcrumb";
-import { Separator } from "@/components/ui/separator";
 import {
   SidebarInset,
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
 import UserSidebarWrapper from "@/components/UserSidebarWrapper";
-import { Menu } from "lucide-react";
 
 export default function RestaurantDashboardLayout({
   children,
@@ -18,7 +15,7 @@ export default function RestaurantDashboardLayout({
       <UserSidebarWrapper />
 
       <SidebarInset>
-        <div className="mt-4 flex justify-end md:justify-start px-2">
+        <div className="flex justify-end md:justify-start mt-1">
           <SidebarTrigger className="[&_svg]:!size-6 size-10" />
         </div>
 

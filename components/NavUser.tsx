@@ -1,11 +1,13 @@
 "use client";
 
-import { ChevronsUpDown, LogOut } from "lucide-react";
+import { ChevronsUpDown, LogOut, Pencil, Settings, User } from "lucide-react";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
@@ -24,6 +26,10 @@ import { Button } from "./ui/button";
 export function NavUser({ session }: { session: JWTPayload }) {
   const { isMobile } = useSidebar();
   const router = useRouter();
+
+  async function handleNavigation(link: string) {
+    router.push(link);
+  }
 
   async function handleLogout() {
     await logout();
@@ -95,6 +101,30 @@ export function NavUser({ session }: { session: JWTPayload }) {
               </div>
             </DropdownMenuLabel>
 
+            <DropdownMenuSeparator />
+
+            <DropdownMenuGroup>
+              <DropdownMenuItem
+                onClick={() => handleNavigation("/user/profile")}
+              >
+                <User />
+                <span>Profile</span>
+              </DropdownMenuItem>
+
+              <DropdownMenuItem
+                onClick={() => handleNavigation("/user/upload-recipe")}
+              >
+                <Pencil />
+                <span>Dashboard</span>
+              </DropdownMenuItem>
+
+              <DropdownMenuItem
+                onClick={() => handleNavigation("/user/settings")}
+              >
+                <Settings />
+                <span>Settings</span>
+              </DropdownMenuItem>
+            </DropdownMenuGroup>
             <DropdownMenuSeparator />
 
             <Button

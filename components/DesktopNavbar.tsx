@@ -9,7 +9,14 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { logout } from "@/lib/actions";
 import { JWTPayload } from "jose";
-import { ChefHat, LogOut, Pencil, Settings, User } from "lucide-react";
+import {
+  ChefHat,
+  ChevronsUpDown,
+  LogOut,
+  Pencil,
+  Settings,
+  User,
+} from "lucide-react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
@@ -70,8 +77,8 @@ export default function DesktopNavbar({
 
       {userInfo !== null ? (
         <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <div className="flex gap-2 items-center">
+          {/* <DropdownMenuTrigger asChild>
+            <DropdownMenuItem className="flex gap-2 items-center">
               <Avatar>
                 <AvatarImage
                   src={
@@ -88,8 +95,32 @@ export default function DesktopNavbar({
               <p className="text-md font-medium">
                 {(userInfo?.fullName as string).split(" ")[0]}
               </p>
+            </DropdownMenuItem>
+          </DropdownMenuTrigger> */}
+
+          <DropdownMenuTrigger>
+            <div className="flex items-center gap-2">
+              <Avatar className="h-8 w-8 rounded-lg">
+                <AvatarImage
+                  src={
+                    (userInfo?.imageUrl as string) ??
+                    "https://github.com/shadcn.png"
+                  }
+                  alt="@shadcn"
+                />
+                <AvatarFallback className="rounded-lg">
+                  {(userInfo?.fullName as string).split(" ")[0][0]}
+                </AvatarFallback>
+              </Avatar>
+              <div className="grid flex-1 text-left text-sm leading-tight">
+                <span className="truncate font-semibold">
+                  {(userInfo?.fullName as string).split(" ")[0]}
+                </span>
+              </div>
+              <ChevronsUpDown className="ml-auto size-4" />
             </div>
           </DropdownMenuTrigger>
+
           <DropdownMenuContent className="w-56">
             <DropdownMenuLabel>My Account</DropdownMenuLabel>
             <DropdownMenuSeparator />
@@ -117,10 +148,13 @@ export default function DesktopNavbar({
             </DropdownMenuGroup>
 
             <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={handleLogout}>
-              <LogOut />
-              <span>Log out</span>
-            </DropdownMenuItem>
+            <Button
+              className="w-full"
+              variant="destructive"
+              onClick={handleLogout}
+            >
+              <LogOut /> Log out
+            </Button>
           </DropdownMenuContent>
         </DropdownMenu>
       ) : (
