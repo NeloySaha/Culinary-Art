@@ -1,5 +1,5 @@
-import React from "react";
+import UploadRecipeForm from "@/components/UploadRecipeForm";
 
 export default function Page() {
-  return <div>Upload recipe bro</div>;
+  return <UploadRecipeForm />;
 }

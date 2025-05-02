@@ -9,19 +9,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { categories } from "@/lib/info";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-
-const categories = [
-  "All",
-  "Breakfast",
-  "Sides",
-  "Brunch",
-  "Lunch",
-  "Dinner",
-  "Snacks",
-  "Desserts",
-  "Beverage",
-];
 
 export function CategorySelector() {
   const searchParams = useSearchParams();

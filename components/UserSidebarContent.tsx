@@ -66,6 +66,7 @@ export default function UserSidebarContent() {
                 className={
                   "flex items-center w-full space-x-2 pl-4 py-2 rounded-lg mb-1 transition-colors text-sm font-semibold"
                 }
+                tooltip={item.title}
               >
                 <item.icon />
                 <span>{item.title}</span>
