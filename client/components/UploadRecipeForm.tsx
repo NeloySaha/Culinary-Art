@@ -26,7 +26,7 @@ import {
 } from "@/components/ui/select";
 
 import { formCategories } from "@/lib/info";
-import { Plus, Trash2, X } from "lucide-react";
+import { Loader2, Plus, Trash2, X } from "lucide-react";
 import { toast } from "sonner";
 import {
   Card,
@@ -35,6 +35,8 @@ import {
   CardHeader,
   CardTitle,
 } from "./ui/card";
+import { getSession } from "@/lib/actions";
+import { JWTPayload } from "jose";
 
 // --- Zod Validation Schema ---
 // Updated keywords to be an array of strings
@@ -153,29 +155,79 @@ export default function RecipeForm() {
     );
     field.onChange(updatedKeywords);
   };
-  // --- End Keyword Handling ---
 
-  // 2. Define a submit handler.
-  function onSubmit(data: RecipeFormValues) {
-    // Keywords data is now already an array
-    console.log("Form Data:", data);
+  async function onSubmit(data: RecipeFormValues) {
+    const file = data.image;
+    if (!file) return;
 
-    // if (data.imageUrl && data.imageUrl.length > 0) {
-    //   const imageFile = data.imageUrl[0];
-    //   console.log("Image File:", imageFile);
-    //   // Add your image upload logic here
-    // }
+    const formData = new FormData();
+    formData.append("image", file);
 
-    toast("Recipe Submitted!", {
-      description: (
-        <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-          <code className="text-white">{JSON.stringify(data, null, 2)}</code>
-        </pre>
-      ),
-    });
-    // Optionally reset the form, including the keyword input state
-    // form.reset();
-    // setCurrentKeyword("");
+    try {
+      const res1 = await fetch(
+        `${process.env.NEXT_PUBLIC_API_PREFIX}/recipes/upload-image`,
+        {
+          method: "POST",
+          body: formData,
+        }
+      );
+
+      const data1 = await res1.json();
+
+      if (data1.success) {
+        console.log("Upload successful:", data1);
+        console.log("Image URL:", data1.imageUrl);
+        const session = await getSession();
+        const res2 = await fetch(
+          `${process.env.NEXT_PUBLIC_API_PREFIX}/recipes/create`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              ...data,
+              image: data1.imageUrl,
+              createdBy: (session as JWTPayload).id,
+            }),
+          }
+        );
+
+        const data2 = await res2.json();
+
+        if (data2.success) {
+          toast.success("Success!", {
+            description: "Your recipe has been uploaded successfully",
+          });
+
+          form.reset({
+            name: "",
+            category: undefined,
+            instructions: [""],
+            keywords: [],
+            ingredients: [{ name: "", quantity: "" }],
+            time: "",
+            servings: 0,
+            difficulty: undefined,
+          });
+          setCurrentKeyword("");
+        } else {
+          toast.error("Error", {
+            description: data2.message,
+          });
+        }
+      } else {
+        console.error("Upload failed:", data1.message);
+        toast.error("Error", {
+          description: data1.message,
+        });
+      }
+    } catch (error) {
+      console.error("Error uploading image:", error);
+      toast.error("Error", {
+        description: (error as Error).message,
+      });
+    }
   }
 
   return (
@@ -547,7 +599,16 @@ export default function RecipeForm() {
               disabled={form.formState.isSubmitting}
               className="w-full"
             >
-              {form.formState.isSubmitting ? "Submitting..." : "Submit Recipe"}
+              {form.formState.isSubmitting ? (
+                <>
+                  <span>Uploading</span>
+                  <span className="animate-spin">
+                    <Loader2 className="h-4 w-4" />
+                  </span>
+                </>
+              ) : (
+                "Upload recipe"
+              )}
             </Button>
           </form>
         </Form>

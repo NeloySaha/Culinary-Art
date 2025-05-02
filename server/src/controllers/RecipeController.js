@@ -27,7 +27,7 @@ const createRecipe = async (req, res) => {
       time,
       servings,
       difficulty,
-      imagePath,
+      imageUrl: image,
       comments: [],
       createdBy,
       likedUsers: [],
@@ -35,7 +35,7 @@ const createRecipe = async (req, res) => {
 
     await newRecipe.save();
 
-    res.status(201).json({
+    res.status(200).json({
       success: true,
       message: "Recipe created successfully",
       data: newRecipe,

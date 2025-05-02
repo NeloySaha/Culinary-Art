@@ -22,7 +22,11 @@ export default function RecipeCard({ recipe }: { recipe: Recipe }) {
         </Badge>
 
         <img
-          src={recipe.imageUrl}
+          src={
+            recipe.imageUrl.startsWith("/")
+              ? `${process.env.NEXT_PUBLIC_API}${recipe.imageUrl}`
+              : recipe.imageUrl
+          }
           alt="food"
           className="object-cover w-full h-56 rounded-lg"
         />

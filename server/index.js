@@ -7,7 +7,7 @@ const port = process.env.PORT;
 
 app.use(express.json());
 app.use(cors());
-app.use(express.static("public"));
+app.use(express.static("public")); //for serving images from the public folder
 
 async function main() {
   await mongoose.connect(process.env.MONGODB_URI);

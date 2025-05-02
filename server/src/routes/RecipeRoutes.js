@@ -39,16 +39,22 @@ const RPupload = multer({
   limits: { fileSize: 25 * 1024 * 1024 },
 });
 
-router.post("/upload", RPupload.single("image"), (req, res) => {
+router.post("/upload-image", RPupload.single("image"), (req, res) => {
   console.log("UPLOADING");
   if (!req.file) {
-    return res.status(400).send("No file uploaded.");
+    return res.status(400).json({
+      success: false,
+      message: "No file uploaded",
+    });
   }
 
-  // File information can be accessed via req.file
-  res.status(200).send({
+  const imageUrl = `/recipeImages/${req.file.filename}`;
+
+  res.status(200).json({
+    success: true,
     message: "File uploaded successfully!",
     file: req.file,
+    imageUrl: imageUrl, // <-- include the path relative to the server
   });
 });
 
