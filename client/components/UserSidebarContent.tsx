@@ -1,5 +1,19 @@
 "use client";
-import { Edit, Home, Info, Pencil, Settings, Utensils } from "lucide-react";
+import {
+  BookMarked,
+  Edit,
+  Heart,
+  Home,
+  Info,
+  ListCheckIcon,
+  LucideInfo,
+  Pencil,
+  Settings,
+  ShoppingBag,
+  Upload,
+  Users,
+  Utensils,
+} from "lucide-react";
 
 import {
   SidebarGroup,
@@ -19,9 +33,9 @@ const items = [
     icon: Home,
   },
   {
-    title: "About Us",
-    url: "/about",
-    icon: Info,
+    title: "Shop",
+    url: "/shop",
+    icon: ShoppingBag,
   },
   {
     title: "Profile",
@@ -31,7 +45,7 @@ const items = [
   {
     title: "Upload recipe",
     url: "/user/upload-recipe",
-    icon: Pencil,
+    icon: Upload,
   },
   {
     title: "Manage recipes",
@@ -39,9 +53,29 @@ const items = [
     icon: Edit,
   },
   {
+    title: "Order history",
+    url: "/user/order-history",
+    icon: ListCheckIcon,
+  },
+  {
+    title: "Bookmarks",
+    url: "/user/bookmarks",
+    icon: BookMarked,
+  },
+  {
+    title: "Liked recipes",
+    url: "/user/likes",
+    icon: Heart,
+  },
+  {
     title: "Settings",
     url: "/user/settings",
     icon: Settings,
+  },
+  {
+    title: "About Us",
+    url: "/about",
+    icon: Users,
   },
 ];
 

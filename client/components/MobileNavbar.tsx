@@ -58,16 +58,18 @@ export default function MobileNavbar({
         <DrawerContent>
           <DrawerHeader>
             <DrawerTitle></DrawerTitle>
-            <Button onClick={() => handleNavigation("/")} variant={"ghost"}>
-              Home
-            </Button>
 
-            <Button onClick={() => handleNavigation("/")} variant={"ghost"}>
+            <Button
+              onClick={() =>
+                handleNavigation(pathName === "/" ? "#recipes" : "/")
+              }
+              variant={"ghost"}
+            >
               Recipes
             </Button>
 
-            <Button onClick={() => handleNavigation("/")} variant={"ghost"}>
-              Shop Item
+            <Button onClick={() => handleNavigation("/shop")} variant={"ghost"}>
+              Shop
             </Button>
 
             <Button

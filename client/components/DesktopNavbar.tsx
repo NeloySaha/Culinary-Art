@@ -55,21 +55,21 @@ export default function DesktopNavbar({
 
       <div className="flex gap-4 text-md font-medium">
         <Link
-          href="/"
-          className="hover:text-primary transition-all duration-300"
+          href={pathName === "/" ? "#recipes" : "/"}
+          className={`hover:text-primary transition-all duration-300 ${pathName === "/" && "text-primary/85"}`}
         >
           Recipes
         </Link>
         <Link
-          href="/"
-          className="hover:text-primary transition-all duration-300"
+          href="/shop"
+          className={`hover:text-primary transition-all duration-300 ${pathName === "/shop" && "text-primary/85"}`}
         >
           Shop Item
         </Link>
 
         <Link
           href="/about"
-          className="hover:text-primary transition-all duration-300"
+          className={`hover:text-primary transition-all duration-300 ${pathName === "/about" && "text-primary/85"}`}
         >
           About Us
         </Link>
@@ -133,7 +133,7 @@ export default function DesktopNavbar({
               </DropdownMenuItem>
 
               <DropdownMenuItem
-                onClick={() => handleNavigation("/user/upload-recipe")}
+                onClick={() => handleNavigation("/user/manage-recipes")}
               >
                 <Pencil />
                 <span>Dashboard</span>
