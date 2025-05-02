@@ -1,11 +1,11 @@
-"use client"; // Required for React Hook Form and client-side interactions
+"use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { KeyboardEvent, useRef, useState } from "react"; // Import useState, useRef, KeyboardEvent
+import { KeyboardEvent, useRef, useState } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 import * as z from "zod";
 
-import { Badge } from "@/components/ui/badge"; // Import Badge component
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -24,8 +24,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-// import { toast } from "@/components/ui/use-toast"; // Assuming you use Shadcn's toast
-import { Plus, PlusCircle, Trash2, X } from "lucide-react"; // Icons for add/remove
+
+import { formCategories } from "@/lib/info";
+import { Plus, Trash2, X } from "lucide-react";
 import { toast } from "sonner";
 import {
   Card,
@@ -34,7 +35,6 @@ import {
   CardHeader,
   CardTitle,
 } from "./ui/card";
-import { categories, formCategories } from "@/lib/info";
 
 // --- Zod Validation Schema ---
 // Updated keywords to be an array of strings
@@ -418,7 +418,7 @@ export default function RecipeForm() {
                     key={field.id}
                     className="flex flex-col space-x-2 p-3 border rounded-md"
                   >
-                    <div className="grid grid-cols-1 gap-2 items-center">
+                    <div className="grid md:grid-cols-2 gap-2 items-start">
                       <FormField
                         control={form.control}
                         name={`ingredients.${index}.name`}
@@ -445,20 +445,23 @@ export default function RecipeForm() {
                             <FormControl>
                               <Input placeholder="e.g., 2 cups" {...field} />
                             </FormControl>
-                            <FormDescription>
-                              For fraction quantities like e.g., 1/2 tsp use
-                              decimal like 0.5 tsp
-                            </FormDescription>
+
                             <FormMessage />
                           </FormItem>
                         )}
                       />
+
+                      <FormDescription className="col-span-full">
+                        For fraction ingredient quantity like e.g., 1/2 tsp use
+                        decimal like 0.5 tsp
+                      </FormDescription>
 
                       <Button
                         type="button"
                         variant="destructive"
                         onClick={() => removeIngredient(index)}
                         disabled={ingredientFields.length <= 1}
+                        className="col-span-full"
                       >
                         <Trash2 />
                         <span>Remove</span>

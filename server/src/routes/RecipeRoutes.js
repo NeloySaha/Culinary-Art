@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
-// const multer = require("multer");
-// const path = require("path");
+const multer = require("multer");
+const path = require("path");
 
 // const verifyToken = require("../controllers/middleware/authMiddleware");
 const {
@@ -20,35 +20,37 @@ const {
   getRecipeByKeywords,
 } = require("../controllers/RecipeController");
 
-// const RPstorage = multer.diskStorage({
-//   destination: (req, file, cb) => {
-//     cb(null, "public/recipepictures");
-//   },
-//   filename: (req, file, cb) => {
-//     const date = new Date();
-//     const datePrefix = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}_${date.getHours()}-${date.getMinutes()}-${date.getSeconds()}`;
-//     const ext = path.extname(file.originalname);
-//     cb(null, `${datePrefix}_${file.originalname}${ext}`);
-//   },
-// });
+const RPstorage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, "public/recipeImages");
+  },
+  filename: (req, file, cb) => {
+    const date = new Date();
+    const datePrefix = `${date.getFullYear()}-${
+      date.getMonth() + 1
+    }-${date.getDate()}_${date.getHours()}-${date.getMinutes()}-${date.getSeconds()}`;
+    const ext = path.extname(file.originalname);
+    cb(null, `${datePrefix}_${file.originalname}${ext}`);
+  },
+});
 
-// const RPupload = multer({
-//   storage: RPstorage,
-//   limits: { fileSize: 25 * 1024 * 1024 },
-// });
+const RPupload = multer({
+  storage: RPstorage,
+  limits: { fileSize: 25 * 1024 * 1024 },
+});
 
-// router.post("/upload", RPupload.single("image"), (req, res) => {
-//   console.log("UPLOADING")
-//   if (!req.file) {
-//     return res.status(400).send('No file uploaded.');
-//   }
+router.post("/upload", RPupload.single("image"), (req, res) => {
+  console.log("UPLOADING");
+  if (!req.file) {
+    return res.status(400).send("No file uploaded.");
+  }
 
-//   // File information can be accessed via req.file
-//   res.status(200).send({
-//     message: 'File uploaded successfully!',
-//     file: req.file
-//   });
-// });
+  // File information can be accessed via req.file
+  res.status(200).send({
+    message: "File uploaded successfully!",
+    file: req.file,
+  });
+});
 
 // Create a recipe
 router.post("/create", createRecipe);
