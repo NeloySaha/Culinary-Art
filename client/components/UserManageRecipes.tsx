@@ -1,10 +1,8 @@
 import { Recipe } from "@/lib/types";
-import { Shapes } from "lucide-react";
 import { cookies } from "next/headers";
-import RecipeCard from "./RecipeCard";
-import { Separator } from "./ui/separator";
+import RecipeActionCard from "./RecipeActionCard";
 
-export default async function UserPosts() {
+export default async function UserManageRecipes() {
   const token = (await cookies()).get("session")?.value;
   let recipes = null;
   if (token) {
@@ -23,16 +21,10 @@ export default async function UserPosts() {
 
   if (recipes === null) return <p>Sorry, no recipes found</p>;
   return (
-    <div className="mt-12">
-      <h3 className="text-xl flex justify-center gap-2 items-center font-semibold text-primary mb-2">
-        <Shapes className="h-4 w-4 text-primary" />
-        <p>Your Recipes</p>
-      </h3>
-      <Separator />
-
-      <div className="my-8 grid md:grid-cols-2 gap-x-4 gap-y-8">
+    <div className="mt-8">
+      <div className="my-8 grid gap-y-3">
         {recipes.map((recipe: Recipe) => (
-          <RecipeCard key={recipe._id} recipe={recipe} />
+          <RecipeActionCard key={recipe._id} recipe={recipe} />
         ))}
       </div>
     </div>

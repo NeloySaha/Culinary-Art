@@ -1,38 +1,44 @@
-import { getSession } from "@/lib/actions";
-import { JWTPayload } from "jose";
 import React from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { Card, CardContent } from "./ui/card";
 import { ChefHat, Heart } from "lucide-react";
+import { cookies } from "next/headers";
 
 export default async function UserInfo() {
-  const session = await getSession();
+  const token = (await cookies()).get("session")?.value;
   let user = null;
-  if ((session as JWTPayload).id) {
+  if (token) {
     const res1 = await fetch(
-      `${process.env.NEXT_PUBLIC_API_PREFIX}/users/user-info/${
-        (session as JWTPayload).id
-      }`
+      `${process.env.NEXT_PUBLIC_API_PREFIX}/users/user-info`,
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
     );
 
-    user = (await res1.json()).data;
-
-    const res2 = await fetch(
-      `${process.env.NEXT_PUBLIC_API_PREFIX}/recipes/user-recipes/${
-        (session as JWTPayload).id
-      }`
-    );
-
-    user.totalRecipes = (await res2.json()).data.length;
+    const data = await res1.json();
+    if (data.success) {
+      user = data.data;
+      user.totalRecipes = data.userRecipes.length;
+    }
   }
+
+  if (user === null) return <h1>User not found :(</h1>;
 
   return (
     <div>
       <div className="flex items-center gap-8 mb-6">
-        <Avatar className="size-28 md:size-36 lg:size-48">
-          <AvatarImage
-            src={(user?.imageUrl as string) ?? "https://github.com/shadcn.png"}
-            alt="@shadcn"
+        <Avatar className="size-28 md:size-36 lg:size-44 border-2 border-primary">
+          <img
+            src={
+              user.imageUrl.startsWith("/")
+                ? `${process.env.NEXT_PUBLIC_API}${user.imageUrl}`
+                : user.imageUrl
+            }
+            alt={`${user.fullName}`}
+            className="object-cover"
           />
           <AvatarFallback>
             {(user?.fullName as string).split(" ")[0][0]}

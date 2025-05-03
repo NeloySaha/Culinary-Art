@@ -9,6 +9,7 @@ import { Clock, Eye, Heart, MessageCircle, Users } from "lucide-react";
 import { Badge } from "./ui/badge";
 import { Button } from "./ui/button";
 import { Progress } from "./ui/progress";
+import Link from "next/link";
 
 export default function RecipeCard({ recipe }: { recipe: Recipe }) {
   return (
@@ -84,9 +85,11 @@ export default function RecipeCard({ recipe }: { recipe: Recipe }) {
       </CardContent>
 
       <CardFooter className="mt-4">
-        <Button variant={"secondary"} className="w-full">
-          <Eye className="h-3 w-3" />
-          <span>View</span>
+        <Button variant={"secondary"} className="w-full" asChild>
+          <Link href={`/view-recipe/${recipe._id}`}>
+            <Eye className="h-3 w-3" />
+            <span>View</span>
+          </Link>
         </Button>
       </CardFooter>
     </Card>

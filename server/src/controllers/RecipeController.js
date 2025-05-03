@@ -1,9 +1,9 @@
-const { default: mongoose } = require("mongoose");
 const Recipe = require("../models/RecipeModel");
 
 // const User = require("../models/User");
 
 const createRecipe = async (req, res) => {
+  const userId = req.user.id;
   try {
     const {
       name,
@@ -15,7 +15,6 @@ const createRecipe = async (req, res) => {
       servings,
       difficulty,
       image,
-      createdBy,
     } = req.body;
 
     const newRecipe = new Recipe({
@@ -29,7 +28,7 @@ const createRecipe = async (req, res) => {
       difficulty,
       imageUrl: image,
       comments: [],
-      createdBy,
+      createdBy: userId,
       likedUsers: [],
     });
 
@@ -48,11 +47,62 @@ const createRecipe = async (req, res) => {
   }
 };
 
+const editRecipe = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const {
+      name,
+      category,
+      instructions,
+      keywords,
+      ingredients,
+      time,
+      servings,
+      difficulty,
+      image,
+    } = req.body;
+
+    const updatedRecipe = await Recipe.findByIdAndUpdate(
+      id,
+      {
+        name,
+        category,
+        instructions,
+        keywords,
+        ingredients,
+        time,
+        servings,
+        difficulty,
+        imageUrl: image,
+      },
+      { new: true } // return the updated document
+    );
+
+    if (!updatedRecipe) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Recipe not found" });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "Recipe updated successfully",
+      data: updatedRecipe,
+    });
+  } catch (error) {
+    console.error("Error updating recipe:", error.message);
+    res
+      .status(500)
+      .json({ success: false, message: "Server error", error: error.message });
+  }
+};
+
 const getRecipesByUser = async (req, res) => {
-  const { createdBy } = req.params;
+  const userId = req.user.id;
   try {
     const recipes = await Recipe.find({
-      createdBy: new mongoose.Types.ObjectId(createdBy),
+      createdBy: userId,
     });
     res.status(200).json({
       success: true,
@@ -188,11 +238,12 @@ const addLike = async (req, res) => {
   }
 };
 
-const getRecipe = async (req, res) => {
+const getRecipeById = async (req, res) => {
   const { id } = req.params;
 
   try {
     const recipe = await Recipe.findById(id);
+
     if (!recipe) {
       return res
         .status(404)
@@ -210,6 +261,7 @@ const getRecipe = async (req, res) => {
       .json({ success: false, message: "Server error", error: error.message });
   }
 };
+
 const getMostLikedRecipes = async (req, res) => {
   try {
     const mostLikedRecipe = await Recipe.find()
@@ -338,35 +390,36 @@ async function getRecipeByKeywords(req, res) {
   }
 }
 
-const adeleterecipe = async (req, res) => {
+const deleteRecipe = async (req, res) => {
   const delrecipeId = req.params.id;
   const userId = req.user.id;
 
   try {
-    const loggedInUser = await User.findById(userId);
+    const recipe = await Recipe.findById(delrecipeId);
 
-    if (!loggedInUser) {
-      return res.status(404).json({ message: "User not found" });
+    if (!recipe) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Recipe not found" });
     }
 
-    if (loggedInUser.role !== "admin") {
-      return res.status(403).json({ message: "Not authorized" });
+    if (recipe.createdBy.toString() !== userId) {
+      return res.status(403).json({
+        success: false,
+        message: "Unauthorized: You can only delete your own recipes",
+      });
     }
 
-    const recipetodelete = await Recipe.findByIdAndDelete(delrecipeId);
-
-    if (!recipetodelete) {
-      return res.status(404).json({ message: "Recipe to delete not found" });
-    }
+    await recipe.deleteOne();
 
     res.json({
       success: true,
       message: "Recipe deleted successfully",
-      recipe: recipetodelete,
+      recipe,
     });
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Server error", error });
+    console.error("Error deleting recipe:", error);
+    res.status(500).json({ success: false, message: "Server error", error });
   }
 };
 
@@ -378,10 +431,11 @@ module.exports = {
   getSearchedRecipes,
   addComment,
   addLike,
-  getRecipe,
+  getRecipeById,
   getMostLikedRecipes,
   getLatestRecipes,
-  adeleterecipe,
+  deleteRecipe,
   getUniqueKeywords,
   getRecipeByKeywords,
+  editRecipe,
 };

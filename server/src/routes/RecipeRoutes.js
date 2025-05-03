@@ -3,7 +3,8 @@ const router = express.Router();
 const multer = require("multer");
 const path = require("path");
 
-// const verifyToken = require("../controllers/middleware/authMiddleware");
+const verifyToken = require("../controllers/authMiddleware");
+
 const {
   createRecipe,
   getRecipesByUser,
@@ -12,12 +13,14 @@ const {
   getUniqueKeywords,
   addComment,
   addLike,
-  getRecipe,
+  getRecipeById,
   getMostLikedRecipes,
   getLatestRecipes,
   getAllRecipes,
-  adeleterecipe,
+
   getRecipeByKeywords,
+  editRecipe,
+  deleteRecipe,
 } = require("../controllers/RecipeController");
 
 const RPstorage = multer.diskStorage({
@@ -58,32 +61,21 @@ router.post("/upload-image", RPupload.single("image"), (req, res) => {
   });
 });
 
-// Create a recipe
-router.post("/create", createRecipe);
-
-// router.post("/userRecipes", getAllRecipes);
-
-//fetch all recipes in a certain category
+// public routes
 router.get("/all-recipes", getAllRecipes);
-
 router.get("/categories/:category", getRecipesByCategory);
 router.get("/keywords", getUniqueKeywords);
 router.post("/keyword-recipes", getRecipeByKeywords);
-
 router.get("/search/:q", getSearchedRecipes);
-
-router.get("/user-recipes/:createdBy", getRecipesByUser);
-
-// router.post("/comments", addComment);
-
-// router.post("/addlike", addLike);
-
-// router.get("/one/:id", getRecipe);
-
+router.get("/single-recipe/:id", getRecipeById);
 router.get("/popular-recipes", getMostLikedRecipes);
 
-// router.get("/latestRecipes", getLatestRecipes);
+// protected routes
+router.use(verifyToken);
 
-// router.delete("/adelete/:id", verifyToken, adeleterecipe);
+router.post("/create", createRecipe);
+router.put("/edit/:id", editRecipe);
+router.get("/user-recipes", getRecipesByUser);
+router.delete("/delete-recipe/:id", deleteRecipe);
 
 module.exports = router;

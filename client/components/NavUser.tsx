@@ -48,9 +48,11 @@ export function NavUser({ session }: { session: JWTPayload }) {
               <Avatar className="h-8 w-8 rounded-lg">
                 <AvatarImage
                   src={
-                    (session as JWTPayload).role === "customer"
-                      ? ((session as JWTPayload).imageUrl as string)
-                      : ""
+                    (session?.imageUrl as string).startsWith("/")
+                      ? `${process.env.NEXT_PUBLIC_API}${
+                          session?.imageUrl as string
+                        }`
+                      : (session?.imageUrl as string)
                   }
                   alt={(session as JWTPayload).fullName as string}
                 />

@@ -56,20 +56,26 @@ export default function DesktopNavbar({
       <div className="flex gap-4 text-md font-medium">
         <Link
           href={pathName === "/" ? "#recipes" : "/"}
-          className={`hover:text-primary transition-all duration-300 ${pathName === "/" && "text-primary/85"}`}
+          className={`hover:text-primary transition-all duration-300 ${
+            pathName === "/" && "text-primary/85"
+          }`}
         >
           Recipes
         </Link>
         <Link
           href="/shop"
-          className={`hover:text-primary transition-all duration-300 ${pathName === "/shop" && "text-primary/85"}`}
+          className={`hover:text-primary transition-all duration-300 ${
+            pathName === "/shop" && "text-primary/85"
+          }`}
         >
           Shop Item
         </Link>
 
         <Link
           href="/about"
-          className={`hover:text-primary transition-all duration-300 ${pathName === "/about" && "text-primary/85"}`}
+          className={`hover:text-primary transition-all duration-300 ${
+            pathName === "/about" && "text-primary/85"
+          }`}
         >
           About Us
         </Link>
@@ -103,8 +109,11 @@ export default function DesktopNavbar({
               <Avatar className="h-8 w-8 rounded-lg">
                 <AvatarImage
                   src={
-                    (userInfo?.imageUrl as string) ??
-                    "https://github.com/shadcn.png"
+                    (userInfo?.imageUrl as string).startsWith("/")
+                      ? `${process.env.NEXT_PUBLIC_API}${
+                          userInfo?.imageUrl as string
+                        }`
+                      : (userInfo?.imageUrl as string)
                   }
                   alt="@shadcn"
                 />

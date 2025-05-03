@@ -2,10 +2,8 @@ const bcrypt = require("bcryptjs");
 
 const nodemailer = require("nodemailer");
 const User = require("../models/UserModel");
+const Recipe = require("../models/RecipeModel");
 const { SignJWT } = require("jose-node-cjs-runtime/jwt/sign");
-// library for verifying jwt
-const { jwtVerify } = require("jose-node-cjs-runtime/jwt/verify");
-
 const encodedKey = new TextEncoder().encode(process.env.SESSION_SECRET_KEY);
 
 async function encrypt(payload) {
@@ -156,10 +154,10 @@ const forgetPassVerification = async (req, res) => {
 // };
 
 const getUser = async (req, res) => {
-  const { id } = req.params;
+  const userId = req.user.id;
 
   try {
-    const user = await User.findById(id).select("-password");
+    const user = await User.findById(userId).select("-password");
 
     if (!user) {
       return res
@@ -167,10 +165,15 @@ const getUser = async (req, res) => {
         .json({ success: false, message: "User not found" });
     }
 
+    const recipes = await Recipe.find({
+      createdBy: userId,
+    });
+
     res.status(200).json({
       success: true,
       message: "User fetched successfully",
       data: user,
+      userRecipes: recipes,
     });
   } catch (error) {
     res
@@ -465,27 +468,83 @@ const resetPassword = async (req, res) => {
   }
 };
 
+const updatePassword = async (req, res) => {
+  const userId = req.user.id;
+  const { password } = req.body;
+
+  try {
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(400).json({
+        success: false,
+        message: "User doesn't exist. Please try again!",
+      });
+    }
+
+    // console.log(user)
+
+    const salt = await bcrypt.genSalt(Number(process.env.JWT_SALT_ROUNDS));
+    user.password = await bcrypt.hash(password, salt);
+    await user.save();
+
+    const expiresAt = new Date(Date.now() + 7 * 24 * 3600);
+    const userInfo = {
+      id: user._id,
+      role: user.role,
+      fullName: user.fullName,
+      imageUrl: user.imageUrl,
+      email: user.email,
+    };
+
+    const token = await encrypt({ ...userInfo, expiresAt });
+
+    res.status(200).json({
+      success: true,
+      message: "Your account password has been updated successfully",
+      token,
+    });
+  } catch (error) {
+    res.status(400).json({
+      success: false,
+      message: "Sorry, couldn't update your password. Please try again!",
+    });
+  }
+};
+
 // //Edit Users
-// const editUser = async (req, res) => {
-//   const { username, bio, photo } = req.body;
-//   const userId = req.user.id;
+const editUser = async (req, res) => {
+  const { fullName, bio, imageUrl } = req.body;
+  const userId = req.user.id;
 
-//   try {
-//     const user = await User.findByIdAndUpdate(
-//       userId,
-//       { username, bio, photo },
-//       { new: true }
-//     );
+  try {
+    const user = await User.findByIdAndUpdate(
+      userId,
+      { fullName, bio, imageUrl },
+      { new: true }
+    );
 
-//     if (!user) {
-//       return res.status(404).json({ message: "User not found" });
-//     }
+    if (!user) {
+      return res
+        .status(404)
+        .json({ success: false, message: "User not found" });
+    }
 
-//     res.json({ success: true, message: "Profile updated successfully", user });
-//   } catch (error) {
-//     res.status(500).json({ message: "Server error", error });
-//   }
-// };
+    const expiresAt = new Date(Date.now() + 7 * 24 * 3600);
+    const userInfo = {
+      id: user._id,
+      role: user.role,
+      fullName: user.fullName,
+      imageUrl: user.imageUrl,
+      email: user.email,
+    };
+    const token = await encrypt({ ...userInfo, expiresAt });
+
+    res.json({ success: true, message: "Profile updated successfully", token });
+  } catch (error) {
+    res.status(500).json({ success: false, message: "Server error", error });
+  }
+};
 // //upload profile picture
 // const PPstorage = multer.diskStorage({
 //   destination: (req, file, cb) => {
@@ -599,4 +658,6 @@ module.exports = {
   forgetPassVerification,
   resetPassword,
   getUser,
+  editUser,
+  updatePassword,
 };

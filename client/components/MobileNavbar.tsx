@@ -89,8 +89,11 @@ export default function MobileNavbar({
                   <Avatar>
                     <AvatarImage
                       src={
-                        (userInfo?.imageUrl as string) ??
-                        "https://github.com/shadcn.png"
+                        (userInfo?.imageUrl as string).startsWith("/")
+                          ? `${process.env.NEXT_PUBLIC_API}${
+                              userInfo?.imageUrl as string
+                            }`
+                          : (userInfo?.imageUrl as string)
                       }
                       alt="@shadcn"
                     />
@@ -114,7 +117,7 @@ export default function MobileNavbar({
 
                 <Button
                   variant={"ghost"}
-                  onClick={() => handleNavigation("/user/upload-recipe")}
+                  onClick={() => handleNavigation("/user/manage-recipes")}
                 >
                   <Pencil />
                   <span>Dashboard</span>

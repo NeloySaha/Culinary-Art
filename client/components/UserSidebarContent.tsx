@@ -98,7 +98,7 @@ export default function UserSidebarContent() {
               <SidebarMenuButton
                 onClick={() => handleClick(item.url)}
                 className={
-                  "flex items-center w-full space-x-2 pl-4 py-2 rounded-lg mb-1 transition-colors text-sm font-semibold"
+                  "flex items-center w-full space-x-2 pl-4 py-2 rounded-lg mb-1 transition-colors text-sm font-medium"
                 }
                 tooltip={item.title}
               >

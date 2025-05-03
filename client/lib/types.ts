@@ -5,13 +5,19 @@ export type Recipe = {
   keywords: string[];
   time: string;
   servings: number;
-  difficulty: string;
+  difficulty: "Easy" | "Medium" | "Hard";
   imageUrl: string;
   likesCount: number;
   comments: Comment[];
   instructions: string[];
-  ingredients: string[];
+  ingredients: Ingredient[];
   createdBy: string;
+  isPopular: boolean;
+};
+
+export type Ingredient = {
+  name?: string | undefined;
+  quantity?: string | undefined;
 };
 
 export type Comment = {
@@ -24,6 +30,12 @@ export type UserSessionInfo = {
   role: "customer" | "admin";
   fullName: string;
   imageUrl: string;
+};
+
+export type UserAccountInfo = {
+  fullName: string;
+  imageUrl: string;
+  bio: string;
 };
 
 export type UserInfo = {

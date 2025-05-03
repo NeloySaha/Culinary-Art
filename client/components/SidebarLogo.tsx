@@ -9,8 +9,9 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 import { useRouter } from "next/navigation";
+import { JWTPayload } from "jose";
 
-export function SidebarLogo() {
+export function SidebarLogo({ session }: { session: JWTPayload }) {
   const router = useRouter();
   const { isMobile, toggleSidebar } = useSidebar();
 
@@ -34,7 +35,11 @@ export function SidebarLogo() {
           </div>
           <div className="grid flex-1 text-left text-sm leading-tight">
             <span className="truncate font-semibold">Culinary Art</span>
-            <span className="truncate text-xs">Platform</span>
+            <span className="truncate text-xs">
+              {(session as JWTPayload).role === "customer"
+                ? "User account"
+                : "Admin account"}
+            </span>
           </div>
         </SidebarMenuButton>
       </SidebarMenuItem>

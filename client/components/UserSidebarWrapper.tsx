@@ -25,7 +25,7 @@ export default async function UserSidebarWrapper() {
           <ChefHat className="h-5 w-5" />
           <p className="text-2xl font-semibold">Culinary Art</p>
         </Link> */}
-        <SidebarLogo />
+        <SidebarLogo session={session as JWTPayload} />
       </SidebarHeader>
 
       <SidebarContent>

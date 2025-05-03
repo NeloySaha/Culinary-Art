@@ -1,10 +1,10 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import Cookies from "js-cookie";
 import { KeyboardEvent, useRef, useState } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 import * as z from "zod";
+import Cookies from "js-cookie";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -27,6 +27,7 @@ import {
 } from "@/components/ui/select";
 
 import { formCategories } from "@/lib/info";
+import { Recipe } from "@/lib/types";
 import { Loader2, Plus, Trash2, X } from "lucide-react";
 import { toast } from "sonner";
 import {
@@ -36,6 +37,7 @@ import {
   CardHeader,
   CardTitle,
 } from "./ui/card";
+import { useRouter } from "next/navigation";
 
 // --- Zod Validation Schema ---
 // Updated keywords to be an array of strings
@@ -77,24 +79,25 @@ type RecipeFormValues = z.infer<typeof recipeFormSchema>;
 // --- Sample Data (Replace with your actual categories) ---
 
 // --- React Component ---
-export default function RecipeForm() {
+export default function EditRecipeForm({ recipe }: { recipe: Recipe }) {
   // State for the current keyword input value
   const [currentKeyword, setCurrentKeyword] = useState("");
   const keywordInputRef = useRef<HTMLInputElement>(null); // Ref to focus input
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const router = useRouter();
 
   // 1. Define your form.
   const form = useForm<RecipeFormValues>({
     resolver: zodResolver(recipeFormSchema),
     defaultValues: {
-      name: "",
-      category: undefined,
-      instructions: [],
-      keywords: [], // Default keywords to an empty array
-      ingredients: [{ name: "", quantity: "" }],
-      time: "",
-      servings: 0,
-      difficulty: undefined,
+      name: recipe.name,
+      category: recipe.category,
+      instructions: recipe.instructions,
+      keywords: recipe.keywords, // Default keywords to an empty array
+      ingredients: recipe.ingredients,
+      time: recipe.time,
+      servings: recipe.servings,
+      difficulty: recipe.difficulty,
     },
   });
 
@@ -157,35 +160,20 @@ export default function RecipeForm() {
 
   async function onSubmit(data: RecipeFormValues) {
     const file = data.image;
-    if (!file) return;
-
-    const formData = new FormData();
-    formData.append("image", file);
-
-    try {
-      const res1 = await fetch(
-        `${process.env.NEXT_PUBLIC_API_PREFIX}/recipes/upload-image`,
-        {
-          method: "POST",
-          body: formData,
-        }
-      );
-
-      const data1 = await res1.json();
-
-      if (data1.success) {
-        const token = Cookies.get("session");
+    const token = Cookies.get("session");
+    if (!file) {
+      try {
         const res2 = await fetch(
-          `${process.env.NEXT_PUBLIC_API_PREFIX}/recipes/create`,
+          `${process.env.NEXT_PUBLIC_API_PREFIX}/recipes/edit/${recipe._id}`,
           {
-            method: "POST",
+            method: "PUT",
             headers: {
               "Content-Type": "application/json",
               Authorization: `Bearer ${token}`,
             },
             body: JSON.stringify({
               ...data,
-              image: data1.imageUrl,
+              image: recipe.imageUrl,
             }),
           }
         );
@@ -193,46 +181,85 @@ export default function RecipeForm() {
         const data2 = await res2.json();
 
         if (data2.success) {
+          router.refresh();
           toast.success("Success!", {
-            description: "Your recipe has been uploaded successfully",
+            description: "Your recipe has been updated successfully",
           });
-
-          form.reset({
-            name: "",
-            category: undefined,
-            instructions: [""],
-            keywords: [],
-            ingredients: [{ name: "", quantity: "" }],
-            time: "",
-            servings: 0,
-            difficulty: undefined,
-          });
-          setCurrentKeyword("");
         } else {
           toast.error("Error", {
             description: data2.message,
           });
         }
-      } else {
-        console.error("Upload failed:", data1.message);
+      } catch (error) {
+        console.error("Error uploading image:", error);
         toast.error("Error", {
-          description: data1.message,
+          description: (error as Error).message,
         });
       }
-    } catch (error) {
-      console.error("Error uploading image:", error);
-      toast.error("Error", {
-        description: (error as Error).message,
-      });
+    } else {
+      const formData = new FormData();
+      formData.append("image", file);
+
+      try {
+        const res1 = await fetch(
+          `${process.env.NEXT_PUBLIC_API_PREFIX}/recipes/upload-image`,
+          {
+            method: "POST",
+            body: formData,
+          }
+        );
+
+        const data1 = await res1.json();
+
+        if (data1.success) {
+          const res2 = await fetch(
+            `${process.env.NEXT_PUBLIC_API_PREFIX}/recipes/edit/${recipe._id}`,
+            {
+              method: "PUT",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+              },
+              body: JSON.stringify({
+                ...data,
+                image: data1.imageUrl,
+              }),
+            }
+          );
+
+          const data2 = await res2.json();
+
+          if (data2.success) {
+            router.refresh();
+            toast.success("Success!", {
+              description: "Your recipe has been uploaded successfully",
+            });
+          } else {
+            toast.error("Error", {
+              description: data2.message,
+            });
+          }
+        } else {
+          console.error("Upload failed:", data1.message);
+          toast.error("Error", {
+            description: data1.message,
+          });
+        }
+      } catch (error) {
+        console.error("Error uploading image:", error);
+        toast.error("Error", {
+          description: (error as Error).message,
+        });
+      }
     }
   }
 
   return (
     <Card className="max-w-3xl">
       <CardHeader className="pl-8">
-        <CardTitle className="text-2xl">Upload a New Recipe</CardTitle>
+        <CardTitle className="text-2xl">Editing Recipe</CardTitle>
         <CardDescription>
-          Fill up the below details to upload your new recipe
+          Edit the below details to update the recipe
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -441,10 +468,22 @@ export default function RecipeForm() {
                       ref={fileInputRef}
                     />
                   </FormControl>
-                  {value && (
+                  {value && value instanceof File ? (
                     <div className="mt-2">
                       <img
                         src={URL.createObjectURL(value)}
+                        alt="Preview"
+                        className="rounded-md object-cover"
+                      />
+                    </div>
+                  ) : (
+                    <div className="mt-2">
+                      <img
+                        src={
+                          recipe.imageUrl.startsWith("/")
+                            ? `${process.env.NEXT_PUBLIC_API}${recipe.imageUrl}`
+                            : recipe.imageUrl
+                        }
                         alt="Preview"
                         className="rounded-md object-cover"
                       />
@@ -539,7 +578,6 @@ export default function RecipeForm() {
               <FormDescription>
                 Provide step-by-step instructions.
               </FormDescription>
-              <FormMessage />
               <div className="space-y-4 mt-2">
                 {instructionFields.map((field, index) => (
                   <div
@@ -599,13 +637,13 @@ export default function RecipeForm() {
             >
               {form.formState.isSubmitting ? (
                 <>
-                  <span>Uploading</span>
+                  <span>Updating</span>
                   <span className="animate-spin">
                     <Loader2 className="h-4 w-4" />
                   </span>
                 </>
               ) : (
-                "Upload recipe"
+                "Update recipe"
               )}
             </Button>
           </form>
