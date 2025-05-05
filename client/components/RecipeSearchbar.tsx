@@ -35,7 +35,7 @@ export default function RecipeSearchbar() {
           value={query}
           placeholder="Search for a recipe by name or keyword"
           onChange={(e) => setQuery(e.target.value)}
-          className="pl-10"
+          className="pl-10 border-2 border-primary"
         />
       </div>
     </form>

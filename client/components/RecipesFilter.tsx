@@ -14,7 +14,7 @@ export default function RecipesFilter() {
       <h2 className="text-primary text-4xl font-semibold mt-8">
         {keyword && `Search results for Keyword: "${keyword}"`}
         {query && `Search results for "${query}"`}
-        {!keyword && !query && `${currentCategory} Recipes`}
+        {!keyword && !query && `${currentCategory}`}
       </h2>
     </div>
   );

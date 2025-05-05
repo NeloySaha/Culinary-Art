@@ -33,6 +33,7 @@ export default async function Page({
         className="max-w-7xl px-4 mx-auto py-10 scroll-mt-16"
         id="recipes"
       >
+        <h2 className="text-primary text-4xl font-semibold mb-8">Recipes</h2>
         <div className="flex flex-col md:flex-row gap-4 w-full">
           <RecipeSearchbar />
           <CategorySelector />
