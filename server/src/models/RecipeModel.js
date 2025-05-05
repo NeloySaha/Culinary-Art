@@ -33,6 +33,10 @@ const RecipeSchema = new mongoose.Schema({
         required: true,
       },
       comment: String,
+      createdAt: {
+        type: Date,
+        default: Date.now,
+      },
     },
   ],
   likedUsers: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],

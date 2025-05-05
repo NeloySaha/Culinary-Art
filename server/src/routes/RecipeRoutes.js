@@ -21,6 +21,8 @@ const {
   getRecipeByKeywords,
   editRecipe,
   deleteRecipe,
+  getOtherRecipes,
+  addBookmark,
 } = require("../controllers/RecipeController");
 
 const RPstorage = multer.diskStorage({
@@ -63,6 +65,7 @@ router.post("/upload-image", RPupload.single("image"), (req, res) => {
 
 // public routes
 router.get("/all-recipes", getAllRecipes);
+router.get("/other-recipes/:excludeId", getOtherRecipes);
 router.get("/categories/:category", getRecipesByCategory);
 router.get("/keywords", getUniqueKeywords);
 router.post("/keyword-recipes", getRecipeByKeywords);
@@ -77,5 +80,8 @@ router.post("/create", createRecipe);
 router.put("/edit/:id", editRecipe);
 router.get("/user-recipes", getRecipesByUser);
 router.delete("/delete-recipe/:id", deleteRecipe);
+router.put("/like-recipe", addLike);
+router.put("/bookmark-recipe", addBookmark);
+router.put("/comment-recipe", addComment);
 
 module.exports = router;

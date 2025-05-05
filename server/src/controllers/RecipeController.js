@@ -1,6 +1,5 @@
 const Recipe = require("../models/RecipeModel");
-
-// const User = require("../models/User");
+const User = require("../models/UserModel");
 
 const createRecipe = async (req, res) => {
   const userId = req.user.id;
@@ -165,12 +164,11 @@ const getSearchedRecipes = async (req, res) => {
 };
 
 const addComment = async (req, res) => {
-  const { recipeID } = req.body;
-  const { comment } = req.body;
-  const { userId } = req.body;
+  const userId = req.user.id;
+  const { recipeId, comment } = req.body;
 
   try {
-    const recipe = await Recipe.findById(recipeID);
+    const recipe = await Recipe.findById(recipeId);
 
     if (!recipe) {
       return res.status(404).json({ message: "Recipe not found" });
@@ -198,13 +196,16 @@ const addComment = async (req, res) => {
 };
 
 const addLike = async (req, res) => {
-  const { recipeID, userId } = req.body;
+  const userId = req.user.id;
+  const { recipeId } = req.body;
 
   try {
-    const recipe = await Recipe.findById(recipeID);
+    const recipe = await Recipe.findById(recipeId);
 
     if (!recipe) {
-      return res.status(404).json({ message: "Recipe not found" });
+      return res
+        .status(404)
+        .json({ success: false, message: "Recipe not found" });
     }
 
     const existingUserIndex = recipe.likedUsers.findIndex(
@@ -214,11 +215,11 @@ const addLike = async (req, res) => {
     if (existingUserIndex !== -1) {
       // User has already liked, so remove the like
       recipe.likedUsers.splice(existingUserIndex, 1);
-      recipe.recipeLikeCount = (recipe.recipeLikeCount || 1) - 1;
+      recipe.likesCount = (recipe.recipeLikeCount || 1) - 1;
     } else {
       // User hasn't liked, so add the like
       recipe.likedUsers.push(userId);
-      recipe.recipeLikeCount = (recipe.recipeLikeCount || 0) + 1;
+      recipe.likesCount = (recipe.recipeLikeCount || 0) + 1;
     }
 
     await recipe.save();
@@ -238,17 +239,73 @@ const addLike = async (req, res) => {
   }
 };
 
+const addBookmark = async (req, res) => {
+  const userId = req.user.id;
+  const { recipeId } = req.body;
+
+  try {
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res
+        .status(404)
+        .json({ success: false, message: "User not found" });
+    }
+
+    const existingRecipeIndex = user.bookmarks.findIndex(
+      (bookmarkedRecipeId) => bookmarkedRecipeId.toString() === recipeId
+    );
+
+    if (existingRecipeIndex !== -1) {
+      // User has already bookmarked, so remove the bookmark
+      user.bookmarks.splice(existingRecipeIndex, 1);
+    } else {
+      // User hasn't bookmarked, so add the bookmark
+      user.bookmarks.push(recipeId);
+    }
+
+    await user.save();
+
+    return res.status(200).json({
+      success: true,
+      message: "Bookmark operation handled successfully",
+    });
+  } catch (error) {
+    console.error("Error adding/removing bookmark:", error.message);
+    res.status(500).json({
+      success: false,
+      message: "Bookmark operation error",
+      error: error.message,
+    });
+  }
+};
+
 const getRecipeById = async (req, res) => {
   const { id } = req.params;
 
   try {
-    const recipe = await Recipe.findById(id);
+    const recipe = await Recipe.findById(id)
+      .populate({
+        path: "createdBy",
+        select:
+          "-password -email -bio -role -bookmarks -userLikeCount -creditPoints -createdAt -updatedAt",
+      })
+      .populate({
+        path: "comments.commentedBy",
+        select:
+          "-password -email -bio -role -bookmarks -userLikeCount -creditPoints -createdAt -updatedAt",
+      });
 
     if (!recipe) {
       return res
         .status(404)
         .json({ success: false, message: "recipe not found" });
     }
+
+    // Sort comments by createdAt (newest first)
+    recipe.comments.sort(
+      (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+    );
 
     res.status(200).json({
       success: true,
@@ -332,6 +389,24 @@ const getAllRecipes = async (req, res) => {
     res
       .status(500)
       .json({ success: false, message: "Server error", error: error.message });
+  }
+};
+
+const getOtherRecipes = async (req, res) => {
+  const { excludeId } = req.params; // or req.query, depending on how you're passing the ID
+
+  try {
+    const recipes = await Recipe.find({ _id: { $ne: excludeId } }).limit(10);
+    res.status(200).json({
+      success: true,
+      data: recipes,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Server error",
+      error: error.message,
+    });
   }
 };
 
@@ -425,12 +500,14 @@ const deleteRecipe = async (req, res) => {
 
 module.exports = {
   getAllRecipes,
+  getOtherRecipes,
   createRecipe,
   getRecipesByUser,
   getRecipesByCategory,
   getSearchedRecipes,
   addComment,
   addLike,
+  addBookmark,
   getRecipeById,
   getMostLikedRecipes,
   getLatestRecipes,

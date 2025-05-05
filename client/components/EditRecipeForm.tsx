@@ -539,10 +539,10 @@ export default function EditRecipeForm({ recipe }: { recipe: Recipe }) {
                         )}
                       />
 
-                      <FormDescription className="col-span-full">
+                      {/* <FormDescription className="col-span-full">
                         For fraction ingredient quantity like e.g., 1/2 tsp use
                         decimal like 0.5 tsp
-                      </FormDescription>
+                      </FormDescription> */}
 
                       <Button
                         type="button"

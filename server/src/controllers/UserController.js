@@ -165,15 +165,20 @@ const getUser = async (req, res) => {
         .json({ success: false, message: "User not found" });
     }
 
-    const recipes = await Recipe.find({
-      createdBy: userId,
-    });
+    const recipes = await Recipe.find({ createdBy: userId });
+
+    // Calculate total likes from all user's recipes
+    const totalLikes = recipes.reduce(
+      (acc, recipe) => acc + (recipe.likesCount || 0),
+      0
+    );
 
     res.status(200).json({
       success: true,
       message: "User fetched successfully",
       data: user,
       userRecipes: recipes,
+      totalLikesReceived: totalLikes,
     });
   } catch (error) {
     res
@@ -237,6 +242,7 @@ const createUser = async (req, res) => {
       email: newUser.email,
       fullName: newUser.fullName,
       imageUrl: newUser.imageUrl,
+      bookmarks: newUser.bookmarks,
     };
 
     const sessionToken = await encrypt({ ...user, expiresAt });
@@ -281,6 +287,7 @@ const loginUser = async (req, res) => {
       email: user.email,
       fullName: user.fullName,
       imageUrl: user.imageUrl,
+      bookmarks: user.bookmarks,
     };
 
     const token = await encrypt({ ...userInfo, expiresAt });
@@ -451,6 +458,7 @@ const resetPassword = async (req, res) => {
       fullName: user.fullName,
       imageUrl: user.imageUrl,
       email: user.email,
+      bookmarks: user.bookmarks,
     };
 
     const token = await encrypt({ ...userInfo, expiresAt });
@@ -537,6 +545,7 @@ const editUser = async (req, res) => {
       fullName: user.fullName,
       imageUrl: user.imageUrl,
       email: user.email,
+      bookmarks: user.bookmarks,
     };
     const token = await encrypt({ ...userInfo, expiresAt });
 
@@ -628,29 +637,6 @@ const editUser = async (req, res) => {
 //   }
 // };
 
-// module.exports = {
-//   getallusers,
-//   getUser,
-//   getmyuser,
-
-//   createUser,
-
-//   loginUser,
-
-//   sendverifyemail,
-//   verifyemail,
-
-//   sendforgeturl,
-//   resetPassword,
-
-//   editUser,
-//   PPupload,
-//   uploadProfilepicture,
-
-//   deleteUser,
-
-//   adeleteUser,
-// };
 module.exports = {
   createUser,
   loginUser,

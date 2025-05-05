@@ -1,7 +1,7 @@
 import React from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { Card, CardContent } from "./ui/card";
-import { ChefHat, Heart } from "lucide-react";
+import { Bookmark, ChefHat, Heart } from "lucide-react";
 import { cookies } from "next/headers";
 
 export default async function UserInfo() {
@@ -22,6 +22,7 @@ export default async function UserInfo() {
     if (data.success) {
       user = data.data;
       user.totalRecipes = data.userRecipes.length;
+      user.userLikeCount = data.totalLikesReceived;
     }
   }
 
@@ -33,7 +34,7 @@ export default async function UserInfo() {
         <Avatar className="size-28 md:size-36 lg:size-44 border-2 border-primary">
           <img
             src={
-              user.imageUrl.startsWith("/")
+              user.imageUrl?.startsWith("/")
                 ? `${process.env.NEXT_PUBLIC_API}${user.imageUrl}`
                 : user.imageUrl
             }
@@ -41,7 +42,7 @@ export default async function UserInfo() {
             className="object-cover"
           />
           <AvatarFallback>
-            {(user?.fullName as string).split(" ")[0][0]}
+            {(user?.fullName as string)?.split(" ")[0][0]}
           </AvatarFallback>
         </Avatar>
 
@@ -68,6 +69,14 @@ export default async function UserInfo() {
             <div className="text-5xl">
               {user.userLikeCount}
               <span className="text-sm text-muted-foreground">Likes</span>
+            </div>
+          </div>
+
+          <div className="flex gap-2 items-center">
+            <Bookmark className="h-10 w-10 text-primary" />
+            <div className="text-5xl">
+              {user.bookmarks.length}
+              <span className="text-sm text-muted-foreground">Bookmarks</span>
             </div>
           </div>
         </CardContent>
