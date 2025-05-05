@@ -1,12 +1,16 @@
 import React from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { Card, CardContent } from "./ui/card";
-import { Bookmark, ChefHat, Heart } from "lucide-react";
+import { Bookmark, ChefHat, Heart, Shapes } from "lucide-react";
 import { cookies } from "next/headers";
+import { Separator } from "./ui/separator";
+import RecipeCard from "./RecipeCard";
+import { Recipe } from "@/lib/types";
 
 export default async function UserInfo() {
   const token = (await cookies()).get("session")?.value;
   let user = null;
+  let recipes = null;
   if (token) {
     const res1 = await fetch(
       `${process.env.NEXT_PUBLIC_API_PREFIX}/users/user-info`,
@@ -23,64 +27,92 @@ export default async function UserInfo() {
       user = data.data;
       user.totalRecipes = data.userRecipes.length;
       user.userLikeCount = data.totalLikesReceived;
+
+      recipes = data.userRecipes;
     }
   }
 
   if (user === null) return <h1>User not found :(</h1>;
 
   return (
-    <div>
-      <div className="flex items-center gap-8 mb-6">
-        <Avatar className="size-28 md:size-36 lg:size-44 border-2 border-primary">
-          <img
-            src={
-              user.imageUrl?.startsWith("/")
-                ? `${process.env.NEXT_PUBLIC_API}${user.imageUrl}`
-                : user.imageUrl
-            }
-            alt={`${user.fullName}`}
-            className="object-cover"
-          />
-          <AvatarFallback>
-            {(user?.fullName as string)?.split(" ")[0][0]}
-          </AvatarFallback>
-        </Avatar>
+    <>
+      <div>
+        <div className="flex items-start md:items-center gap-8 mb-6">
+          <Avatar className="size-28 md:size-36 lg:size-44 border-2 border-primary">
+            <img
+              src={
+                user.imageUrl?.startsWith("/")
+                  ? `${process.env.NEXT_PUBLIC_API}${user.imageUrl}`
+                  : user.imageUrl
+              }
+              alt={`${user.fullName}`}
+              className="object-cover"
+            />
+            <AvatarFallback>
+              {(user?.fullName as string)?.split(" ")[0][0]}
+            </AvatarFallback>
+          </Avatar>
 
-        <div className="space-y-4 w-full">
-          <div className="space-y-2">
-            <h3 className="text-2xl font-semibold">{user.fullName}</h3>
-            <p className="text-muted-foreground">{user.bio}</p>
+          <div className="space-y-4 w-full">
+            <div className="space-y-2">
+              <h3 className="text-2xl font-semibold">{user.fullName}</h3>
+              <p className="text-muted-foreground">{user.bio}</p>
+            </div>
           </div>
         </div>
+
+        <Card>
+          <CardContent className="flex justify-around">
+            <div className="flex gap-2 items-center">
+              <ChefHat className="h-10 w-10 text-primary" />
+              <div className="text-3xl md:text-4xl lg:text-5xl">
+                {user.totalRecipes}
+                <span className="text-sm text-muted-foreground">Recipes</span>
+              </div>
+            </div>
+
+            <div className="flex gap-2 items-center">
+              <Heart className="h-10 w-10 text-primary" />
+              <div className="text-3xl md:text-4xl lg:text-5xl">
+                {user.userLikeCount}
+                <span className="text-sm text-muted-foreground">Likes</span>
+              </div>
+            </div>
+
+            <div className="flex gap-2 items-center">
+              <Bookmark className="h-10 w-10 text-primary" />
+              <div className="text-3xl md:text-4xl lg:text-5xl">
+                {user.bookmarks.length}
+                <span className="text-sm text-muted-foreground">Bookmarks</span>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
       </div>
 
-      <Card>
-        <CardContent className="flex justify-around">
-          <div className="flex gap-2 items-center">
-            <ChefHat className="h-10 w-10 text-primary" />
-            <div className="text-5xl">
-              {user.totalRecipes}
-              <span className="text-sm text-muted-foreground">Recipes</span>
-            </div>
-          </div>
+      <div className="mt-12">
+        <h3 className="text-xl flex justify-center gap-2 items-center font-semibold text-primary mb-2">
+          <Shapes className="h-4 w-4 text-primary" />
+          <p>Your Recipes</p>
+        </h3>
+        <Separator />
 
-          <div className="flex gap-2 items-center">
-            <Heart className="h-10 w-10 text-primary" />
-            <div className="text-5xl">
-              {user.userLikeCount}
-              <span className="text-sm text-muted-foreground">Likes</span>
-            </div>
-          </div>
+        {recipes === null && (
+          <p className="text-muted-foreground text=center my-8">
+            An error occurred. Recipes couldn't be found
+          </p>
+        )}
 
-          <div className="flex gap-2 items-center">
-            <Bookmark className="h-10 w-10 text-primary" />
-            <div className="text-5xl">
-              {user.bookmarks.length}
-              <span className="text-sm text-muted-foreground">Bookmarks</span>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-    </div>
+        {recipes.length === 0 && (
+          <p className="text-muted-foreground text=center my-8">No posts yet</p>
+        )}
+
+        <div className="my-8 grid md:grid-cols-2 lg:grid-cols-3 gap-x-4 gap-y-8">
+          {recipes.map((recipe: Recipe) => (
+            <RecipeCard key={recipe._id} recipe={recipe} />
+          ))}
+        </div>
+      </div>
+    </>
   );
 }

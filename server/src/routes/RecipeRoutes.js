@@ -14,15 +14,15 @@ const {
   addComment,
   addLike,
   getRecipeById,
+  getUserLikedRecipes,
   getMostLikedRecipes,
-  getLatestRecipes,
   getAllRecipes,
-
   getRecipeByKeywords,
   editRecipe,
   deleteRecipe,
   getOtherRecipes,
   addBookmark,
+  getUserBookmarkedRecipes,
 } = require("../controllers/RecipeController");
 
 const RPstorage = multer.diskStorage({
@@ -79,6 +79,8 @@ router.use(verifyToken);
 router.post("/create", createRecipe);
 router.put("/edit/:id", editRecipe);
 router.get("/user-recipes", getRecipesByUser);
+router.get("/user-liked-recipes", getUserLikedRecipes);
+router.get("/user-bookmarked-recipes", getUserBookmarkedRecipes);
 router.delete("/delete-recipe/:id", deleteRecipe);
 router.put("/like-recipe", addLike);
 router.put("/bookmark-recipe", addBookmark);

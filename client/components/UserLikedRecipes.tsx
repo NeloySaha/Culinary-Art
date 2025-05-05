@@ -1,15 +1,13 @@
 import { Recipe } from "@/lib/types";
-import { Shapes } from "lucide-react";
 import { cookies } from "next/headers";
 import RecipeCard from "./RecipeCard";
-import { Separator } from "./ui/separator";
 
-export default async function UserPosts() {
+export default async function UserLikedRecipes() {
   const token = (await cookies()).get("session")?.value;
   let recipes = null;
   if (token) {
     const res = await fetch(
-      `${process.env.NEXT_PUBLIC_API_PREFIX}/recipes/user-recipes`,
+      `${process.env.NEXT_PUBLIC_API_PREFIX}/recipes/user-liked-recipes`,
       {
         headers: {
           "Content-Type": "application/json",
@@ -23,18 +21,24 @@ export default async function UserPosts() {
 
   if (recipes === null) return <p>Sorry, no recipes found</p>;
   return (
-    <div className="mt-12">
-      <h3 className="text-xl flex justify-center gap-2 items-center font-semibold text-primary mb-2">
-        <Shapes className="h-4 w-4 text-primary" />
-        <p>Your Recipes</p>
-      </h3>
-      <Separator />
+    <>
+      {recipes === null && (
+        <p className="text-muted-foreground text=center my-8">
+          An error occurred. Recipes couldn't be found
+        </p>
+      )}
 
-      <div className="my-8 grid md:grid-cols-2 gap-x-4 gap-y-8">
+      {recipes.length === 0 && (
+        <p className="text-muted-foreground text=center my-8">
+          You haven't liked any recipes yet
+        </p>
+      )}
+
+      <div className="my-8 grid md:grid-cols-2 lg:grid-cols-3 gap-x-4 gap-y-8">
         {recipes.map((recipe: Recipe) => (
           <RecipeCard key={recipe._id} recipe={recipe} />
         ))}
       </div>
-    </div>
+    </>
   );
 }

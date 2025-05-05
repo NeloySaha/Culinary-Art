@@ -33,7 +33,7 @@ export default function RecipeCard({ recipe }: { recipe: Recipe }) {
         />
       </CardHeader>
       <CardContent className="space-y-2">
-        <div className="flex gap-2">
+        <div className="flex flex-wrap gap-2">
           {recipe.keywords.map((keyword, index) => (
             <Badge key={index} className="capitalize">
               {keyword}

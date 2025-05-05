@@ -118,7 +118,7 @@ const getRecipesByCategory = async (req, res) => {
   const { category } = req.params;
 
   try {
-    const recipes = await Recipe.find({ category: category.toLowerCase() });
+    const recipes = await Recipe.find({ category: category });
 
     if (recipes.length === 0) {
       return res.status(404).json({ message: "Category not found" });
@@ -348,35 +348,6 @@ const getMostLikedRecipes = async (req, res) => {
     });
   }
 };
-const getLatestRecipes = async (req, res) => {
-  try {
-    const latestRecipes = await Recipe.find()
-      .sort({ _id: -1 })
-      .limit(4)
-      .select("-comments")
-      .populate("createdBy", "username");
-
-    if (latestRecipes.length === 0) {
-      return res.status(404).json({
-        success: false,
-        message: "No recipes found",
-      });
-    }
-
-    res.status(200).json({
-      success: true,
-      message: "Latest recipes fetched successfully",
-      data: latestRecipes,
-    });
-  } catch (error) {
-    console.error("Error fetching latest recipes:", error.message);
-    res.status(500).json({
-      success: false,
-      message: "Server error",
-      error: error.message,
-    });
-  }
-};
 
 const getAllRecipes = async (req, res) => {
   try {
@@ -498,6 +469,54 @@ const deleteRecipe = async (req, res) => {
   }
 };
 
+const getUserLikedRecipes = async (req, res) => {
+  const userId = req.user.id;
+  try {
+    const recipes = await Recipe.find({
+      likedUsers: userId,
+    });
+
+    if (!recipes) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Recipes not found" });
+    }
+
+    res.status(200).json({
+      success: true,
+      data: recipes,
+    });
+  } catch (error) {
+    res
+      .status(500)
+      .json({ success: false, message: "Server error", error: error.message });
+  }
+};
+
+const getUserBookmarkedRecipes = async (req, res) => {
+  const userId = req.user.id;
+  try {
+    const bookmarkedRecipes = await User.findById(userId)
+      .select("bookmarks")
+      .populate("bookmarks");
+
+    if (!bookmarkedRecipes) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Recipes not found" });
+    }
+
+    res.status(200).json({
+      success: true,
+      data: bookmarkedRecipes,
+    });
+  } catch (error) {
+    res
+      .status(500)
+      .json({ success: false, message: "Server error", error: error.message });
+  }
+};
+
 module.exports = {
   getAllRecipes,
   getOtherRecipes,
@@ -510,9 +529,10 @@ module.exports = {
   addBookmark,
   getRecipeById,
   getMostLikedRecipes,
-  getLatestRecipes,
   deleteRecipe,
   getUniqueKeywords,
   getRecipeByKeywords,
   editRecipe,
+  getUserLikedRecipes,
+  getUserBookmarkedRecipes,
 };
