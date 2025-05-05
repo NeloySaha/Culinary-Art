@@ -387,7 +387,7 @@ export default function RecipeDetails({ recipe, user }: Props) {
             disabled={isLikeSubmitting}
           >
             <Heart className={`w-4 h-4 ${isLiked ? "fill-red-500" : ""}`} />
-            {recipe.likesCount}
+            {recipe.likedUsers.length}
           </Button>
           <Button
             variant="outline"

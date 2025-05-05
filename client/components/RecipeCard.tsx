@@ -46,7 +46,7 @@ export default function RecipeCard({ recipe }: { recipe: Recipe }) {
           <div className="flex items-center gap-1">
             <Heart className="h-6 w-6 text-primary/75" />
             <p className="text-lg font-normal text-primary/75">
-              {recipe.likesCount}
+              {recipe.likedUsers.length}
               {/* <span className="text-xs text-muted-foreground font-normal ml-1">
               / 5
             </span> */}
