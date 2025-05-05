@@ -367,6 +367,7 @@ export default function RecipeDetails({ recipe, user }: Props) {
                   : recipe.createdBy.imageUrl
               }
               alt={recipe.createdBy.fullName}
+              className="object-cover"
             />
             <AvatarFallback>{recipe.createdBy.fullName[0]}</AvatarFallback>
           </Avatar>
@@ -515,6 +516,7 @@ export default function RecipeDetails({ recipe, user }: Props) {
                     : user.imageUrl
                 }
                 alt={user.fullName}
+                className="object-cover"
               />
               <AvatarFallback>You</AvatarFallback>
             </Avatar>
@@ -582,6 +584,7 @@ export default function RecipeDetails({ recipe, user }: Props) {
                           : comment.commentedBy.imageUrl
                       }
                       alt={comment.commentedBy.fullName}
+                      className="object-cover"
                     />
                     <AvatarFallback className="text-sm">
                       {" "}

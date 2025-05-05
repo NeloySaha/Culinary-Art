@@ -116,6 +116,7 @@ export default function DesktopNavbar({
                       : (userInfo?.imageUrl as string)
                   }
                   alt="@shadcn"
+                  className="object-cover"
                 />
                 <AvatarFallback className="rounded-lg">
                   {(userInfo?.fullName as string).split(" ")[0][0]}

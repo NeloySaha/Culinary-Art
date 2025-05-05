@@ -96,6 +96,7 @@ export default function MobileNavbar({
                           : (userInfo?.imageUrl as string)
                       }
                       alt="@shadcn"
+                      className="object-cover"
                     />
                     <AvatarFallback>
                       {(userInfo?.fullName as string).split(" ")[0][0]}

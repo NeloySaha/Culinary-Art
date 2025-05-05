@@ -39,7 +39,7 @@ export default async function UserInfo() {
       <div>
         <div className="flex items-start md:items-center gap-8 mb-6">
           <Avatar className="size-28 md:size-36 lg:size-44 border-2 border-primary">
-            <img
+            <AvatarImage
               src={
                 user.imageUrl?.startsWith("/")
                   ? `${process.env.NEXT_PUBLIC_API}${user.imageUrl}`
