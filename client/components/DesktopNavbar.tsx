@@ -134,15 +134,15 @@ export default function DesktopNavbar({
             <DropdownMenuLabel>My Account</DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              <DropdownMenuItem
+              {/* <DropdownMenuItem
                 onClick={() => handleNavigation("/user/profile")}
               >
                 <User />
                 <span>Profile</span>
-              </DropdownMenuItem>
+              </DropdownMenuItem> */}
 
               <DropdownMenuItem
-                onClick={() => handleNavigation("/user/manage-recipes")}
+                onClick={() => handleNavigation("/user/profile")}
               >
                 <Pencil />
                 <span>Dashboard</span>

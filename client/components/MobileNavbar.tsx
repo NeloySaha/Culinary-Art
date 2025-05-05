@@ -107,17 +107,17 @@ export default function MobileNavbar({
                   </p>
                 </div>
 
-                <Button
+                {/* <Button
                   variant={"ghost"}
                   onClick={() => handleNavigation("/user/profile")}
                 >
                   <User />
                   <span>Profile</span>
-                </Button>
+                </Button> */}
 
                 <Button
                   variant={"ghost"}
-                  onClick={() => handleNavigation("/user/manage-recipes")}
+                  onClick={() => handleNavigation("/user/profile")}
                 >
                   <Pencil />
                   <span>Dashboard</span>
