@@ -21,10 +21,12 @@ async function main() {
   //routes
   const UserRoutes = require("./src/routes/UserRoutes");
   const RecipeRoutes = require("./src/routes/RecipeRoutes");
+  const ProductRoutes = require("./src/routes/ProductRoutes");
   //   const ProductsRoutes = require("./src/routes/productRoute");
 
   app.use("/api/users", UserRoutes);
   app.use("/api/recipes", RecipeRoutes);
+  app.use("/api/products", ProductRoutes);
   //   app.use("/api/minimart", ProductsRoutes);
 
   app.listen(port, () => {

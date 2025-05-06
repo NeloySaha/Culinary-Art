@@ -36,7 +36,7 @@ export default function KeywordsFilter({ keywords }: Props) {
         <li key={keyword}>
           <Button
             variant={"outline"}
-            className={`rounded-full border border-primary cursor-pointer capitalize ${
+            className={`rounded-full cursor-pointer capitalize ${
               currentKeyword === keyword &&
               "bg-primary text-slate-50 hover:bg-primary hover:text-slate-50"
             }`}

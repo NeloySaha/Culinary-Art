@@ -321,13 +321,37 @@ const getRecipeById = async (req, res) => {
 
 const getMostLikedRecipes = async (req, res) => {
   try {
-    const mostLikedRecipe = await Recipe.find()
-      .sort({ likesCount: -1 })
-      .limit(8)
-      .select("-comments")
-      .populate("createdBy", "username");
+    const mostLikedRecipes = await Recipe.aggregate([
+      {
+        $addFields: {
+          likedUsersCount: { $size: "$likedUsers" },
+        },
+      },
+      {
+        $sort: { likedUsersCount: -1 },
+      },
+      {
+        $limit: 8,
+      },
+      {
+        $lookup: {
+          from: "users",
+          localField: "createdBy",
+          foreignField: "_id",
+          as: "createdBy",
+        },
+      },
+      {
+        $unwind: "$createdBy",
+      },
+      {
+        $project: {
+          comments: 0,
+        },
+      },
+    ]);
 
-    if (!mostLikedRecipe) {
+    if (!mostLikedRecipes) {
       return res.status(404).json({
         success: false,
         message: "No recipes found",
@@ -337,7 +361,7 @@ const getMostLikedRecipes = async (req, res) => {
     res.status(200).json({
       success: true,
       message: "Most liked recipe fetched successfully",
-      data: mostLikedRecipe,
+      data: mostLikedRecipes,
     });
   } catch (error) {
     console.error("Error fetching most liked recipe:", error.message);

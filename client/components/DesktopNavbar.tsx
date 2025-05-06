@@ -53,7 +53,7 @@ export default function DesktopNavbar({
         <p className="text-2xl font-semibold">Culinary Art</p>
       </Link>
 
-      <div className="flex gap-4 text-md font-medium">
+      <div className="flex gap-10 text-md font-medium">
         <Link
           href={pathName === "/" ? "#recipes" : "/"}
           className={`hover:text-primary transition-all duration-300 ${
@@ -68,7 +68,7 @@ export default function DesktopNavbar({
             pathName === "/shop" && "text-primary/85"
           }`}
         >
-          Shop Item
+          Shop
         </Link>
 
         <Link

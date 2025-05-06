@@ -77,3 +77,14 @@ export type RecipePublicView = {
   isPopular: boolean;
   likedUsers: string[];
 };
+
+export type Product = {
+  _id: string;
+  name: string;
+  description: string;
+  price: number;
+  quantityInStock: number;
+  category: string;
+  imageUrl: string;
+  unit: string;
+};
