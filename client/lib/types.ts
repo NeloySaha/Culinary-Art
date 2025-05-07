@@ -89,6 +89,28 @@ export type Product = {
   unit: string;
 };
 
+type OrderItemWithProductDetails = {
+  _id: string;
+  productId: Product;
+  quantity: number;
+  currentUnitPrice: number;
+};
+
+export type Order = {
+  _id: string;
+  userId: string;
+  phoneNumber: string;
+  address: string;
+  items: OrderItemWithProductDetails[];
+  subtotal: number;
+  deliveryCharge: number;
+  totalAmount: number;
+  paymentMethod: string;
+  orderStatus: "Pending" | "Confirmed" | "Shipped" | "Delivered" | "Cancelled";
+  createdAt: string | Date; // ISO string or Date object
+  updatedAt: string | Date; // From your data
+};
+
 //for redux
 export type CartItemType = Product & {
   quantity: number;

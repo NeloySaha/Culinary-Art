@@ -37,8 +37,8 @@ export default function Cart() {
 
     if (session === null) return router.push("/login");
 
-    if (session.role === "user") {
-      router.push("/users/checkout");
+    if (session.role === "customer") {
+      router.push("/purchase/checkout");
     } else {
       router.push("/login");
     }
@@ -49,11 +49,7 @@ export default function Cart() {
     setIsOpen(false);
   }
 
-  if (
-    pathname.startsWith("/users") ||
-    pathname.startsWith("/admin") ||
-    pathname.startsWith("/restaurant")
-  )
+  if (pathname.startsWith("/user") || pathname.startsWith("/admin"))
     return null;
 
   return (
@@ -62,7 +58,7 @@ export default function Cart() {
         <div className="fixed bottom-4 right-4 z-50">
           <Button className="rounded-full w-16 h-16 shadow-lg relative">
             {cartCurrentQuantity !== 0 && (
-              <p className="absolute bg-amber-400 -top-1 -right-1  h-6 w-6 rounded-md text-xs font-medium flex items-center justify-center border border-zinc-500">
+              <p className="absolute bg-primary -top-1 -left-1  h-6 w-6 rounded-md text-xs font-medium flex items-center justify-center border border-zinc-500">
                 {cartCurrentQuantity}
               </p>
             )}

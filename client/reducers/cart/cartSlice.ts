@@ -6,7 +6,7 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialState: CartInfoState = {
   cart: {
     items: [],
-    deliveryCharge: 0,
+    deliveryCharge: 60,
   },
 };
 
@@ -49,11 +49,6 @@ const cartSlice = createSlice({
         state.cart.items = state.cart.items.filter(
           (item) => item._id !== existingItem._id
         );
-
-        if (state.cart.items.length === 0) {
-          state.cart.deliveryCharge = 0;
-        }
-        return;
       }
 
       if (existingItem) {
@@ -70,16 +65,11 @@ const cartSlice = createSlice({
         state.cart.items = state.cart.items.filter(
           (item) => item._id !== action.payload
         );
-
-        if (state.cart.items.length === 0) {
-          state.cart.deliveryCharge = 0;
-        }
       }
     },
 
     clearCart(state) {
       state.cart.items = [];
-      state.cart.deliveryCharge = 0;
     },
   },
 });
@@ -94,6 +84,7 @@ export const {
 export default cartSlice.reducer;
 
 export const getCart = (state: GlobalStoreState) => state.cart.cart;
+export const getCartItems = (state: GlobalStoreState) => state.cart.cart.items;
 
 export const getCartItemIds = (state: GlobalStoreState) =>
   state.cart.cart.items.map((item) => item._id);
@@ -112,5 +103,17 @@ export const getTotalCartPrice = (state: GlobalStoreState) =>
     0
   );
 
-export const currentDeliveryCharge = (state: GlobalStoreState) =>
+export const getCurrentDeliveryCharge = (state: GlobalStoreState) =>
   state.cart.cart.deliveryCharge;
+
+export const getSubtotalCartPrice = (state: GlobalStoreState) =>
+  state.cart.cart.items.reduce(
+    (acc, item) => acc + item.price * item.quantity,
+    0
+  );
+
+export const getTotalOrderPrice = (state: GlobalStoreState) => {
+  const subtotal = getSubtotalCartPrice(state);
+  const delivery = getCurrentDeliveryCharge(state);
+  return subtotal + delivery;
+};

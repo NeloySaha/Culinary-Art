@@ -1,63 +1,37 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import Image from "next/image";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
+import { useAppDispatch, useAppSelector } from "@/lib/hooks";
+import { Product } from "@/lib/types";
+import {
+  addItem,
+  decreaseItemQuantity,
+  deleteItem,
+  getCartItemIds,
+  getCurrentQuantityById,
+  increaseItemQuantity,
+} from "@/reducers/cart/cartSlice";
+import { ChevronLeft, Minus, Plus, ShoppingCart, Trash } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ChevronLeft, Minus, Plus, ShoppingCart } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Separator } from "@/components/ui/separator";
-import { Product } from "@/lib/types";
 
 export default function ProductDetail({ product }: { product: Product }) {
-  const [isLoading, setIsLoading] = useState(false);
-  const [quantity, setQuantity] = useState(1);
-  const [isAddingToCart, setIsAddingToCart] = useState(false);
+  const currentCartItemIds = useAppSelector(getCartItemIds);
+  const dispatch = useAppDispatch();
+  const currentQuantity = useAppSelector(getCurrentQuantityById(product._id));
 
   const handleAddToCart = () => {
-    setIsAddingToCart(true);
+    const curProduct = {
+      ...product,
+      quantity: 1,
+    };
+
+    dispatch(addItem(curProduct));
 
     // Simulate adding to cart
-    setTimeout(() => {
-      setIsAddingToCart(false);
-      //   toast({
-      //     title: "Added to cart",
-      //     description: `${quantity} × ${product?.name} has been added to your cart.`,
-      //   });
-    }, 600);
   };
-
-  const decreaseQuantity = () => {
-    if (quantity > 1) {
-      setQuantity(quantity - 1);
-    }
-  };
-
-  const increaseQuantity = () => {
-    if (product && quantity < product.quantityInStock) {
-      setQuantity(quantity + 1);
-    }
-  };
-
-  if (isLoading) {
-    return (
-      <div className="max-w-7xl mx-auto px-4 py-8">
-        <div className="animate-pulse">
-          <div className="h-6 w-24 bg-muted rounded mb-8"></div>
-          <div className="grid md:grid-cols-2 gap-8">
-            <div className="aspect-square bg-muted rounded-lg"></div>
-            <div className="space-y-4">
-              <div className="h-8 bg-muted rounded w-3/4"></div>
-              <div className="h-4 bg-muted rounded w-1/4"></div>
-              <div className="h-24 bg-muted rounded w-full"></div>
-              <div className="h-10 bg-muted rounded w-full"></div>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  }
 
   if (!product) {
     return notFound();
@@ -73,20 +47,12 @@ export default function ProductDetail({ product }: { product: Product }) {
         Back to shop
       </Link>
 
-      <div className="grid md:grid-cols-2 gap-8">
-        <div className="aspect-square">
-          <img
-            src={product.imageUrl}
-            alt={product.name}
-            className="object-cover w-full rounded-lg"
-          />
-
-          {product.quantityInStock <= 0 && (
-            <div className="absolute inset-0 bg-background/80 flex items-center justify-center">
-              <Badge variant="destructive">Out of Stock</Badge>
-            </div>
-          )}
-        </div>
+      <div className="grid md:grid-cols-2 gap-8 ">
+        <img
+          src={product.imageUrl}
+          alt={product.name}
+          className="object-cover h-96 w-full rounded-lg border"
+        />
 
         <div className="space-y-6">
           <div>
@@ -118,40 +84,46 @@ export default function ProductDetail({ product }: { product: Product }) {
             </p>
           </div>
 
-          {product.quantityInStock > 0 && (
-            <div className="flex gap-4">
-              <div className="flex items-center ">
+          {product.quantityInStock > 0 &&
+            (currentCartItemIds.includes(product._id) ? (
+              <div className="flex items-center gap-4">
                 <Button
-                  variant="outline"
-                  size="icon"
-                  onClick={decreaseQuantity}
-                  disabled={quantity <= 1}
+                  variant={"destructive"}
+                  onClick={() => dispatch(deleteItem(product._id))}
                 >
-                  <Minus className="h-4 w-4" />
+                  <Trash className="h-4 w-4" />
+                  Delete
                 </Button>
-                <span className="w-12 text-center">
-                  {quantity} {product.unit}
-                </span>
+                <div className="flex items-center gap-2 rounded-md">
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    onClick={() => dispatch(decreaseItemQuantity(product._id))}
+                  >
+                    <Minus className="h-4 w-4" />
+                  </Button>
+                  <span>{currentQuantity}</span>
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    onClick={() => dispatch(increaseItemQuantity(product._id))}
+                  >
+                    <Plus className="h-4 w-4" />
+                  </Button>
+                </div>
+              </div>
+            ) : (
+              <div className="flex flex-col gap-2">
                 <Button
-                  variant="outline"
-                  size="icon"
-                  onClick={increaseQuantity}
-                  disabled={quantity >= product.quantityInStock}
+                  onClick={handleAddToCart}
+                  disabled={product.quantityInStock <= 0}
+                  className="w-full"
                 >
-                  <Plus className="h-4 w-4" />
+                  <ShoppingCart className="h-4 w-4" />
+                  <span>Add to cart</span>
                 </Button>
               </div>
-
-              <Button
-                className="flex-1 w-full"
-                onClick={handleAddToCart}
-                disabled={isAddingToCart}
-              >
-                <ShoppingCart className="h-4 w-4 mr-2" />
-                Add to Cart
-              </Button>
-            </div>
-          )}
+            ))}
         </div>
       </div>
     </div>

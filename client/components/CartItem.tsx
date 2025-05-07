@@ -49,7 +49,7 @@ const CartItem: React.FC<CartItemProps> = ({ item }) => {
         <Button
           variant="outline"
           size="icon"
-          onClick={() => dispatch(decreaseItemQuantity(`${item._id}`))}
+          onClick={() => dispatch(decreaseItemQuantity(item._id))}
         >
           <Minus className="h-4 w-4" />
         </Button>
@@ -57,14 +57,14 @@ const CartItem: React.FC<CartItemProps> = ({ item }) => {
         <Button
           variant="outline"
           size="icon"
-          onClick={() => dispatch(increaseItemQuantity(`${item._id}`))}
+          onClick={() => dispatch(increaseItemQuantity(item._id))}
         >
           <Plus className="h-4 w-4" />
         </Button>
         <Button
           variant="ghost"
           size="icon"
-          onClick={() => dispatch(deleteItem(`${item._id}`))}
+          onClick={() => dispatch(deleteItem(item._id))}
         >
           <Trash2 className="h-4 w-4" />
         </Button>

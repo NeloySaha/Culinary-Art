@@ -16,7 +16,7 @@ export async function middleware(request: NextRequest) {
 
   const pathname = request.nextUrl.pathname;
 
-  if (pathname.startsWith("/user")) {
+  if (pathname.startsWith("/user") || pathname.startsWith("/purchase")) {
     if (session.role !== "customer") {
       // If not a restaurant user, rewrite to home
       return NextResponse.rewrite(new URL("/", request.url));
