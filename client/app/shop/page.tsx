@@ -2,8 +2,6 @@ import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
 import { Suspense } from "react";
 
-// import ProductGrid from "@/components/product-grid";
-
 import ProductFilter from "@/components/ProductFilter";
 import { Skeleton } from "@/components/ui/skeleton";
 import { getFilterData, getFilteredProducts } from "@/lib/actions";
@@ -34,7 +32,9 @@ export default async function Page({
     <section className="max-w-7xl px-4 mx-auto py-24">
       <div className="flex flex-col gap-6">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Shop</h1>
+          <h1 className="text-4xl font-bold tracking-tight text-primary">
+            Shop
+          </h1>
           <p className="text-muted-foreground mt-1">
             Browse our selection of high-quality cooking products
           </p>

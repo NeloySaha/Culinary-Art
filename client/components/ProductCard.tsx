@@ -10,12 +10,14 @@ import {
   CardFooter,
   CardHeader,
 } from "@/components/ui/card";
-import { ShoppingCart } from "lucide-react";
+import { Minus, Plus, ShoppingCart, Trash } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 
 import { Product } from "@/lib/types";
 import { Separator } from "./ui/separator";
+import { useAppSelector } from "@/lib/hooks";
+import { getCartItemIds } from "@/reducers/cart/cartSlice";
 
 type Props = {
   product: Product;
@@ -23,6 +25,7 @@ type Props = {
 
 export default function ProductCard({ product }: Props) {
   const [isAddingToCart, setIsAddingToCart] = useState(false);
+  const currentCartItemIds = useAppSelector(getCartItemIds);
 
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -67,16 +70,46 @@ export default function ProductCard({ product }: Props) {
 
           <Separator />
 
-          <div className="flex flex-col gap-2 w-full">
-            <Button
-              onClick={handleAddToCart}
-              disabled={isAddingToCart || product.quantityInStock <= 0}
-              className="w-full"
-            >
-              <ShoppingCart className="h-4 w-4" />
-              <span>Add to cart</span>
-            </Button>
-          </div>
+          {currentCartItemIds.includes(product._id) ? (
+            <div className="flex items-center w-full justify-between">
+              <Button variant={"destructive"}>
+                <Trash className="h-4 w-4" />
+                Delete
+              </Button>
+              <div className="flex items-center gap-1 rounded-md">
+                <Button
+                  // variant="ghost"
+
+                  // onClick={() => handleQuantityChange(-1)}
+                  // disabled={!quantity}
+                  // className="h-8 w-8 p-0"
+                  size={"icon"}
+                >
+                  <Minus className="w-4 h-4" />
+                </Button>
+                <span className="w-8 text-center text-md font-normal">{0}</span>
+                <Button
+                  // variant="ghost"
+                  size="icon"
+                  // onClick={() => handleQuantityChange(1)}
+                  // className="h-8 w-8 p-0"
+                >
+                  <Plus className="w-4 h-4" />
+                </Button>
+              </div>
+            </div>
+          ) : (
+            <div className="flex flex-col gap-2 w-full">
+              <Button
+                onClick={handleAddToCart}
+                disabled={isAddingToCart || product.quantityInStock <= 0}
+                className="w-full"
+              >
+                <ShoppingCart className="h-4 w-4" />
+                <span>Add to cart</span>
+              </Button>
+            </div>
+          )}
         </CardFooter>
       </Card>
     </Link>

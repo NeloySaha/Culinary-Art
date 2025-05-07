@@ -88,3 +88,21 @@ export type Product = {
   imageUrl: string;
   unit: string;
 };
+
+//for redux
+export type CartItemType = Product & {
+  quantity: number;
+};
+
+export type Cart = {
+  items: CartItemType[];
+  deliveryCharge: number;
+};
+
+export type CartInfoState = {
+  cart: Cart;
+};
+
+export type GlobalStoreState = {
+  cart: CartInfoState;
+};
