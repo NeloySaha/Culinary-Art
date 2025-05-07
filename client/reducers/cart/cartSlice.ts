@@ -101,6 +101,11 @@ export const getCartItemIds = (state: GlobalStoreState) =>
 export const getTotalCartQuantity = (state: GlobalStoreState) =>
   state.cart.cart.items.reduce((acc, item) => acc + item.quantity, 0);
 
+export const getCurrentQuantityById = (id: string) => {
+  return (state: GlobalStoreState) =>
+    state.cart.cart.items.find((item) => item._id === id)?.quantity ?? 0;
+};
+
 export const getTotalCartPrice = (state: GlobalStoreState) =>
   state.cart.cart.items.reduce(
     (acc, item) => acc + item.price * item.quantity,

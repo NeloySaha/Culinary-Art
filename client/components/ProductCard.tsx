@@ -16,8 +16,14 @@ import { useState } from "react";
 
 import { Product } from "@/lib/types";
 import { Separator } from "./ui/separator";
-import { useAppSelector } from "@/lib/hooks";
-import { getCartItemIds } from "@/reducers/cart/cartSlice";
+import { useAppDispatch, useAppSelector } from "@/lib/hooks";
+import {
+  addItem,
+  decreaseItemQuantity,
+  getCartItemIds,
+  getCurrentQuantityById,
+  increaseItemQuantity,
+} from "@/reducers/cart/cartSlice";
 
 type Props = {
   product: Product;
@@ -26,12 +32,20 @@ type Props = {
 export default function ProductCard({ product }: Props) {
   const [isAddingToCart, setIsAddingToCart] = useState(false);
   const currentCartItemIds = useAppSelector(getCartItemIds);
+  const dispatch = useAppDispatch();
+  const currentQuantity = useAppSelector(getCurrentQuantityById(product._id));
 
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
 
     setIsAddingToCart(true);
+    const curProduct = {
+      ...product,
+      quantity: 1,
+    };
+
+    dispatch(addItem(curProduct));
 
     // Simulate adding to cart
   };
@@ -76,25 +90,27 @@ export default function ProductCard({ product }: Props) {
                 <Trash className="h-4 w-4" />
                 Delete
               </Button>
-              <div className="flex items-center gap-1 rounded-md">
+              <div className="flex items-center gap-2 rounded-md">
                 <Button
-                  // variant="ghost"
-
-                  // onClick={() => handleQuantityChange(-1)}
-                  // disabled={!quantity}
-                  // className="h-8 w-8 p-0"
-                  size={"icon"}
-                >
-                  <Minus className="w-4 h-4" />
-                </Button>
-                <span className="w-8 text-center text-md font-normal">{0}</span>
-                <Button
-                  // variant="ghost"
+                  variant="outline"
                   size="icon"
-                  // onClick={() => handleQuantityChange(1)}
-                  // className="h-8 w-8 p-0"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    dispatch(decreaseItemQuantity(`${product._id}`));
+                  }}
                 >
-                  <Plus className="w-4 h-4" />
+                  <Minus className="h-4 w-4" />
+                </Button>
+                <span>{currentQuantity}</span>
+                <Button
+                  variant="outline"
+                  size="icon"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    dispatch(increaseItemQuantity(`${product._id}`));
+                  }}
+                >
+                  <Plus className="h-4 w-4" />
                 </Button>
               </div>
             </div>
