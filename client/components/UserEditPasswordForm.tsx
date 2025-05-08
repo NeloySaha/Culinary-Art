@@ -25,11 +25,27 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import * as z from "zod";
-import { getSession } from "@/lib/actions";
+
+const passwordValidation = z
+  .string()
+  .min(8, { message: "Password must be at least 8 characters long." })
+  .refine((password) => /[a-z]/.test(password), {
+    message: "Password must contain at least one lowercase letter.",
+  })
+  .refine((password) => /[A-Z]/.test(password), {
+    message: "Password must contain at least one uppercase letter.",
+  })
+  .refine((password) => /[0-9]/.test(password), {
+    message: "Password must contain at least one number.",
+  })
+  .refine((password) => /[!@#$%^&*(),.?":{}|<>]/.test(password), {
+    message:
+      "Password must contain at least one special character (e.g., !@#$%&*).",
+  });
 
 const PasswordSchema = z
   .object({
-    password: z.string().min(8, "Password must be at least 8 characters"),
+    password: passwordValidation,
     confirmPassword: z.string(),
   })
   .refine((data) => data.password === data.confirmPassword, {

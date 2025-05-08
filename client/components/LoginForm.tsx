@@ -85,11 +85,10 @@ export default function LoginForm() {
         });
 
         if (session.role === "admin") {
-          router.push("/admin");
-        } else {
-          router.push("/user");
+          router.push("/admin/orders");
+        } else if (session.role === "customer") {
+          router.push("/user/profile");
         }
-        // router.push("/user");
       } else {
         toast.error("Error Occurred", {
           description: data.message,

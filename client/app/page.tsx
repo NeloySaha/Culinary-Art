@@ -25,9 +25,11 @@ export default async function Page({
     <div>
       <HeroSection />
 
-      <Suspense fallback={<Spinner />}>
-        <PopularRecipeSectionWrapper />
-      </Suspense>
+      <section className="scroll-mt-16" id="popular-recipes">
+        <Suspense fallback={<Spinner />}>
+          <PopularRecipeSectionWrapper />
+        </Suspense>
+      </section>
 
       <section
         className="max-w-7xl px-4 mx-auto py-10 scroll-mt-16"

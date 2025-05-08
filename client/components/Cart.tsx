@@ -49,7 +49,13 @@ export default function Cart() {
     setIsOpen(false);
   }
 
-  if (pathname.startsWith("/user") || pathname.startsWith("/admin"))
+  if (
+    pathname.startsWith("/user") ||
+    pathname.startsWith("/admin") ||
+    pathname.startsWith("/purchase") ||
+    pathname === "/login" ||
+    pathname === "/signup"
+  )
     return null;
 
   return (

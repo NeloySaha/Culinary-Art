@@ -1,5 +1,6 @@
+import { redirect } from "next/navigation";
 import React from "react";
 
 export default function Page() {
-  return <div className="py-32">Admin</div>;
+  return redirect("/admin/orders");
 }

@@ -1,5 +1,4 @@
 "use client";
-import Cookies from "js-cookie";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -9,6 +8,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import Cookies from "js-cookie";
 
 import { Input } from "@/components/ui/input";
 
@@ -19,6 +19,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { getSession } from "@/lib/actions";
 import { generateOTP } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Eye, EyeOff, Loader2 } from "lucide-react";
@@ -26,6 +27,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 import * as z from "zod";
 import {
   InputOTP,
@@ -34,19 +36,34 @@ import {
   InputOTPSlot,
 } from "./ui/input-otp";
 import { Textarea } from "./ui/textarea";
-import { toast, useSonner } from "sonner";
-import { getSession } from "@/lib/actions";
 
-const signupSchema = z
+const passwordValidation = z
+  .string()
+  .min(8, { message: "Password must be at least 8 characters long." })
+  .refine((password) => /[a-z]/.test(password), {
+    message: "Password must contain at least one lowercase letter.",
+  })
+  .refine((password) => /[A-Z]/.test(password), {
+    message: "Password must contain at least one uppercase letter.",
+  })
+  .refine((password) => /[0-9]/.test(password), {
+    message: "Password must contain at least one number.",
+  })
+  .refine((password) => /[!@#$%^&*(),.?":{}|<>]/.test(password), {
+    message:
+      "Password must contain at least one special character (e.g., !@#$%&*).",
+  });
+
+export const signupSchema = z
   .object({
-    fullName: z.string().min(2, "Name must be at least 2 characters"),
+    fullName: z.string().min(2, "Name must be at least 2 characters long."),
     bio: z.string().optional(),
-    email: z.string().email("Please enter a valid email!"),
-    password: z.string().min(8, "Password must be at least 8 characters"),
-    confirmPassword: z.string(),
+    email: z.string().email("Please enter a valid email address."),
+    password: passwordValidation,
+    confirmPassword: z.string().min(1, "Please confirm your password."),
   })
   .refine((data) => data.password === data.confirmPassword, {
-    message: "Passwords don't match",
+    message: "Passwords do not match. Please re-enter.",
     path: ["confirmPassword"],
   });
 

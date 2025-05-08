@@ -3,8 +3,12 @@ import { ChefHat, Facebook, Instagram, Twitter, Youtube } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { getSession } from "@/lib/actions";
+import { JWTPayload } from "jose";
+import FooterClientNav from "./FooterClientNav";
 
-export default function Footer() {
+export default async function Footer() {
+  const session = await getSession();
   return (
     <section className="py-10 border-t border-primary/30">
       <footer className="max-w-7xl mx-auto px-4">
@@ -26,26 +30,11 @@ export default function Footer() {
           <div className="space-y-4">
             <h3 className="text-lg font-semibold">Explore</h3>
             <ul className="space-y-2">
-              <li>
-                <Link
-                  href="#"
-                  className="text-muted-foreground hover:text-primary"
-                >
-                  Popular Recipes
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="#"
-                  className="text-muted-foreground hover:text-primary"
-                >
-                  All Recipes
-                </Link>
-              </li>
+              <FooterClientNav />
 
               <li>
                 <Link
-                  href="#"
+                  href="/user/upload-recipe"
                   className="text-muted-foreground hover:text-primary"
                 >
                   Upload Recipe
@@ -54,18 +43,10 @@ export default function Footer() {
 
               <li>
                 <Link
-                  href="#"
+                  href="/shop"
                   className="text-muted-foreground hover:text-primary"
                 >
-                  Recipe Competition
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="#"
-                  className="text-muted-foreground hover:text-primary"
-                >
-                  Shopping Mart
+                  Shop
                 </Link>
               </li>
             </ul>
@@ -73,25 +54,42 @@ export default function Footer() {
 
           <div className="space-y-4">
             <h3 className="text-lg font-semibold">Account</h3>
-            <ul className="space-y-2">
-              <li>
-                <Link
-                  href="/login"
-                  className="text-muted-foreground hover:text-primary"
-                >
-                  Log in
-                </Link>
-              </li>
+            {session !== null ? (
+              <ul className="space-y-2">
+                <li>
+                  <Link
+                    href={
+                      (session as JWTPayload).role === "admin"
+                        ? "/admin.orders"
+                        : "/user/profile"
+                    }
+                    className="text-muted-foreground hover:text-primary"
+                  >
+                    Dashboard
+                  </Link>
+                </li>
+              </ul>
+            ) : (
+              <ul className="space-y-2">
+                <li>
+                  <Link
+                    href="/login"
+                    className="text-muted-foreground hover:text-primary"
+                  >
+                    Log in
+                  </Link>
+                </li>
 
-              <li>
-                <Link
-                  href="/signup"
-                  className="text-muted-foreground hover:text-primary"
-                >
-                  Sign up
-                </Link>
-              </li>
-            </ul>
+                <li>
+                  <Link
+                    href="/signup"
+                    className="text-muted-foreground hover:text-primary"
+                  >
+                    Sign up
+                  </Link>
+                </li>
+              </ul>
+            )}
           </div>
 
           {/* Company links */}
@@ -100,7 +98,7 @@ export default function Footer() {
             <ul className="space-y-2">
               <li>
                 <Link
-                  href="#"
+                  href="/about"
                   className="text-muted-foreground hover:text-primary"
                 >
                   About Us
@@ -108,8 +106,6 @@ export default function Footer() {
               </li>
             </ul>
           </div>
-
-          {/* Newsletter signup */}
         </div>
 
         <div className="mt-12 border-t pt-8">
