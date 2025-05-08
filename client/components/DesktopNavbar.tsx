@@ -143,18 +143,26 @@ export default function DesktopNavbar({
               </DropdownMenuItem> */}
 
               <DropdownMenuItem
-                onClick={() => handleNavigation("/user/profile")}
+                onClick={() =>
+                  handleNavigation(
+                    userInfo.role === "customer"
+                      ? "/user/profile"
+                      : "/admin/orders"
+                  )
+                }
               >
                 <Pencil />
                 <span>Dashboard</span>
               </DropdownMenuItem>
 
-              <DropdownMenuItem
-                onClick={() => handleNavigation("/user/settings")}
-              >
-                <Settings />
-                <span>Settings</span>
-              </DropdownMenuItem>
+              {userInfo.role === "customer" && (
+                <DropdownMenuItem
+                  onClick={() => handleNavigation("/user/settings")}
+                >
+                  <Settings />
+                  <span>Settings</span>
+                </DropdownMenuItem>
+              )}
             </DropdownMenuGroup>
 
             <DropdownMenuSeparator />

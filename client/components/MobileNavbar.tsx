@@ -10,12 +10,12 @@ import {
 } from "@/components/ui/drawer";
 import { logout } from "@/lib/actions";
 import { JWTPayload } from "jose";
-import { ChefHat, Menu, Pencil, Settings, User } from "lucide-react";
+import { ChefHat, Menu, Pencil, Settings } from "lucide-react";
+import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { Button } from "./ui/button";
 import { Separator } from "./ui/separator";
-import Link from "next/link";
 
 export default function MobileNavbar({
   userInfo,
@@ -118,19 +118,27 @@ export default function MobileNavbar({
 
                 <Button
                   variant={"ghost"}
-                  onClick={() => handleNavigation("/user/profile")}
+                  onClick={() =>
+                    handleNavigation(
+                      userInfo.role === "customer"
+                        ? "/user/profile"
+                        : "/admin/orders"
+                    )
+                  }
                 >
                   <Pencil />
                   <span>Dashboard</span>
                 </Button>
 
-                <Button
-                  variant={"ghost"}
-                  onClick={() => handleNavigation("/user/settings")}
-                >
-                  <Settings />
-                  <span>Settings</span>
-                </Button>
+                {userInfo.role === "customer" && (
+                  <Button
+                    variant={"ghost"}
+                    onClick={() => handleNavigation("/user/settings")}
+                  >
+                    <Settings />
+                    <span>Settings</span>
+                  </Button>
+                )}
 
                 <Button variant={"destructive"} onClick={handleLogout}>
                   Log out

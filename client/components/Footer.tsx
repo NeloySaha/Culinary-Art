@@ -1,8 +1,6 @@
+import { ChefHat } from "lucide-react";
 import Link from "next/link";
-import { ChefHat, Facebook, Instagram, Twitter, Youtube } from "lucide-react";
 
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { getSession } from "@/lib/actions";
 import { JWTPayload } from "jose";
 import FooterClientNav from "./FooterClientNav";
@@ -60,7 +58,7 @@ export default async function Footer() {
                   <Link
                     href={
                       (session as JWTPayload).role === "admin"
-                        ? "/admin.orders"
+                        ? "/admin/orders"
                         : "/user/profile"
                     }
                     className="text-muted-foreground hover:text-primary"
