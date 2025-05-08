@@ -13,6 +13,7 @@ const {
   resetPassword,
   updatePassword,
   editUser,
+  getUserPublicInfo,
 } = require("../controllers/UserController");
 
 const RPstorage = multer.diskStorage({
@@ -58,6 +59,7 @@ router.post("/create-user", createUser);
 router.post("/forget-password-verification", forgetPassVerification);
 router.post("/reset-password", resetPassword);
 router.post("/login", loginUser);
+router.get("/user-public-info/:id", getUserPublicInfo);
 
 //protected routes
 router.use(verifyToken);

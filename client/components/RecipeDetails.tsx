@@ -113,40 +113,11 @@ type Props = {
 
 export default function RecipeDetails({ recipe, user }: Props) {
   const router = useRouter();
-  //   const [recipe, setRecipe] = useState<any>(null);
-  // const [loading, setLoading] = useState(true);
 
   const [comment, setComment] = useState("");
   const [isLikeSubmitting, startLikeTransition] = useTransition();
   const [isCommentSubmitting, startCommentTransition] = useTransition();
   const [isBookmarkSubmitting, startBookmarkTransition] = useTransition();
-
-  // Mock current user ID - would come from auth context in a real app
-  const currentUserId = "user123";
-
-  //   useEffect(() => {
-  //     const loadRecipe = async () => {
-  //       try {
-  //         const data = await fetchRecipe(id);
-  //         setRecipe(data);
-  //         setLikesCount(data.likesCount);
-  //         setIsLiked(data.likedUsers.includes(currentUserId));
-  //         // In a real app, you would check if the recipe is bookmarked by the user
-  //         setIsBookmarked(false);
-  //         setLoading(false);
-  //       } catch (error) {
-  //         console.error("Error loading recipe:", error);
-  //         // toast({
-  //         //   title: "Error",
-  //         //   description: "Failed to load recipe details",
-  //         //   variant: "destructive",
-  //         // });
-  //         setLoading(false);
-  //       }
-  //     };
-
-  //     loadRecipe();
-  //   }, [id, currentUserId]);
 
   const handleLike = async () => {
     const token = Cookies.get("session");
@@ -268,42 +239,6 @@ export default function RecipeDetails({ recipe, user }: Props) {
     }
   };
 
-  //   const handleComment = async () => {
-  //     if (!comment.trim()) return;
-
-  //     try {
-  //       // In a real app, you would make an API call to add a comment
-  //       const newComment = {
-  //         _id: `comment${Date.now()}`,
-  //         commentedBy: {
-  //           _id: currentUserId,
-  //           name: "You",
-  //           avatar: "/placeholder.svg?height=40&width=40",
-  //         },
-  //         comment: comment,
-  //       };
-
-  //       setRecipe({
-  //         ...recipe,
-  //         comments: [...recipe.comments, newComment],
-  //       });
-
-  //       setComment("");
-
-  //       //   toast({
-  //       //     title: "Comment added",
-  //       //     description: "Your comment has been added to the recipe",
-  //       //   });
-  //     } catch (error) {
-  //       console.error("Error adding comment:", error);
-  //       //   toast({
-  //       //     title: "Error",
-  //       //     description: "Failed to add comment",
-  //       //     variant: "destructive",
-  //       //   });
-  //     }
-  //   };
-
   if (!recipe) {
     return <div className="text-center py-12">Recipe not found</div>;
   }
@@ -358,7 +293,14 @@ export default function RecipeDetails({ recipe, user }: Props) {
 
       {/* Action Buttons */}
       <div className="flex flex-col gap-4 md:flex-row md:justify-between md:items-center">
-        <Link href="/" className="flex items-center gap-2 group">
+        <Link
+          href={
+            user !== null && user._id === recipe.createdBy._id
+              ? `/user/profile`
+              : `/public-profile/${recipe.createdBy._id}`
+          }
+          className="flex items-center gap-2 group"
+        >
           <Avatar className="h-10 w-10">
             <AvatarImage
               src={

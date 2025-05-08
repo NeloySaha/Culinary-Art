@@ -187,6 +187,40 @@ const getUser = async (req, res) => {
   }
 };
 
+const getUserPublicInfo = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const user = await User.findById(id).select("-password");
+
+    if (!user) {
+      return res
+        .status(404)
+        .json({ success: false, message: "User not found" });
+    }
+
+    const recipes = await Recipe.find({ createdBy: id });
+
+    // Calculate total likes from all user's recipes
+    const totalLikes = recipes.reduce(
+      (acc, recipe) => acc + (recipe.likesCount || 0),
+      0
+    );
+
+    res.status(200).json({
+      success: true,
+      message: "User fetched successfully",
+      data: user,
+      userRecipes: recipes,
+      totalLikesReceived: totalLikes,
+    });
+  } catch (error) {
+    res
+      .status(500)
+      .json({ success: false, message: "Server error", error: error.message });
+  }
+};
+
 // const getmyuser = async (req, res) => {
 //   const id = req.user.id;
 
@@ -646,4 +680,5 @@ module.exports = {
   getUser,
   editUser,
   updatePassword,
+  getUserPublicInfo,
 };
