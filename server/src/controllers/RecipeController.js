@@ -208,6 +208,14 @@ const addLike = async (req, res) => {
         .json({ success: false, message: "Recipe not found" });
     }
 
+    const user = await User.findById(recipe.createdBy);
+
+    if (!user) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Recipe user not found" });
+    }
+
     const existingUserIndex = recipe.likedUsers.findIndex(
       (likedUserId) => likedUserId.toString() === userId
     );
@@ -215,14 +223,17 @@ const addLike = async (req, res) => {
     if (existingUserIndex !== -1) {
       // User has already liked, so remove the like
       recipe.likedUsers.splice(existingUserIndex, 1);
-      recipe.likesCount = (recipe.recipeLikeCount || 1) - 1;
+      recipe.likesCount -= 1;
+      user.userLikeCount -= 1;
     } else {
       // User hasn't liked, so add the like
       recipe.likedUsers.push(userId);
-      recipe.likesCount = (recipe.recipeLikeCount || 0) + 1;
+      recipe.likesCount += 1;
+      user.userLikeCount += 1;
     }
 
     await recipe.save();
+    await user.save();
 
     return res.status(200).json({
       success: true,

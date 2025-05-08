@@ -26,7 +26,6 @@ export default async function UserInfo() {
     if (data.success) {
       user = data.data;
       user.totalRecipes = data.userRecipes.length;
-      user.userLikeCount = data.totalLikesReceived;
 
       recipes = data.userRecipes;
     }
