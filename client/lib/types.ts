@@ -111,6 +111,21 @@ export type Order = {
   updatedAt: string | Date; // From your data
 };
 
+export type AdminOrder = {
+  _id: string;
+  userId: createdBy;
+  phoneNumber: string;
+  address: string;
+  items: OrderItemWithProductDetails[];
+  subtotal: number;
+  deliveryCharge: number;
+  totalAmount: number;
+  paymentMethod: string;
+  orderStatus: "Pending" | "Confirmed" | "Shipped" | "Delivered" | "Cancelled";
+  createdAt: string | Date; // ISO string or Date object
+  updatedAt: string | Date; // From your data
+};
+
 //for redux
 export type CartItemType = Product & {
   quantity: number;

@@ -97,7 +97,71 @@ const getOrdersByUserId = async (req, res) => {
   }
 };
 
+const getAllOrders = async (req, res) => {
+  try {
+    const orders = await Order.find()
+      .populate({
+        path: "items.productId",
+      })
+      .sort({ createdAt: -1 })
+      .populate({
+        path: "userId",
+        select:
+          "-password -email -bio -role -bookmarks -userLikeCount -creditPoints -createdAt -updatedAt",
+      });
+
+    if (!orders) {
+      res.status(500).json({
+        success: false,
+        message: "Couldn't get orders",
+      });
+    }
+    res.status(200).json({
+      success: true,
+      message: "Orders successfully fetched!",
+      data: orders,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Server error",
+      error: error.message,
+    });
+  }
+};
+
+const updateOrderStatus = async (req, res) => {
+  const { orderId, status } = req.body;
+  try {
+    const order = await Order.findById(orderId);
+
+    if (!order) {
+      res.status(500).json({
+        success: false,
+        message: "Couldn't get order",
+      });
+    }
+
+    order.orderStatus = status;
+    await order.save();
+
+    res.status(200).json({
+      success: true,
+      message: "Orders successfully fetched!",
+      data: order,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Server error",
+      error: error.message,
+    });
+  }
+};
+
 module.exports = {
   createOrder,
   getOrdersByUserId,
+  getAllOrders,
+  updateOrderStatus,
 };

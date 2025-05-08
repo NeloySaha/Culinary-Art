@@ -14,6 +14,17 @@ import {
 } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import {
   Dialog,
   DialogContent,
   DialogDescription,
@@ -45,6 +56,10 @@ import {
 } from "lucide-react";
 import { AdminOrder, Order } from "@/lib/types";
 import OrderDetail from "./OrderDetail";
+import { toast } from "sonner";
+import Cookies from "js-cookie";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 // useRouter is no longer needed for navigation here
 // import { useRouter } from "next/navigation";
 
@@ -69,7 +84,7 @@ const getStatusBadgeVariant = (
   }
 };
 
-export default function UserOrderCard({ order }: { order: Order }) {
+export default function AdminOrderCard({ order }: { order: AdminOrder }) {
   const {
     _id,
     userId, // Consider populating this to get user's name for the modal
@@ -88,6 +103,8 @@ export default function UserOrderCard({ order }: { order: Order }) {
   // const router = useRouter(); // No longer needed for navigation to details page
 
   const orderDate = new Date(createdAt);
+  const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
   const formattedDate = orderDate.toLocaleDateString("en-GB", {
     year: "numeric",
     month: "short",
@@ -106,6 +123,48 @@ export default function UserOrderCard({ order }: { order: Order }) {
   );
   const firstFewItemsForImagePreview = items.slice(0, 3);
   const firstFewItemsForTextPreview = items.slice(0, 2);
+
+  const handleUpdateOrder = async (status: Order["orderStatus"]) => {
+    const token = Cookies.get("session");
+    if (!token) {
+      toast("Failed", {
+        description: "Please sign in to like this recipe",
+      });
+
+      return;
+    }
+
+    try {
+      setIsLoading(true);
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API_PREFIX}/orders/update-order`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            orderId: order._id,
+            status: status,
+          }),
+        }
+      );
+      const data = await res.json();
+      if (data.success) router.refresh();
+      else {
+        toast.error("Error", {
+          description: data.message,
+        });
+      }
+    } catch (error) {
+      toast.error("Error", {
+        description: (error as Error).message,
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <Card className="overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-200 w-full border border-border/60">
@@ -219,7 +278,7 @@ export default function UserOrderCard({ order }: { order: Order }) {
         )}
       </CardContent>
 
-      <CardFooter className="border-t border-border/60 flex justify-end">
+      <CardFooter className="border-t border-border/60 flex justify-between">
         <Dialog>
           <DialogTrigger asChild>
             <Button variant="outline" size="sm" className="w-full sm:w-auto">
@@ -230,6 +289,80 @@ export default function UserOrderCard({ order }: { order: Order }) {
           </DialogTrigger>
           <OrderDetail order={order} />
         </Dialog>
+
+        {order.orderStatus === "Pending" && (
+          <div className="flex gap-2">
+            <Button
+              disabled={isLoading}
+              onClick={() => handleUpdateOrder("Confirmed")}
+            >
+              Confirm
+            </Button>
+            <Button
+              variant={"destructive"}
+              disabled={isLoading}
+              onClick={() => handleUpdateOrder("Cancelled")}
+            >
+              Cancel
+            </Button>
+          </div>
+        )}
+
+        {order.orderStatus === "Confirmed" && (
+          <AlertDialog>
+            <AlertDialogTrigger asChild>
+              <Button variant="outline">Update Status</Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                <AlertDialogDescription>
+                  This action cannot be undone. This will update the order
+                  status to <span className="text-primary">Shipped</span>.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel disabled={isLoading}>
+                  Cancel
+                </AlertDialogCancel>
+                <AlertDialogAction
+                  disabled={isLoading}
+                  onClick={() => handleUpdateOrder("Shipped")}
+                >
+                  Continue
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+        )}
+
+        {order.orderStatus === "Shipped" && (
+          <AlertDialog>
+            <AlertDialogTrigger asChild>
+              <Button variant="outline">Update Status</Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                <AlertDialogDescription>
+                  This action cannot be undone. This will update the order
+                  status to <span className="text-primary">Delivered</span>.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel disabled={isLoading}>
+                  Cancel
+                </AlertDialogCancel>
+                <AlertDialogAction
+                  disabled={isLoading}
+                  onClick={() => handleUpdateOrder("Delivered")}
+                >
+                  Continue
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+        )}
       </CardFooter>
     </Card>
   );

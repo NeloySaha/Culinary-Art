@@ -16,10 +16,8 @@ export default async function UserOrders() {
         },
       }
     );
-    console.log(res);
-    orders = (await res.json()).data;
 
-    console.log(orders);
+    orders = (await res.json()).data;
   }
 
   if (orders === null) return <p>Sorry, no orders found</p>;
