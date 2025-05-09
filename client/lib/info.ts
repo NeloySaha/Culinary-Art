@@ -20,3 +20,13 @@ export const formCategories = [
   "Desserts",
   "Beverage",
 ];
+
+export const productCategories = [
+  "Baking",
+  "Condiments",
+  "Dairy",
+  "Fish and Meat",
+  "Fruits",
+  "Spices",
+  "Vegetables",
+];

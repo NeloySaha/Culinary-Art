@@ -153,7 +153,11 @@ export default function UserOrderCard({ order }: { order: Order }) {
                   >
                     {item.productId && item.productId.imageUrl ? (
                       <img
-                        src={item.productId.imageUrl}
+                        src={
+                          item.productId.imageUrl.startsWith("/")
+                            ? `${process.env.NEXT_PUBLIC_API}${item.productId.imageUrl}`
+                            : item.productId.imageUrl
+                        }
                         alt={item.productId.name || "Product image"}
                         width={48}
                         height={48}

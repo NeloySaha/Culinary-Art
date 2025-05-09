@@ -194,7 +194,11 @@ export default function OrderDetail({ order }: { order: Order | AdminOrder }) {
                 <div className="w-16 h-16 rounded-md overflow-hidden bg-muted flex-shrink-0 border">
                   {item.productId && item.productId.imageUrl ? (
                     <img
-                      src={item.productId.imageUrl}
+                      src={
+                        item.productId.imageUrl.startsWith("/")
+                          ? `${process.env.NEXT_PUBLIC_API}${item.productId.imageUrl}`
+                          : item.productId.imageUrl
+                      }
                       alt={item.productId.name}
                       width={64}
                       height={64}

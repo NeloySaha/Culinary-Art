@@ -108,10 +108,10 @@ const getFilteredProducts = async (req, res) => {
 
     switch (sort) {
       case "latest":
-        sortOptions = { createdAt: -1 };
+        sortOptions = { updatedAt: -1 };
         break;
       case "oldest":
-        sortOptions = { createdAt: 1 };
+        sortOptions = { updatedAt: 1 };
         break;
       case "price-low-high":
         sortOptions = { price: 1 };
@@ -127,7 +127,7 @@ const getFilteredProducts = async (req, res) => {
         break;
       default:
         // Default sort by creation date (newest first)
-        sortOptions = { name: 1 };
+        sortOptions = { updatedAt: -1 };
     }
 
     // Calculate pagination
@@ -193,22 +193,42 @@ const getFilterData = async (req, res) => {
   }
 };
 
-// const createProduct = async (req, res) => {
-//   try {
-//     const newProduct = new Product(req.body);
-//     const product = await newProduct.save();
-//     res.status(201).json({
-//       success: true,
-//       data: product,
-//     });
-//   } catch (error) {
-//     console.error("Error creating product:", error);
-//     res.status(500).json({
-//       success: false,
-//       message: "Server error",
-//     });
-//   }
-// };
+const createProduct = async (req, res) => {
+  const {
+    name,
+    description,
+    price,
+    category,
+    imageUrl,
+    unit,
+    quantityInStock,
+  } = req.body;
+
+  const newProduct = {
+    name,
+    description,
+    price,
+    category,
+    imageUrl,
+    unit,
+    quantityInStock,
+  };
+  try {
+    const newProd = new Product(newProduct);
+    const item = await newProd.save();
+    res.status(200).json({
+      success: true,
+      message: "Success",
+      data: item,
+    });
+  } catch (error) {
+    console.error("Error creating product:", error);
+    res.status(500).json({
+      success: false,
+      message: "Server error",
+    });
+  }
+};
 
 // const getProducts = async (req, res) => {
 //   try {
@@ -407,6 +427,7 @@ module.exports = {
   getSearchedProducts,
   getSingleProduct,
   getProductCategory,
-  getFilteredProducts, // New function
-  getFilterData, // New function
+  getFilteredProducts,
+  getFilterData,
+  createProduct,
 };

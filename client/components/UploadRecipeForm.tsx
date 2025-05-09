@@ -74,9 +74,6 @@ const recipeFormSchema = z.object({
 
 type RecipeFormValues = z.infer<typeof recipeFormSchema>;
 
-// --- Sample Data (Replace with your actual categories) ---
-
-// --- React Component ---
 export default function RecipeForm() {
   // State for the current keyword input value
   const [currentKeyword, setCurrentKeyword] = useState("");

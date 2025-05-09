@@ -55,7 +55,11 @@ export default function ProductCard({ product }: Props) {
 
         <div className="overflow-hidden rounded-lg border">
           <img
-            src={product.imageUrl}
+            src={
+              product.imageUrl.startsWith("/")
+                ? `${process.env.NEXT_PUBLIC_API}${product.imageUrl}`
+                : product.imageUrl
+            }
             alt="food"
             className="object-cover w-full h-56  group-hover:scale-105 transition-all duration-300"
           />

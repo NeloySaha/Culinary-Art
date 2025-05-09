@@ -159,6 +159,37 @@ const updateOrderStatus = async (req, res) => {
   }
 };
 
+// const AdminInfo = async (req, res) => {
+
+//   try {
+//     const orders = await Order.countDocuments()
+//     const recipes = await Order.countDocuments()
+//     const users = await Order.countDocuments()
+
+//     if (!order) {
+//       res.status(500).json({
+//         success: false,
+//         message: "Couldn't get order",
+//       });
+//     }
+
+//     order.orderStatus = status;
+//     await order.save();
+
+//     res.status(200).json({
+//       success: true,
+//       message: "Orders successfully fetched!",
+//       data: order,
+//     });
+//   } catch (error) {
+//     res.status(500).json({
+//       success: false,
+//       message: "Server error",
+//       error: error.message,
+//     });
+//   }
+// };
+
 module.exports = {
   createOrder,
   getOrdersByUserId,

@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Product } from "@/lib/types";
 import ProductCard from "./ProductCard";
+import PaginationLink from "./PaginationLink";
 
 interface ProductGridProps {
   products: Product[];
@@ -74,38 +75,5 @@ export default function ProductGrid({
         </div>
       )}
     </div>
-  );
-}
-
-interface PaginationLinkProps extends React.HTMLAttributes<HTMLAnchorElement> {
-  page: number | null;
-  isActive?: boolean;
-}
-
-function PaginationLink({
-  page,
-  isActive,
-  children,
-  ...props
-}: PaginationLinkProps) {
-  if (!page) {
-    return (
-      <Button variant="outline" size="icon" disabled className="w-9 h-9">
-        {children}
-      </Button>
-    );
-  }
-
-  return (
-    <Button
-      asChild
-      variant={isActive ? "default" : "outline"}
-      size="icon"
-      className="w-9 h-9"
-    >
-      <Link href={{ query: { page } }} scroll={false} {...props}>
-        {children}
-      </Link>
-    </Button>
   );
 }

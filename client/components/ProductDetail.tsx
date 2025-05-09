@@ -49,7 +49,11 @@ export default function ProductDetail({ product }: { product: Product }) {
 
       <div className="grid md:grid-cols-2 gap-8 ">
         <img
-          src={product.imageUrl}
+          src={
+            product.imageUrl.startsWith("/")
+              ? `${process.env.NEXT_PUBLIC_API}${product.imageUrl}`
+              : product.imageUrl
+          }
           alt={product.name}
           className="object-cover h-96 w-full rounded-lg border"
         />
