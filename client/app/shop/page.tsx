@@ -45,7 +45,7 @@ export default async function Page({
           <div className="flex flex-col md:flex-row gap-6">
             {/* Filters sidebar */}
             <div className="w-full md:w-72 shrink-0">
-              <div className="sticky top-16 space-y-6">
+              <div className="space-y-6">
                 <ProductFilter
                   categories={filterData.categories}
                   priceRange={filterData.priceRange}
