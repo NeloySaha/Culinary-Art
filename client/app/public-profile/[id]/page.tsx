@@ -68,7 +68,7 @@ export default async function Page({
           </div>
 
           <Card>
-            <CardContent className="flex justify-around">
+            <CardContent className="flex flex-col gap-6 sm:flex-row sm:justify-around">
               <div className="flex gap-2 items-center">
                 <ChefHat className="h-10 w-10 text-primary" />
                 <div className="text-3xl md:text-4xl lg:text-5xl">
