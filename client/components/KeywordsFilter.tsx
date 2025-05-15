@@ -11,15 +11,7 @@ export default function KeywordsFilter({ keywords }: Props) {
   const searchParams = useSearchParams();
   const currentPath = usePathname();
   const router = useRouter();
-  const currentCategory = searchParams.get("category") ?? "All";
-  const query = searchParams.get("query") ?? undefined;
   const currentKeyword = searchParams.get("keyword") ?? undefined;
-  //   const filters = [
-  //     { capacity: "all", text: <>All Cabins</> },
-  //     { capacity: "small", text: <>1&mdash;3 guests</> },
-  //     { capacity: "medium", text: <>4&mdash;7 guests</> },
-  //     { capacity: "large", text: <>8&mdash;12 guests</> },
-  //   ];
 
   const handleFilter = (filter: string) => {
     const params = new URLSearchParams(searchParams);

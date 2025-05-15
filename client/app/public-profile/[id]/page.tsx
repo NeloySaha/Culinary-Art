@@ -35,27 +35,35 @@ export default async function Page({
 
   return (
     <div>
-      <div className="max-w-6xl mx-auto pt-28 pb-10">
+      <div className="max-w-6xl mx-auto pt-28 pb-10 px-2">
         <div>
-          <div className="flex items-start md:items-center gap-8 mb-6">
-            <Avatar className="size-28 md:size-36 lg:size-44 border-2 border-primary">
-              <AvatarImage
-                src={
-                  user.imageUrl?.startsWith("/")
-                    ? `${process.env.NEXT_PUBLIC_API}${user.imageUrl}`
-                    : user.imageUrl
-                }
-                alt={`${user.fullName}`}
-                className="object-cover"
-              />
-              <AvatarFallback>
-                {(user?.fullName as string)?.split(" ")[0][0]}
-              </AvatarFallback>
-            </Avatar>
+          <div className="flex flex-col md:flex-row items-start md:items-center gap-8 mb-6">
+            <div className="flex gap-4 items-center">
+              <Avatar className="size-28 md:size-36 lg:size-44 border-2 border-primary">
+                <AvatarImage
+                  src={
+                    user.imageUrl?.startsWith("/")
+                      ? `${process.env.NEXT_PUBLIC_API}${user.imageUrl}`
+                      : user.imageUrl
+                  }
+                  alt={`${user.fullName}`}
+                  className="object-cover"
+                />
+                <AvatarFallback>
+                  {(user?.fullName as string)?.split(" ")[0][0]}
+                </AvatarFallback>
+              </Avatar>
+
+              <h3 className="text-2xl font-semibold md:hidden">
+                {user.fullName}
+              </h3>
+            </div>
 
             <div className="space-y-4 w-full">
               <div className="space-y-2">
-                <h3 className="text-2xl font-semibold">{user.fullName}</h3>
+                <h3 className="hidden text-2xl font-semibold md:block">
+                  {user.fullName}
+                </h3>
                 <p className="text-muted-foreground">{user.bio}</p>
               </div>
             </div>

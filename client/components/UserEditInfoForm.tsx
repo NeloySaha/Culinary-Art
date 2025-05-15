@@ -29,6 +29,7 @@ import {
   CardTitle,
 } from "./ui/card";
 import { toast } from "sonner";
+import { uploadUserImage } from "@/lib/actions";
 
 const formSchema = z.object({
   fullName: z.string().min(2, "Name must be at least 2 characters"),
@@ -94,19 +95,19 @@ export default function UserEditInfoForm({
         });
       }
     } else {
-      const formData = new FormData();
-      formData.append("image", file);
+      // const formData = new FormData();
+      // formData.append("image", file);
 
       try {
-        const res1 = await fetch(
-          `${process.env.NEXT_PUBLIC_API_PREFIX}/users/upload-image`,
-          {
-            method: "POST",
-            body: formData,
-          }
-        );
+        // const res1 = await fetch(
+        //   `${process.env.NEXT_PUBLIC_API_PREFIX}/users/upload-image`,
+        //   {
+        //     method: "POST",
+        //     body: formData,
+        //   }
+        // );
 
-        const data1 = await res1.json();
+        const data1 = await uploadUserImage(file);
 
         if (data1.success) {
           const res2 = await fetch(

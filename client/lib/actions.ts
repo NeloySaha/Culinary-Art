@@ -2,6 +2,7 @@
 
 import { cookies } from "next/headers";
 import { decrypt, deleteSession } from "./session";
+import { supabase } from "./supabase";
 
 export async function getSession() {
   const cookieStore = await cookies();
@@ -87,5 +88,68 @@ export async function getFilteredProducts(
         totalPages: 0,
       },
     };
+  }
+}
+
+// upload image for the recipes
+
+export async function uploadRecipeImage(file: File) {
+  try {
+    const recipeImgName = `${Math.random()}-${file.name}`.replaceAll("/", "");
+
+    const recipeImgUrl = `${process.env.SUPABASE_URL}/storage/v1/object/public/culinary-art/recipes/${recipeImgName}`;
+
+    const { error: uploadError } = await supabase.storage
+      .from("culinary-art")
+      .upload(`recipes/${recipeImgName}`, file);
+
+    if (uploadError) throw uploadError;
+
+    return { success: true, imageUrl: recipeImgUrl };
+  } catch (error) {
+    console.error("Error uploading image:", error);
+    return { success: false, message: (error as Error).message };
+  }
+}
+
+// upload image for the recipes
+
+export async function uploadProductImage(file: File) {
+  try {
+    const productImgName = `${Math.random()}-${file.name}`.replaceAll("/", "");
+
+    const productImgUrl = `${process.env.SUPABASE_URL}/storage/v1/object/public/culinary-art/products/${productImgName}`;
+
+    const { error: uploadError } = await supabase.storage
+      .from("culinary-art")
+      .upload(`products/${productImgName}`, file);
+
+    if (uploadError) throw uploadError;
+
+    return { success: true, imageUrl: productImgUrl };
+  } catch (error) {
+    console.error("Error uploading image:", error);
+    return { success: false, message: (error as Error).message };
+  }
+}
+
+// upload image for the recipes
+
+export async function uploadUserImage(file: File) {
+  try {
+    const UserImgName = `${Math.random()}-${file.name}`.replaceAll("/", "");
+
+    const userImgUrl = `${process.env.SUPABASE_URL}/storage/v1/object/public/culinary-art/users/${UserImgName}`;
+
+    const { error: uploadError } = await supabase.storage
+      .from("culinary-art")
+      .upload(`users/${UserImgName}`, file);
+
+    if (uploadError) throw uploadError;
+
+    return { success: true, imageUrl: userImgUrl };
+  } catch (error) {
+    console.error("Error uploading image:", error);
+    return { success: false, message: (error as Error).message };
   }
 }

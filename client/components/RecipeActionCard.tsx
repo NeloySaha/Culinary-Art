@@ -48,7 +48,7 @@ export default function RecipeActionCard({ recipe }: Props) {
       if (data.success) {
         router.refresh();
         toast.success("Success!", {
-          description: "Your recipe has been uploaded successfully",
+          description: "Your recipe has been deleted successfully",
         });
       } else {
         toast.error("Error!", {
@@ -93,7 +93,7 @@ export default function RecipeActionCard({ recipe }: Props) {
           ))}
         </div>
 
-        <div className="mt-2 flex justify-end sm:items-center space-y-2 sm:space-y-0 items-center">
+        <div className="mt-6 sm:mt-2 flex justify-end sm:items-center space-y-2 sm:space-y-0 items-center">
           <div className="flex gap-2">
             <Button asChild variant={"outline"}>
               <Link href={`/view-recipe/${recipe._id}`}>

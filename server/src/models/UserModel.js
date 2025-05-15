@@ -18,7 +18,8 @@ const userSchema = new mongoose.Schema(
 
     imageUrl: {
       type: String,
-      default: "https://github.com/shadcn.png",
+      default:
+        "https://zaaopnogqwbkasyujppf.supabase.co/storage/v1/object/public/culinary-art/users/default-user-logo.png",
     },
 
     bio: {

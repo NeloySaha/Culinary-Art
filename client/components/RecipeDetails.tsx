@@ -250,7 +250,7 @@ export default function RecipeDetails({ recipe, user }: Props) {
     user === null ? false : user.bookmarks.includes(recipe._id);
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 mb-16">
       {/* Hero Section */}
       <div className="relative rounded-xl overflow-hidden">
         <img

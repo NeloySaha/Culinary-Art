@@ -33,6 +33,23 @@ import {
   InputOTPSlot,
 } from "./ui/input-otp";
 
+const passwordValidation = z
+  .string()
+  .min(8, { message: "Password must be at least 8 characters long." })
+  .refine((password) => /[a-z]/.test(password), {
+    message: "Password must contain at least one lowercase letter.",
+  })
+  .refine((password) => /[A-Z]/.test(password), {
+    message: "Password must contain at least one uppercase letter.",
+  })
+  .refine((password) => /[0-9]/.test(password), {
+    message: "Password must contain at least one number.",
+  })
+  .refine((password) => /[!@#$%^&*(),.?":{}|<>]/.test(password), {
+    message:
+      "Password must contain at least one special character (e.g., !@#$%&*).",
+  });
+
 const emailSchema = z.object({
   email: z.string().email("Please enter a valid email!"),
 });
@@ -43,11 +60,11 @@ const verificationSchema = z.object({
 
 const passwordSchema = z
   .object({
-    password: z.string().min(8, "Password must be at least 8 characters"),
-    confirmPassword: z.string(),
+    password: passwordValidation,
+    confirmPassword: z.string().min(1, "Please confirm your password."),
   })
   .refine((data) => data.password === data.confirmPassword, {
-    message: "Passwords don't match",
+    message: "Passwords do not match. Please re-enter.",
     path: ["confirmPassword"],
   });
 

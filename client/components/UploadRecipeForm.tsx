@@ -36,6 +36,7 @@ import {
   CardHeader,
   CardTitle,
 } from "./ui/card";
+import { uploadRecipeImage } from "@/lib/actions";
 
 // --- Zod Validation Schema ---
 // Updated keywords to be an array of strings
@@ -156,19 +157,19 @@ export default function RecipeForm() {
     const file = data.image;
     if (!file) return;
 
-    const formData = new FormData();
-    formData.append("image", file);
+    // const formData = new FormData();
+    // formData.append("image", file);
 
     try {
-      const res1 = await fetch(
-        `${process.env.NEXT_PUBLIC_API_PREFIX}/recipes/upload-image`,
-        {
-          method: "POST",
-          body: formData,
-        }
-      );
+      // const res1 = await fetch(
+      //   `${process.env.NEXT_PUBLIC_API_PREFIX}/recipes/upload-image`,
+      //   {
+      //     method: "POST",
+      //     body: formData,
+      //   }
+      // );
 
-      const data1 = await res1.json();
+      const data1 = await uploadRecipeImage(file);
 
       if (data1.success) {
         const token = Cookies.get("session");
