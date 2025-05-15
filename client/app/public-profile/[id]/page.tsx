@@ -107,13 +107,13 @@ export default async function Page({
           <Separator />
 
           {recipes === null && (
-            <p className="text-muted-foreground text=center my-8">
+            <p className="text-muted-foreground text-center my-8">
               An error occurred. Recipes couldn&apos;t be found
             </p>
           )}
 
           {recipes.length === 0 && (
-            <p className="text-muted-foreground text=center my-8">
+            <p className="text-muted-foreground text-center my-8">
               No posts yet
             </p>
           )}
