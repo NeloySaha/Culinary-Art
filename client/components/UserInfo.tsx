@@ -120,7 +120,7 @@ export default async function UserInfo() {
 
         {recipes === null && (
           <p className="text-muted-foreground text-center my-8">
-            An error occurred. Recipes couldn't be found
+            An error occurred. Recipes couldn&apos;t be found
           </p>
         )}
 

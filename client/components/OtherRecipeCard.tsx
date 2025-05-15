@@ -1,16 +1,5 @@
 "use client";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
-import { Clock, Eye, Loader2, Pencil, Trash, Users } from "lucide-react";
+import { Clock, Eye, Users } from "lucide-react";
 import Link from "next/link";
 
 import { Recipe } from "@/lib/types";
@@ -21,7 +10,6 @@ import { toast } from "sonner";
 import { Badge } from "./ui/badge";
 import { Button } from "./ui/button";
 import { Card, CardContent, CardFooter } from "./ui/card";
-import { Progress } from "./ui/progress";
 
 type Props = {
   recipe: Recipe;

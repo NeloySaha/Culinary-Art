@@ -1,45 +1,29 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
-import {
-  Dialog,
+  DialogClose,
   DialogContent,
   DialogDescription,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
-  DialogFooter,
-  DialogClose,
 } from "@/components/ui/dialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Separator } from "@/components/ui/separator";
 
 // Assuming your Order type is defined here
-import {
-  CalendarDays,
-  ChevronRight, // Will be removed from button, but kept for reference
-  Hash,
-  ImageIcon,
-  Info,
-  Package,
-  Truck,
-  User,
-  Phone,
-  HomeIcon, // Using HomeIcon for address
-  CreditCard,
-  ClipboardList,
-  ShoppingCart,
-  DollarSign,
-  Eye,
-} from "lucide-react";
 import { AdminOrder, Order } from "@/lib/types";
+import {
+  ClipboardList, // Using HomeIcon for address
+  CreditCard,
+  DollarSign,
+  HomeIcon,
+  ImageIcon,
+  Package,
+  Phone,
+  ShoppingCart,
+  Truck,
+} from "lucide-react";
 
 const getStatusBadgeVariant = (
   status: Order["orderStatus"]

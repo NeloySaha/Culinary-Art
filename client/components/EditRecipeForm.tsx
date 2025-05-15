@@ -1,10 +1,10 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import Cookies from "js-cookie";
 import { KeyboardEvent, useRef, useState } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 import * as z from "zod";
-import Cookies from "js-cookie";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -26,9 +26,11 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
+import { uploadRecipeImage } from "@/lib/actions";
 import { formCategories } from "@/lib/info";
 import { Recipe } from "@/lib/types";
 import { Loader2, Plus, Trash2, X } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import {
   Card,
@@ -37,8 +39,6 @@ import {
   CardHeader,
   CardTitle,
 } from "./ui/card";
-import { useRouter } from "next/navigation";
-import { uploadRecipeImage } from "@/lib/actions";
 
 // --- Zod Validation Schema ---
 // Updated keywords to be an array of strings

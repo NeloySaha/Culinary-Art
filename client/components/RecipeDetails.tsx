@@ -1,26 +1,7 @@
 "use client";
 
-import { useState, useEffect, useTransition } from "react";
-import Image from "next/image";
-import { useRouter } from "next/navigation";
-import { formatRelative, parseISO } from "date-fns"; // Import date-fns functions
-import Cookies from "js-cookie";
-import {
-  Clock,
-  Users,
-  ChefHat,
-  Bookmark,
-  BookmarkCheck,
-  Heart,
-  MessageSquare,
-  Send,
-  ForkKnifeCrossed,
-  Check,
-  Plus,
-  Minus,
-  Loader2,
-} from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -29,82 +10,27 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Textarea } from "@/components/ui/textarea";
-import { Comment, Recipe, RecipePublicView, UserInfo } from "@/lib/types";
+import { Comment, RecipePublicView, UserInfo } from "@/lib/types";
+import { formatRelative, parseISO } from "date-fns"; // Import date-fns functions
+import Cookies from "js-cookie";
+import {
+  Bookmark,
+  Check,
+  Clock,
+  ForkKnifeCrossed,
+  Heart,
+  Loader2,
+  MessageSquare,
+  Send,
+  Users,
+} from "lucide-react";
 import Link from "next/link";
-import { Progress } from "./ui/progress";
-import { JWTPayload } from "jose";
-import { Input } from "./ui/input";
+import { useRouter } from "next/navigation";
+import { useState, useTransition } from "react";
 import { toast } from "sonner";
-// import { toast } from "@/components/ui/use-toast";
-
-// Mock data for demonstration - replace with actual data fetching
-// const fetchRecipe = async (id: string) => {
-//   // This would be replaced with an actual API call
-//   return {
-//     _id: id,
-//     name: "Creamy Garlic Parmesan Pasta",
-//     category: "Pasta",
-//     instructions: [
-//       "Bring a large pot of salted water to a boil.",
-//       "Cook pasta according to package instructions until al dente.",
-//       "Meanwhile, in a large skillet, melt butter over medium heat.",
-//       "Add minced garlic and sauté until fragrant, about 1 minute.",
-//       "Pour in heavy cream and bring to a simmer.",
-//       "Add grated Parmesan cheese and stir until melted and sauce is smooth.",
-//       "Drain pasta and add to the sauce, tossing to coat.",
-//       "Season with salt, pepper, and red pepper flakes to taste.",
-//       "Garnish with chopped parsley and additional Parmesan cheese before serving.",
-//     ],
-//     keywords: ["pasta", "italian", "creamy", "quick", "vegetarian"],
-//     ingredients: [
-//       { name: "Fettuccine pasta", quantity: "8 oz" },
-//       { name: "Butter", quantity: "2 tbsp" },
-//       { name: "Garlic, minced", quantity: "4 cloves" },
-//       { name: "Heavy cream", quantity: "1 cup" },
-//       { name: "Parmesan cheese, grated", quantity: "1 cup" },
-//       { name: "Salt", quantity: "to taste" },
-//       { name: "Black pepper", quantity: "to taste" },
-//       { name: "Red pepper flakes", quantity: "1/4 tsp (optional)" },
-//       { name: "Fresh parsley, chopped", quantity: "2 tbsp" },
-//     ],
-//     time: "30 minutes",
-//     servings: 4,
-//     difficulty: "Easy",
-//     imageUrl: "/placeholder.svg?height=500&width=800",
-//     createdBy: {
-//       _id: "user123",
-//       name: "Chef Maria",
-//       avatar: "/placeholder.svg?height=40&width=40",
-//     },
-//     likesCount: 124,
-//     comments: [
-//       {
-//         _id: "comment1",
-//         commentedBy: {
-//           _id: "user456",
-//           name: "John Doe",
-//           avatar: "/placeholder.svg?height=40&width=40",
-//         },
-//         comment:
-//           "Made this last night and it was delicious! I added some grilled chicken on top.",
-//       },
-//       {
-//         _id: "comment2",
-//         commentedBy: {
-//           _id: "user789",
-//           name: "Sarah Smith",
-//           avatar: "/placeholder.svg?height=40&width=40",
-//         },
-//         comment: "Perfect weeknight dinner! So creamy and flavorful.",
-//       },
-//     ],
-//     likedUsers: ["user456", "user789"],
-//     isPopular: true,
-//   };
-// };
+import { Progress } from "./ui/progress";
 
 type Props = {
   recipe: RecipePublicView;
@@ -407,7 +333,7 @@ export default function RecipeDetails({ recipe, user }: Props) {
               Ingredients
             </CardTitle>
             <CardDescription>
-              Check the ingredients and quantities you'll need.
+              Check the ingredients and quantities you&apos;ll need.
             </CardDescription>
           </CardHeader>
           <CardContent>

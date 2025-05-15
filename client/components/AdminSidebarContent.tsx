@@ -1,19 +1,5 @@
 "use client";
-import {
-  BookMarked,
-  Edit,
-  Heart,
-  Home,
-  Info,
-  ListCheckIcon,
-  LucideInfo,
-  Pencil,
-  Settings,
-  ShoppingBag,
-  Upload,
-  Users,
-  Utensils,
-} from "lucide-react";
+import { Edit, Home, ShoppingBag, Upload, Users, Utensils } from "lucide-react";
 
 import {
   SidebarGroup,

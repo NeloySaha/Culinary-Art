@@ -1,10 +1,7 @@
-import type React from "react";
-import Link from "next/link";
-import { Button } from "@/components/ui/button";
-import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Product } from "@/lib/types";
-import ProductCard from "./ProductCard";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import PaginationLink from "./PaginationLink";
+import ProductCard from "./ProductCard";
 
 interface ProductGridProps {
   products: Product[];

@@ -43,8 +43,8 @@ export type UserInfo = {
   bio: string;
   role: string;
   bookmarks: string[];
-  userLikeCount: Number;
-  creditPoints: Number;
+  userLikeCount: number;
+  creditPoints: number;
 };
 
 export type createdBy = {

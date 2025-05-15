@@ -24,13 +24,13 @@ export default async function UserLikedRecipes() {
     <>
       {recipes === null && (
         <p className="text-muted-foreground text-center my-8">
-          An error occurred. Recipes couldn't be found
+          An error occurred. Recipes couldn&apos;t be found
         </p>
       )}
 
       {recipes.length === 0 && (
         <p className="text-muted-foreground text-center my-8">
-          You haven't liked any recipes yet
+          You haven&apos;t liked any recipes yet
         </p>
       )}
 

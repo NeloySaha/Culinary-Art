@@ -1,18 +1,6 @@
 // components/OrderCard.tsx
 "use client";
 
-import Image from "next/image"; // Using Next.js Image for optimization
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -24,42 +12,34 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-  DialogFooter,
-  DialogClose,
-} from "@/components/ui/dialog";
-import { ScrollArea } from "@/components/ui/scroll-area";
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Dialog, DialogTrigger } from "@/components/ui/dialog";
+import { Separator } from "@/components/ui/separator";
 
 // Assuming your Order type is defined here
+import { AdminOrder, Order } from "@/lib/types";
+import Cookies from "js-cookie";
 import {
   CalendarDays,
-  ChevronRight, // Will be removed from button, but kept for reference
+  Eye, // Will be removed from button, but kept for reference
   Hash,
   ImageIcon,
-  Info,
   Package,
   Truck,
-  User,
-  Phone,
-  HomeIcon, // Using HomeIcon for address
-  CreditCard,
-  ClipboardList,
-  ShoppingCart,
-  DollarSign,
-  Eye,
 } from "lucide-react";
-import { AdminOrder, Order } from "@/lib/types";
-import OrderDetail from "./OrderDetail";
-import { toast } from "sonner";
-import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { toast } from "sonner";
+import OrderDetail from "./OrderDetail";
 // useRouter is no longer needed for navigation here
 // import { useRouter } from "next/navigation";
 

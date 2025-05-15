@@ -1,36 +1,23 @@
 // app/about-us/page.tsx
+import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button"; // Shadcn Button
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"; // Shadcn Card
-import Link from "next/link"; // For the CTA button
 import {
   ChefHat,
-  Users,
-  ShoppingCart,
-  LayoutDashboard,
-  Sparkles,
   HeartHandshake,
+  LayoutDashboard,
   Rocket,
+  ShoppingCart,
+  Users,
 } from "lucide-react"; // Icons for feature cards
-import Footer from "@/components/Footer";
+import Link from "next/link"; // For the CTA button
 
 export default function AboutUsPage() {
-  const websiteName = "Culinary Art"; // Your website name
+  const websiteName = "Culinary Art";
 
   return (
     <div>
-      {/* Main Content Container */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-16">
-        {/* Hero Section - Simplified */}
-        {/* <section className="py-12 sm:py-16 text-center">
-          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-gray-800 dark:text-white tracking-tight">
-            Welcome to {websiteName}!
-          </h1>
-          <p className="mt-4 sm:mt-6 text-lg sm:text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
-            Your Kitchen, Your Community.
-          </p>
-        </section> */}
-
-        {/* Our Mission Section - Simplified */}
         <section className="my-12 sm:my-16 text-center">
           <h2 className="text-3xl sm:text-4xl font-semibold text-gray-800 dark:text-white mb-4 sm:mb-6">
             Our Culinary Mission

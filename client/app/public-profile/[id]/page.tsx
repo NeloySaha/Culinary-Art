@@ -1,12 +1,10 @@
-import React from "react";
-import { Bookmark, ChefHat, Heart, Shapes } from "lucide-react";
+import Footer from "@/components/Footer";
+import RecipeCard from "@/components/RecipeCard";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import RecipeCard from "@/components/RecipeCard";
 import { Recipe } from "@/lib/types";
-import Footer from "@/components/Footer";
-import { getSession } from "@/lib/actions";
+import { Bookmark, ChefHat, Heart, Shapes } from "lucide-react";
 
 export default async function Page({
   params,
@@ -110,7 +108,7 @@ export default async function Page({
 
           {recipes === null && (
             <p className="text-muted-foreground text=center my-8">
-              An error occurred. Recipes couldn't be found
+              An error occurred. Recipes couldn&apos;t be found
             </p>
           )}
 

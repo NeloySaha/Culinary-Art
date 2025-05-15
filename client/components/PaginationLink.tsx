@@ -11,7 +11,6 @@ export default function PaginationLink({
   page,
   isActive,
   children,
-  ...props
 }: PaginationLinkProps) {
   const searchParams = useSearchParams();
   const currentPath = usePathname();

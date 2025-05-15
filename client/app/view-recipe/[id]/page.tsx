@@ -40,7 +40,7 @@ export default async function Page({
   if (!data.success)
     return (
       <p className="pt-24 text-center">
-        Sorry, couldn't find the recipe. Please try again
+        Sorry, couldn&apos;t find the recipe. Please try again
       </p>
     );
   return (

@@ -1,7 +1,5 @@
 "use client";
 
-import type React from "react";
-
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -12,11 +10,9 @@ import {
 } from "@/components/ui/card";
 import { Eye, Minus, Plus, ShoppingCart, Trash } from "lucide-react";
 import Link from "next/link";
-import { useState } from "react";
 
-import { Product } from "@/lib/types";
-import { Separator } from "./ui/separator";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
+import { Product } from "@/lib/types";
 import {
   addItem,
   decreaseItemQuantity,
@@ -25,6 +21,7 @@ import {
   getCurrentQuantityById,
   increaseItemQuantity,
 } from "@/reducers/cart/cartSlice";
+import { Separator } from "./ui/separator";
 
 type Props = {
   product: Product;
