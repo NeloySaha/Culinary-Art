@@ -5,6 +5,7 @@ import { Bricolage_Grotesque } from "next/font/google";
 import "./globals.css";
 import ReduxProvider from "./ReduxProvider";
 import Cart from "@/components/Cart";
+import { Analytics } from "@vercel/analytics/next";
 
 const bricolage = Bricolage_Grotesque({
   subsets: ["latin"],
@@ -29,6 +30,7 @@ export default function RootLayout({
           <main>{children}</main>
           <Toaster theme="light" />
           <Cart />
+          <Analytics />
         </ReduxProvider>
       </body>
     </html>
