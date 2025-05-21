@@ -355,11 +355,6 @@ const getMostLikedRecipes = async (req, res) => {
       {
         $unwind: "$createdBy",
       },
-      {
-        $project: {
-          comments: 0,
-        },
-      },
     ]);
 
     if (!mostLikedRecipes) {
@@ -428,15 +423,16 @@ async function getUniqueKeywords(req, res) {
       {
         $group: {
           _id: "$keyword",
+          count: { $sum: 1 }, // count frequency
         },
       },
-      {
-        $sort: { _id: 1 }, // sort alphabetically
-      },
+      { $sort: { count: -1 } }, // sort by frequency descending
+      { $limit: 10 },
       {
         $project: {
           _id: 0,
           keyword: "$_id",
+          count: 1,
         },
       },
     ]);

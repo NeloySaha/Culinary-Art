@@ -31,7 +31,7 @@ export function CategorySelector() {
         onValueChange={(val) => handleFilter(val)}
         value={currentCategory}
       >
-        <SelectTrigger className="w-full md:w-[180px] border-2 border-primary">
+        <SelectTrigger className="w-full md:w-[180px] border border-primary">
           <SelectValue placeholder="Select a category" />
         </SelectTrigger>
         <SelectContent>

@@ -39,7 +39,7 @@ export default function ProductSearchbar() {
           value={query}
           placeholder="Search for a product here"
           onChange={(e) => setQuery(e.target.value)}
-          className="pl-10 border-2 border-primary"
+          className="pl-10 border border-primary"
         />
       </div>
     </form>
