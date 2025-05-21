@@ -442,30 +442,45 @@ export default function RecipeDetails({ recipe, user }: Props) {
                   {" "}
                   {/* Use items-start, adjust gap */}
                   {/* Avatar */}
-                  <Avatar className="h-9 w-9 sm:h-10 sm:w-10 border">
-                    {" "}
-                    {/* Slightly smaller on mobile, added border */}
-                    <AvatarImage
-                      src={
-                        comment.commentedBy.imageUrl.startsWith("/")
-                          ? `${process.env.NEXT_PUBLIC_API}${comment.commentedBy.imageUrl}`
-                          : comment.commentedBy.imageUrl
-                      }
-                      alt={comment.commentedBy.fullName}
-                      className="object-cover"
-                    />
-                    <AvatarFallback className="text-sm">
+                  <Link
+                    href={
+                      user !== null && user._id === comment.commentedBy._id
+                        ? `/user/profile`
+                        : `/public-profile/${comment.commentedBy._id}`
+                    }
+                  >
+                    <Avatar className="h-9 w-9 sm:h-10 sm:w-10 border">
                       {" "}
-                      {/* Slightly smaller fallback text */}
-                      {comment.commentedBy.fullName.charAt(0).toUpperCase()}
-                    </AvatarFallback>
-                  </Avatar>
+                      {/* Slightly smaller on mobile, added border */}
+                      <AvatarImage
+                        src={
+                          comment.commentedBy.imageUrl.startsWith("/")
+                            ? `${process.env.NEXT_PUBLIC_API}${comment.commentedBy.imageUrl}`
+                            : comment.commentedBy.imageUrl
+                        }
+                        alt={comment.commentedBy.fullName}
+                        className="object-cover"
+                      />
+                      <AvatarFallback className="text-sm">
+                        {" "}
+                        {/* Slightly smaller fallback text */}
+                        {comment.commentedBy.fullName.charAt(0).toUpperCase()}
+                      </AvatarFallback>
+                    </Avatar>
+                  </Link>
                   {/* Comment Content */}
                   <div className="flex-1 bg-gray-100 dark:bg-gray-800 rounded-lg px-3 py-2 shadow-sm">
                     {" "}
                     {/* Changed background, padding, added subtle shadow */}
-                    <div className="flex items-center gap-2 mb-1">
-                      <p className="font-semibold text-sm text-gray-800 dark:text-gray-200">
+                    <Link
+                      href={
+                        user !== null && user._id === comment.commentedBy._id
+                          ? `/user/profile`
+                          : `/public-profile/${comment.commentedBy._id}`
+                      }
+                      className="flex items-center gap-2 mb-1 group"
+                    >
+                      <p className="font-semibold text-sm text-gray-800 dark:text-gray-200 group-hover:text-primary/60 transition-colors">
                         {" "}
                         {/* Bolder name */}
                         {comment.commentedBy.fullName}
@@ -478,7 +493,7 @@ export default function RecipeDetails({ recipe, user }: Props) {
                         {/* Tooltip with exact time */}
                         {displayTime} {/* Display formatted relative time */}
                       </p>
-                    </div>
+                    </Link>
                     <p className="text-sm text-gray-700 dark:text-gray-300">
                       {comment.comment}
                     </p>
