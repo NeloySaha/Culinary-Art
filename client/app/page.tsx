@@ -7,7 +7,6 @@ import PopularRecipeSectionWrapper from "@/components/PopularRecipeSectionWrappe
 import RecipeSearchbar from "@/components/RecipeSearchbar";
 import RecipesFilter from "@/components/RecipesFilter";
 import Spinner from "@/components/Spinner";
-import { Tabs } from "@/components/ui/tabs";
 import { Suspense } from "react";
 
 type SearchParams = Promise<{ [category: string]: string | undefined }>;

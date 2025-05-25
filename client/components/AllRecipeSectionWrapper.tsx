@@ -1,6 +1,5 @@
-import React from "react";
-import AllRecipeSection from "./AllRecipeSection";
 import { Recipe } from "@/lib/types";
+import AllRecipeSection from "./AllRecipeSection";
 import Pagination from "./Pagination";
 
 export default async function AllRecipeSectionWrapper({
@@ -30,7 +29,7 @@ export default async function AllRecipeSectionWrapper({
   };
 
   const params = new URLSearchParams();
-  page !== undefined && params.set("page", page);
+  if (page !== undefined) params.set("page", page);
 
   if (query) {
     params.set("q", query);
