@@ -23,6 +23,7 @@ export function CategorySelector() {
     params.delete("query");
     params.delete("keyword");
     params.set("category", filter);
+    params.set("page", "1");
     router.push(currentPath + "?" + params.toString(), { scroll: false });
   };
   return (

@@ -115,10 +115,21 @@ const getRecipesByUser = async (req, res) => {
 };
 
 const getRecipesByCategory = async (req, res) => {
-  const { category } = req.params;
+  const { category, page = 1, limit = 9 } = req.query;
 
   try {
-    const recipes = await Recipe.find({ category: category });
+    const pageNum = Number.parseInt(page);
+    const limitNum = Number.parseInt(limit);
+    const skip = (pageNum - 1) * limitNum;
+
+    const query = {};
+    query.category = category;
+    // Get total count for pagination
+    const total = await Recipe.countDocuments(query);
+
+    const recipes = await Recipe.find({ category: category })
+      .skip(skip)
+      .limit(limitNum);
 
     if (recipes.length === 0) {
       return res.status(404).json({ message: "Category not found" });
@@ -127,6 +138,8 @@ const getRecipesByCategory = async (req, res) => {
       success: true,
       message: "Recipes fetched successfully",
       data: recipes,
+      page: pageNum,
+      totalPages: Math.ceil(total / limitNum),
     });
   } catch (error) {
     res
@@ -136,22 +149,35 @@ const getRecipesByCategory = async (req, res) => {
 };
 
 const getSearchedRecipes = async (req, res) => {
-  const { q } = req.params;
+  const { q, page = 1, limit = 9 } = req.query;
 
   try {
+    const pageNum = Number.parseInt(page);
+    const limitNum = Number.parseInt(limit);
+    const skip = (pageNum - 1) * limitNum;
     let recipes = [];
+
+    const query = {
+      $or: [
+        { name: { $regex: q, $options: "i" } },
+        { keywords: { $elemMatch: { $regex: q, $options: "i" } } },
+      ],
+    };
+
+    const total = await Recipe.countDocuments(query);
+
     if (q) {
-      recipes = await Recipe.find({
-        $or: [
-          { name: { $regex: q, $options: "i" } },
-          { keywords: { $elemMatch: { $regex: q, $options: "i" } } },
-        ],
-      });
+      recipes = await Recipe.find(query)
+        .skip(skip)
+        .limit(limitNum)
+        .sort({ name: 1 });
     }
     res.status(200).json({
       success: true,
       message: "Recipes fetched successfully",
       data: recipes,
+      page: pageNum,
+      totalPages: Math.ceil(total / limitNum),
     });
   } catch (error) {
     console.error(error);
@@ -380,11 +406,24 @@ const getMostLikedRecipes = async (req, res) => {
 };
 
 const getAllRecipes = async (req, res) => {
+  const { page = 1, limit = 9 } = req.query;
   try {
-    const recipes = await Recipe.find();
+    const pageNum = Number.parseInt(page);
+    const limitNum = Number.parseInt(limit);
+    const skip = (pageNum - 1) * limitNum;
+
+    const total = await Recipe.countDocuments({});
+
+    const recipes = await Recipe.find()
+      .skip(skip)
+      .limit(limitNum)
+      .sort({ name: 1 });
+
     res.status(200).json({
       success: true,
       data: recipes,
+      page: pageNum,
+      totalPages: Math.ceil(total / limitNum),
     });
   } catch (error) {
     res
@@ -451,15 +490,28 @@ async function getUniqueKeywords(req, res) {
 }
 
 async function getRecipeByKeywords(req, res) {
-  const { keyword } = req.body;
+  const { keyword, page = 1, limit = 9 } = req.body;
 
   try {
-    const recipes = await Recipe.find({
+    const pageNum = Number.parseInt(page);
+    const limitNum = Number.parseInt(limit);
+    const skip = (pageNum - 1) * limitNum;
+    const query = {
       keywords: { $regex: new RegExp(`^${keyword}$`, "i") },
-    });
+    };
+
+    const total = await Recipe.countDocuments(query);
+    const recipes = await Recipe.find(query)
+      .skip(skip)
+      .limit(limitNum)
+      .sort({ name: 1 });
+
     res.status(200).json({
       success: true,
       data: recipes,
+
+      page: pageNum,
+      totalPages: Math.ceil(total / limitNum),
     });
   } catch (err) {
     console.error("Error fetching recipes by keyword:", err);

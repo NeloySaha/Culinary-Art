@@ -66,10 +66,10 @@ router.post("/upload-image", RPupload.single("image"), (req, res) => {
 // public routes
 router.get("/all-recipes", getAllRecipes);
 router.get("/other-recipes/:excludeId", getOtherRecipes);
-router.get("/categories/:category", getRecipesByCategory);
+router.get("/categories", getRecipesByCategory);
 router.get("/keywords", getUniqueKeywords);
 router.post("/keyword-recipes", getRecipeByKeywords);
-router.get("/search/:q", getSearchedRecipes);
+router.get("/search", getSearchedRecipes);
 router.get("/single-recipe/:id", getRecipeById);
 router.get("/popular-recipes", getMostLikedRecipes);
 

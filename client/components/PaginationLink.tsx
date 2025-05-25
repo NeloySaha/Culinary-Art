@@ -34,7 +34,7 @@ export default function PaginationLink({
     <Button
       variant={isActive ? "default" : "outline"}
       size="icon"
-      className="w-9 h-9"
+      className="w-9 h-9 cursor-pointer"
       onClick={handleGoToPage}
     >
       {children}

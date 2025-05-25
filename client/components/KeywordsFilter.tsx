@@ -20,6 +20,7 @@ export default function KeywordsFilter({ keywords }: Props) {
     params.delete("category");
 
     params.set("keyword", filter);
+    params.set("page", "1");
     router.push(currentPath + "?" + params.toString(), { scroll: false });
   };
 

@@ -7,6 +7,7 @@ import PopularRecipeSectionWrapper from "@/components/PopularRecipeSectionWrappe
 import RecipeSearchbar from "@/components/RecipeSearchbar";
 import RecipesFilter from "@/components/RecipesFilter";
 import Spinner from "@/components/Spinner";
+import { Tabs } from "@/components/ui/tabs";
 import { Suspense } from "react";
 
 type SearchParams = Promise<{ [category: string]: string | undefined }>;
@@ -20,6 +21,7 @@ export default async function Page({
   const category = searchParamsData.category ?? "All";
   const query = searchParamsData.query;
   const keyword = searchParamsData.keyword;
+  const currentPage = searchParamsData.page;
 
   return (
     <div>
@@ -32,7 +34,7 @@ export default async function Page({
       </section>
 
       <section
-        className="max-w-7xl px-4 mx-auto py-10 scroll-mt-16"
+        className="max-w-7xl px-4 mx-auto pt-10 py-16 scroll-mt-16"
         id="recipes"
       >
         <h2 className="text-primary text-4xl font-semibold mb-8">Recipes</h2>
@@ -44,11 +46,15 @@ export default async function Page({
 
         <RecipesFilter />
 
-        <Suspense fallback={<Spinner />} key={category}>
+        <Suspense
+          fallback={<Spinner />}
+          key={`${category}-${query}-${keyword}`}
+        >
           <AllRecipeSectionWrapper
             category={category}
             query={query}
             keyword={keyword}
+            page={currentPage}
           />
         </Suspense>
       </section>

@@ -72,7 +72,7 @@ export async function getFilteredProducts(
     return {
       products: data.products,
       pagination: {
-        total: data.total,
+        totalData: data.total,
         page: data.page,
         totalPages: data.totalPages,
       },
@@ -83,7 +83,7 @@ export async function getFilteredProducts(
     return {
       products: [],
       pagination: {
-        total: 0,
+        totalData: 0,
         page: 1,
         totalPages: 0,
       },
