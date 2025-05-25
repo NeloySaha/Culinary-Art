@@ -18,7 +18,7 @@ export default function ProductGrid({
   const { totalData, page, totalPages } = pagination;
 
   return (
-    <div>
+    <div id="view-products" className="scroll-mt-16">
       <div className="flex items-center justify-between mb-6">
         <p className="text-sm text-muted-foreground">
           {totalData} products found

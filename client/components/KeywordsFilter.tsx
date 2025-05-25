@@ -21,7 +21,9 @@ export default function KeywordsFilter({ keywords }: Props) {
 
     params.set("keyword", filter);
     params.set("page", "1");
-    router.push(currentPath + "?" + params.toString(), { scroll: false });
+    router.push(currentPath + "?" + params.toString() + "#view-recipes", {
+      scroll: true,
+    });
   };
 
   return (

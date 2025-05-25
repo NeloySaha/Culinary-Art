@@ -21,7 +21,9 @@ export default function ProductSearchbar() {
     params.delete("page");
     params.set("search", Query);
 
-    router.push(currentPath + "?" + params.toString(), { scroll: false });
+    router.push(currentPath + "?" + params.toString() + "#view-products", {
+      scroll: true,
+    });
   };
 
   const clearQuery = () => {
