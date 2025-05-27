@@ -47,7 +47,7 @@ export default async function Page({
 
         <Suspense
           fallback={<Spinner />}
-          key={`${category}-${query}-${keyword}`}
+          key={`${category}-${query}-${keyword}-${currentPage}`}
         >
           <AllRecipeSectionWrapper
             category={category}
