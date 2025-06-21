@@ -266,7 +266,7 @@ export default function AdminOrderCard({ order }: { order: AdminOrder }) {
       if (addressText.length > maxCharsPerLine) {
         const words = addressText.split(" ");
         let currentLine = "";
-        let lines = [];
+        const lines = [];
 
         words.forEach((word) => {
           if ((currentLine + word).length <= maxCharsPerLine) {
