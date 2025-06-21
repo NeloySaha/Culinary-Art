@@ -99,7 +99,7 @@ const getFilteredProducts = async (req, res) => {
     if (search) {
       query.$or = [
         { name: { $regex: search, $options: "i" } },
-        { description: { $regex: search, $options: "i" } },
+        // { description: { $regex: search, $options: "i" } },
       ];
     }
 

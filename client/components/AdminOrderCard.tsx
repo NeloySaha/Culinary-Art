@@ -34,12 +34,21 @@ import {
   Hash,
   ImageIcon,
   Package,
+  Printer,
   Truck,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
 import OrderDetail from "./OrderDetail";
+// import {
+//   Printer as ThermalPrinter,
+//   Text,
+//   Row,
+//   render,
+// } from "react-thermal-printer";
+// import { saveAs } from "file-saver";
+import jsPDF from "jspdf";
 // useRouter is no longer needed for navigation here
 // import { useRouter } from "next/navigation";
 
@@ -84,6 +93,320 @@ export default function AdminOrderCard({ order }: { order: AdminOrder }) {
 
   const orderDate = new Date(createdAt);
   const [isLoading, setIsLoading] = useState(false);
+  const [isPrinting, setIsPrinting] = useState(false);
+
+  // const handlePrintBill = async () => {
+  //   try {
+  //     setIsPrinting(true);
+
+  //     const receiptData = (
+  //       <ThermalPrinter type="epson" width={48}>
+  //         {/* Header */}
+  //         <Text size={{ width: 2, height: 2 }} align="center" bold>
+  //           CULINARY ART
+  //         </Text>
+  //         <Text align="center">Order Receipt</Text>
+  //         <Text>--------------------------------</Text>
+
+  //         {/* Order Info */}
+  //         <Row left={`Order ID`} right={`${_id.slice(-10)}`} />
+  //         <Row left={`Date`} right={`${formattedDate}`} />
+  //         <Row left={`Time`} right={`${formattedTime}`} />
+  //         <Row left={`Status`} right={`${orderStatus}`} />
+  //         <Text>--------------------------------</Text>
+
+  //         {/* Customer Info */}
+  //         <Text bold>Customer Details:</Text>
+  //         <Row left={`Phone number`} right={`${phoneNumber}`} />
+  //         <Text>{`Address: ${address}`}</Text>
+  //         <Text>--------------------------------</Text>
+
+  //         {/* Items */}
+  //         <Text bold>Order Items:</Text>
+  //         {items.map((item, index) => (
+  //           <div key={item._id}>
+  //             <Row
+  //               left={`${index + 1}. ${item.productId.name || "Product"}`}
+  //               right={""}
+  //             />
+  //             <Row
+  //               left={`   Qty: ${item.quantity} ${item.productId.unit}`}
+  //               right={`Tk ${(
+  //                 item.currentUnitPrice * item.quantity
+  //               ).toLocaleString()}`}
+  //             />
+  //           </div>
+  //         ))}
+  //         <Text>--------------------------------</Text>
+
+  //         {/* Totals */}
+  //         <Row left="Subtotal:" right={`Tk ${subtotal.toLocaleString()}`} />
+  //         <Row
+  //           left="Delivery:"
+  //           right={`Tk ${deliveryCharge.toLocaleString()}`}
+  //         />
+  //         <Text>--------------------------------</Text>
+  //         <Row
+  //           left={<Text bold>TOTAL</Text>}
+  //           right={<Text bold>Tk {totalAmount.toLocaleString()}</Text>}
+  //         />
+  //         <Text>--------------------------------</Text>
+
+  //         {/* Payment Method */}
+  //         <Row
+  //           left={`Payment type`}
+  //           right={<Text bold>{paymentMethod}</Text>}
+  //         />
+  //         <Text>--------------------------------</Text>
+
+  //         {/* Footer */}
+  //         <Text align="center">Thank you for your order!</Text>
+  //         <Text align="center">Visit again soon</Text>
+  //         <Text></Text>
+  //         <Text></Text>
+  //       </ThermalPrinter>
+  //     );
+
+  //     // Generate the buffer
+  //     const buffer = await render(receiptData);
+
+  //     // Create blob and download
+  //     const blob = new Blob([buffer], { type: "application/octet-stream" });
+  //     saveAs(blob, `order-${_id.slice(-10)}.bin`);
+
+  //     toast.success("Success", {
+  //       description: "Receipt generated successfully!",
+  //     });
+  //   } catch (error) {
+  //     console.error("Print error:", error);
+  //     toast.error("Error", {
+  //       description: "Failed to generate receipt",
+  //     });
+  //   } finally {
+  //     setIsPrinting(false);
+  //   }
+  // };
+
+  // Replace the handlePrintBill function
+  const handlePrintBill = async () => {
+    try {
+      setIsPrinting(true);
+
+      // Create PDF with thermal receipt dimensions (4 inches wide)
+      // 1 inch = 72 points, so 4 inches = 288 points
+      const doc = new jsPDF({
+        unit: "pt",
+        format: [288, 600], // 4 inches wide, 8.33 inches tall (will auto-extend)
+        orientation: "portrait",
+      });
+
+      // Use monospace font for receipt look
+      doc.setFont("courier", "normal");
+
+      let yPos = 30;
+      const pageWidth = 288;
+      const margin = 20;
+      const contentWidth = pageWidth - margin * 2;
+
+      // Helper function to center text
+      const centerText = (text: string, y: number, size = 10) => {
+        doc.setFontSize(size);
+        const textWidth = doc.getTextWidth(text);
+        const x = (pageWidth - textWidth) / 2;
+        doc.text(text, x, y);
+      };
+
+      // Helper function for receipt line
+      const addLine = (y: number, char = "-") => {
+        const lineText = char.repeat(52);
+        doc.setFontSize(8);
+        doc.text(lineText, margin, y);
+        return y + 12;
+      };
+
+      // Header
+      doc.setFont("courier", "bold");
+      centerText("CULINARY ART", yPos, 14);
+      yPos += 20;
+
+      doc.setFont("courier", "normal");
+      centerText("Order Receipt", yPos, 10);
+      yPos += 15;
+
+      yPos = addLine(yPos);
+
+      // Order Information
+      doc.setFontSize(8);
+      doc.text(`Order ID: ${_id.slice(-10)}`, margin, yPos);
+      yPos += 12;
+
+      doc.text(`Date: ${formattedDate}`, margin, yPos);
+      yPos += 12;
+
+      doc.text(`Time: ${formattedTime}`, margin, yPos);
+      yPos += 12;
+
+      doc.text(`Status: ${orderStatus}`, margin, yPos);
+      yPos += 15;
+
+      yPos = addLine(yPos);
+
+      // Customer Details
+      doc.setFont("courier", "bold");
+      doc.text("Customer Details:", margin, yPos);
+      yPos += 12;
+
+      doc.setFont("courier", "normal");
+      doc.text(`Phone: ${phoneNumber}`, margin, yPos);
+      yPos += 12;
+
+      // Handle long addresses by wrapping
+      const maxCharsPerLine = 28;
+      const addressText = `Address: ${address}`;
+      if (addressText.length > maxCharsPerLine) {
+        const words = addressText.split(" ");
+        let currentLine = "";
+        let lines = [];
+
+        words.forEach((word) => {
+          if ((currentLine + word).length <= maxCharsPerLine) {
+            currentLine += (currentLine ? " " : "") + word;
+          } else {
+            if (currentLine) lines.push(currentLine);
+            currentLine = word;
+          }
+        });
+        if (currentLine) lines.push(currentLine);
+
+        lines.forEach((line) => {
+          doc.text(line, margin, yPos);
+          yPos += 12;
+        });
+      } else {
+        doc.text(addressText, margin, yPos);
+        yPos += 12;
+      }
+
+      yPos += 5;
+      yPos = addLine(yPos);
+
+      // Items Header
+      doc.setFont("courier", "bold");
+      doc.text("Order Items:", margin, yPos);
+      yPos += 15;
+
+      // Items
+      doc.setFont("courier", "normal");
+      items.forEach((item, index) => {
+        // Check if we need more space
+        if (yPos > 550) {
+          doc.addPage();
+          yPos = 30;
+        }
+
+        // Item name (truncate if too long)
+        const itemName = item.productId.name || "Product";
+        const truncatedName =
+          itemName.length > 26 ? itemName.substring(0, 23) + "..." : itemName;
+
+        doc.text(`${index + 1}. ${truncatedName}`, margin, yPos);
+        yPos += 12;
+
+        // Quantity and price on same line
+        const qtyText = `   ${item.quantity} ${item.productId.unit}`;
+        const priceText = `Tk ${(
+          item.currentUnitPrice * item.quantity
+        ).toLocaleString()}`;
+
+        doc.text(qtyText, margin, yPos);
+
+        // Right align price
+        const priceWidth = doc.getTextWidth(priceText);
+        doc.text(priceText, pageWidth - margin - priceWidth, yPos);
+        yPos += 15;
+      });
+
+      yPos = addLine(yPos);
+
+      // Totals
+      const addTotal = (label: string, amount: number, bold = false) => {
+        if (bold) doc.setFont("courier", "bold");
+        else doc.setFont("courier", "normal");
+
+        const labelText = label;
+        const amountText = `Tk ${amount.toLocaleString()}`;
+
+        doc.text(labelText, margin, yPos);
+        const amountWidth = doc.getTextWidth(amountText);
+        doc.text(amountText, pageWidth - margin - amountWidth, yPos);
+        yPos += 12;
+      };
+
+      addTotal("Subtotal:", subtotal);
+      addTotal("Delivery:", deliveryCharge);
+
+      yPos = addLine(yPos, "=");
+
+      addTotal("TOTAL:", totalAmount, true);
+
+      yPos = addLine(yPos, "=");
+
+      // Payment Method
+      doc.setFont("courier", "normal");
+      doc.text(`Payment: ${paymentMethod}`, margin, yPos);
+      yPos += 15;
+
+      yPos = addLine(yPos);
+
+      // Footer
+      yPos += 10;
+      centerText("Thank you for your order!", yPos, 9);
+      yPos += 15;
+      centerText("Visit again soon!", yPos, 9);
+      yPos += 20;
+
+      // Add some bottom spacing
+      yPos += 30;
+
+      // Instead of saving, open print dialog
+      const pdfBlob = doc.output("blob");
+      const pdfUrl = URL.createObjectURL(pdfBlob);
+
+      // Create a new window with the PDF
+      const printWindow = window.open(pdfUrl, "_blank");
+
+      if (printWindow) {
+        printWindow.onload = () => {
+          // Trigger print dialog after PDF loads
+          printWindow.print();
+
+          // Clean up the URL after a delay
+          setTimeout(() => {
+            URL.revokeObjectURL(pdfUrl);
+          }, 1000);
+        };
+      } else {
+        // Fallback: download the PDF if popup is blocked
+        const link = document.createElement("a");
+        link.href = pdfUrl;
+        link.download = `receipt-${_id.slice(-10)}.pdf`;
+        link.click();
+        URL.revokeObjectURL(pdfUrl);
+      }
+
+      toast.success("Success", {
+        description: "Receipt ready for printing!",
+      });
+    } catch (error) {
+      console.error("Print error:", error);
+      toast.error("Error", {
+        description: "Failed to generate receipt PDF",
+      });
+    } finally {
+      setIsPrinting(false);
+    }
+  };
+
   const router = useRouter();
   const formattedDate = orderDate.toLocaleDateString("en-GB", {
     year: "numeric",
@@ -258,20 +581,28 @@ export default function AdminOrderCard({ order }: { order: AdminOrder }) {
         )}
       </CardContent>
 
-      <CardFooter className="border-t border-border/60 flex justify-between">
-        <Dialog>
-          <DialogTrigger asChild>
-            <Button variant="outline" size="sm" className="w-full sm:w-auto">
-              <Eye className="h-4 w-4 mr-2" />
-              View Order Details
-              {/* <ChevronRight className="h-4 w-4 ml-1" /> // Optional: Keep if you like the style */}
-            </Button>
-          </DialogTrigger>
-          <OrderDetail order={order} />
-        </Dialog>
+      <CardFooter className="items-stretch border-t border-border/60 flex flex-col gap-2 lg:flex-row lg:justify-between">
+        <div className="flex flex-col lg:flex-row gap-2">
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button variant="outline">
+                <Eye className="h-4 w-4 mr-1" />
+                View Order Details
+                {/* <ChevronRight className="h-4 w-4 ml-1" />  */}
+              </Button>
+            </DialogTrigger>
+
+            <OrderDetail order={order} />
+          </Dialog>
+
+          <Button disabled={isPrinting} onClick={handlePrintBill}>
+            <Printer className="h-4 w-4 mr-1" />
+            Print bill
+          </Button>
+        </div>
 
         {order.orderStatus === "Pending" && (
-          <div className="flex gap-2">
+          <div className="grid grid-cols-2 gap-2">
             <Button
               disabled={isLoading}
               onClick={() => handleUpdateOrder("Confirmed")}
