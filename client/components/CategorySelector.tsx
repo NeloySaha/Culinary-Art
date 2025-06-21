@@ -25,7 +25,7 @@ export function CategorySelector() {
     params.set("category", filter);
     params.set("page", "1");
     router.push(currentPath + "?" + params.toString() + "#view-recipes", {
-      scroll: true,
+      scroll: false,
     });
   };
   return (

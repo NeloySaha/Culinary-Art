@@ -5,6 +5,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { useEffect } from "react";
 import DesktopNavbar from "./DesktopNavbar";
 import MobileNavbar from "./MobileNavbar";
+import Cookies from "js-cookie";
 
 export default function Navbar({ userInfo }: { userInfo: JWTPayload | null }) {
   const pathname = usePathname();
@@ -13,6 +14,10 @@ export default function Navbar({ userInfo }: { userInfo: JWTPayload | null }) {
   useEffect(() => {
     async function checkSession() {
       if ((await getSession()) === null) {
+        const expiredToken = Cookies.get("session");
+
+        if (expiredToken) Cookies.remove("session");
+
         router.refresh();
       }
     }
