@@ -24,6 +24,12 @@ export default function Navbar({ userInfo }: { userInfo: JWTPayload | null }) {
     checkSession();
   }, [pathname]);
 
+  useEffect(() => {
+    router.prefetch("/login");
+    router.prefetch("/signup");
+    router.prefetch("/about");
+  }, [router]);
+
   if (pathname.startsWith("/admin") || pathname.startsWith("/user"))
     return null;
   return (

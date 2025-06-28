@@ -1,3 +1,4 @@
+import Footer from "@/components/Footer";
 import ProductDetail from "@/components/ProductDetail";
 
 export default async function ProductPage({
@@ -20,8 +21,12 @@ export default async function ProductPage({
     );
 
   return (
-    <section className="max-w-7xl px-4 mx-auto pt-24 scroll-mt-16">
-      <ProductDetail product={data.data} />
-    </section>
+    <div>
+      <section className="max-w-7xl px-4 mx-auto py-24 scroll-mt-16">
+        <ProductDetail product={data.data} />
+      </section>
+
+      <Footer />
+    </div>
   );
 }
