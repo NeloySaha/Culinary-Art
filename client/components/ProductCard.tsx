@@ -81,7 +81,7 @@ export default function ProductCard({ product }: Props) {
         <Separator />
 
         <Button variant={"outline"} className="w-full" asChild>
-          <Link href={`/shop/product/${product._id}`} prefetch={true}>
+          <Link href={`/shop/product/${product._id}`}>
             <>
               <Eye className="h-4 w-4" />
               View

@@ -86,7 +86,7 @@ export default function RecipeCard({ recipe }: { recipe: Recipe }) {
 
       <CardFooter className="mt-4">
         <Button variant={"secondary"} className="w-full" asChild>
-          <Link href={`/view-recipe/${recipe._id}`} prefetch={true}>
+          <Link href={`/view-recipe/${recipe._id}`}>
             <Eye className="h-3 w-3" />
             <span>View</span>
           </Link>
