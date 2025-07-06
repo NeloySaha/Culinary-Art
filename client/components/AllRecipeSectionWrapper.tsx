@@ -53,10 +53,6 @@ export default async function AllRecipeSectionWrapper({
           keyword,
           page: 1,
         }),
-
-        next: {
-          revalidate: 86400,
-        },
       }
     );
 
@@ -66,12 +62,7 @@ export default async function AllRecipeSectionWrapper({
       const allRecipesRes = await fetch(
         `${
           process.env.NEXT_PUBLIC_API_PREFIX
-        }/recipes/all-recipes?${params.toString()}`,
-        {
-          next: {
-            revalidate: 86400,
-          },
-        }
+        }/recipes/all-recipes?${params.toString()}`
       );
 
       allRecipesData = await allRecipesRes.json();
@@ -83,12 +74,7 @@ export default async function AllRecipeSectionWrapper({
       const allRecipesRes = await fetch(
         `${
           process.env.NEXT_PUBLIC_API_PREFIX
-        }/recipes/categories?${params.toString()}`,
-        {
-          next: {
-            revalidate: 86400,
-          },
-        }
+        }/recipes/categories?${params.toString()}`
       );
 
       allRecipesData = await allRecipesRes.json();

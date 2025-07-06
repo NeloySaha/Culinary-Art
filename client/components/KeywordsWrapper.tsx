@@ -9,6 +9,12 @@ export default async function KeywordsWrapper() {
       },
     }
   );
+
+  if (!res.ok) {
+    const text = await res.text(); // fallback when not JSON
+    throw new Error(`API Error: ${res.status} ${text}`);
+  }
+
   const data = await res.json();
 
   if (!data.success) return null;
