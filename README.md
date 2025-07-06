@@ -1,4 +1,4 @@
-# <img src="client/public/favicon.svg" alt="Culinary Art Logo" height="32" style="vertical-align: middle;"> Culinary Art
+# <img src="client/public/favicon.svg" alt="Culinary Art Logo" height="32" width="32" style="vertical-align: middle;"> Culinary Art
 
 **Culinary Art** is a modern web platform for food lovers to share, discover, and celebrate recipes from around the world. Whether you’re a home cook, a professional chef, or just love exploring new dishes, Culinary Art is your digital kitchen and recipe book.
 
