@@ -5,7 +5,7 @@ export default async function KeywordsWrapper() {
     `${process.env.NEXT_PUBLIC_API_PREFIX}/recipes/keywords`,
     {
       next: {
-        revalidate: 3600 * 24,
+        revalidate: 86400,
       },
     }
   );

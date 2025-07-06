@@ -5,7 +5,7 @@ export default async function PopularRecipeSectionWrapper() {
     `${process.env.NEXT_PUBLIC_API_PREFIX}/recipes/popular-recipes`,
     {
       next: {
-        revalidate: 3600 * 24,
+        revalidate: 86400,
       },
     }
   );

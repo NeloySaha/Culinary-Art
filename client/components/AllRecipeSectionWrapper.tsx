@@ -55,7 +55,7 @@ export default async function AllRecipeSectionWrapper({
         }),
 
         next: {
-          revalidate: 3600 * 24,
+          revalidate: 86400,
         },
       }
     );
@@ -69,7 +69,7 @@ export default async function AllRecipeSectionWrapper({
         }/recipes/all-recipes?${params.toString()}`,
         {
           next: {
-            revalidate: 3600 * 24,
+            revalidate: 86400,
           },
         }
       );
@@ -86,7 +86,7 @@ export default async function AllRecipeSectionWrapper({
         }/recipes/categories?${params.toString()}`,
         {
           next: {
-            revalidate: 3600 * 24,
+            revalidate: 86400,
           },
         }
       );
