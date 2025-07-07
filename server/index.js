@@ -2,12 +2,14 @@ const express = require("express");
 const mongoose = require("mongoose");
 const app = express();
 const cors = require("cors");
+const path = require("path");
 require("dotenv").config();
 const port = process.env.PORT;
 
 app.use(express.json());
 app.use(cors());
 app.use(express.static("public")); //for serving images from the public folder
+app.use(express.static(path.join(__dirname, "public")));
 
 async function main() {
   await mongoose.connect(process.env.MONGODB_URI);
