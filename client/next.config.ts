@@ -7,6 +7,12 @@ const nextConfig: NextConfig = {
       bodySizeLimit: "200mb",
     },
   },
+
+  logging: {
+    fetches: {
+      fullUrl: true,
+    },
+  },
   images: {
     remotePatterns: [
       {
