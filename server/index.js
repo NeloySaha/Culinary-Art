@@ -44,7 +44,7 @@ const express = require("express");
 const serverless = require("serverless-http");
 const cors = require("cors");
 const path = require("path");
-const dbConnect = require("../lib/dbConnect");
+const dbConnect = require("./lib/dbConnect");
 
 require("dotenv").config();
 
@@ -53,7 +53,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 app.use(express.static("public"));
-app.use(express.static(path.join(__dirname, "../public")));
+app.use(express.static(path.join(__dirname, "public")));
 
 app.use(async (req, res, next) => {
   await dbConnect();
@@ -64,10 +64,10 @@ app.get("/", (req, res) => {
   res.send("Culinary Art server is running (serverless)!");
 });
 
-app.use("/api/users", require("../src/routes/UserRoutes"));
-app.use("/api/recipes", require("../src/routes/RecipeRoutes"));
-app.use("/api/products", require("../src/routes/ProductRoutes"));
-app.use("/api/orders", require("../src/routes/OrderRoutes"));
+app.use("/api/users", require("./src/routes/UserRoutes"));
+app.use("/api/recipes", require("./src/routes/RecipeRoutes"));
+app.use("/api/products", require("./src/routes/ProductRoutes"));
+app.use("/api/orders", require("./src/routes/OrderRoutes"));
 
 module.exports = {
   handler: serverless(app),
