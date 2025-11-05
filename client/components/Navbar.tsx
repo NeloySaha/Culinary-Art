@@ -33,7 +33,7 @@ export default function Navbar({ userInfo }: { userInfo: JWTPayload | null }) {
   if (pathname.startsWith("/admin") || pathname.startsWith("/user"))
     return null;
   return (
-    <header className="backdrop-blur-lg w-full z-40 fixed py-4">
+    <header className="backdrop-blur-lg w-screen z-40 fixed py-4">
       <MobileNavbar userInfo={userInfo as JWTPayload} />
       <DesktopNavbar userInfo={userInfo as JWTPayload} />
     </header>

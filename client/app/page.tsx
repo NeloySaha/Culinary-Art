@@ -22,6 +22,8 @@ export default async function Page({
   const keyword = searchParamsData.keyword;
   const currentPage = searchParamsData.page;
 
+  const curKey = `${category}-${query}-${keyword}-${currentPage}`;
+
   return (
     <div>
       <HeroSection />
@@ -45,10 +47,7 @@ export default async function Page({
 
         <RecipesFilter />
 
-        <Suspense
-          fallback={<Spinner />}
-          key={`${category}-${query}-${keyword}-${currentPage}`}
-        >
+        <Suspense fallback={<Spinner />} key={curKey}>
           <AllRecipeSectionWrapper
             category={category}
             query={query}
