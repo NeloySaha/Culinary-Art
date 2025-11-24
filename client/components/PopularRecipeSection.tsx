@@ -11,6 +11,7 @@ import {
 } from "./ui/carousel";
 import Autoplay from "embla-carousel-autoplay";
 import { Recipe } from "@/lib/types";
+import PopularRecipeCard from "./PopularRecipeCard";
 
 export default function PopularRecipeSection({
   recipes,
@@ -19,9 +20,12 @@ export default function PopularRecipeSection({
 }) {
   return (
     <section className="max-w-7xl px-4 mx-auto py-10">
-      <h2 className="text-primary text-4xl font-semibold">Most Popular</h2>
+      <h2 className="text-primary text-2xl lg:text-4xl font-semibold">
+        Most Popular
+      </h2>
 
       <Carousel
+        opts={{ loop: true }}
         plugins={[
           Autoplay({
             delay: 2000,
@@ -38,7 +42,7 @@ export default function PopularRecipeSection({
               className="pl-1 md:basis-1/2 lg:basis-1/2 xl:basis-1/3"
             >
               <div className="p-2">
-                <RecipeCard recipe={recipe} />
+                <PopularRecipeCard recipe={recipe} />
               </div>
             </CarouselItem>
           ))}

@@ -31,7 +31,7 @@ export default async function Page({
       <section className="max-w-7xl px-4 mx-auto py-24">
         <div className="flex flex-col gap-6">
           <div>
-            <h1 className="text-4xl font-bold tracking-tight text-primary">
+            <h1 className="text-2xl lg:text-4xl font-bold tracking-tight text-primary">
               Shop
             </h1>
             <p className="text-muted-foreground mt-1">

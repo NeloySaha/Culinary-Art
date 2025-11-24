@@ -11,9 +11,9 @@ import { Button } from "./ui/button";
 import { Progress } from "./ui/progress";
 import Link from "next/link";
 
-export default function RecipeCard({ recipe }: { recipe: Recipe }) {
+export default function PopularRecipeCard({ recipe }: { recipe: Recipe }) {
   return (
-    <Card className="flex flex-col gap-1">
+    <Card className="h-[560px] lg:h-full flex flex-col gap-1">
       <CardHeader className="relative">
         <Badge
           className="absolute top-2 right-8 uppercase"
@@ -32,7 +32,6 @@ export default function RecipeCard({ recipe }: { recipe: Recipe }) {
           className="object-cover w-full h-56 rounded-lg"
         />
       </CardHeader>
-
       <CardContent className="space-y-2">
         <div className="flex flex-wrap gap-2">
           {recipe.keywords.map((keyword, index) => (
@@ -85,7 +84,7 @@ export default function RecipeCard({ recipe }: { recipe: Recipe }) {
         </div>
       </CardContent>
 
-      <CardFooter className="mt-4">
+      <CardFooter className="mt-auto lg:mt-4">
         <Button variant={"outline"} className="w-full" asChild>
           <Link href={`/view-recipe/${recipe._id}`}>
             <Eye className="h-3 w-3" />

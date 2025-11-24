@@ -39,7 +39,7 @@ export default function DesktopNavbar({
   }
 
   return (
-    <nav className="hidden lg:max-w-7xl lg:mx-auto px-4 lg:flex lg:items-center lg:justify-between">
+    <nav className="hidden lg:max-w-7xl lg:mx-auto px-4 lg:flex lg:items-center lg:justify-between h-full">
       <Link
         href={pathName === "/" ? "#home" : "/"}
         className={`${

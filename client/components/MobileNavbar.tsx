@@ -38,7 +38,7 @@ export default function MobileNavbar({
   }
 
   return (
-    <nav className="lg:hidden px-4 flex items-center justify-between">
+    <nav className="lg:hidden px-4 flex items-center justify-between h-full">
       <Link
         className={`${
           pathName === "/login" || pathName === "/signup"
