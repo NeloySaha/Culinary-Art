@@ -1,7 +1,6 @@
 "use client";
 
 import React from "react";
-import RecipeCard from "./RecipeCard";
 import {
   Carousel,
   CarouselContent,
@@ -10,14 +9,12 @@ import {
   CarouselPrevious,
 } from "./ui/carousel";
 import Autoplay from "embla-carousel-autoplay";
-import { Recipe } from "@/lib/types";
-import PopularRecipeCard from "./PopularRecipeCard";
+import PopularRecipeCardSkeleton from "./PopularRecipeCardSkeleton";
 
-export default function PopularRecipeSection({
-  recipes,
-}: {
-  recipes: Recipe[];
-}) {
+export default function PopularRecipeSectionSkeleton() {
+  // Array to simulate multiple skeleton cards
+  const skeletonItems = Array.from({ length: 6 }, (_, index) => index);
+
   return (
     <Carousel
       opts={{ loop: true }}
@@ -31,19 +28,19 @@ export default function PopularRecipeSection({
       className="max-w-[280px] md:max-w-2xl lg:max-w-4xl xl:max-w-6xl mx-auto my-8"
     >
       <CarouselContent className="-ml-1">
-        {recipes.map((recipe: Recipe) => (
+        {skeletonItems.map((item) => (
           <CarouselItem
-            key={recipe._id}
+            key={item}
             className="pl-1 md:basis-1/2 lg:basis-1/2 xl:basis-1/3"
           >
             <div className="p-2">
-              <PopularRecipeCard recipe={recipe} />
+              <PopularRecipeCardSkeleton />
             </div>
           </CarouselItem>
         ))}
       </CarouselContent>
-      <CarouselPrevious variant={"default"} />
-      <CarouselNext variant={"default"} />
+      <CarouselPrevious />
+      <CarouselNext />
     </Carousel>
   );
 }

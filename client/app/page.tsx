@@ -1,12 +1,13 @@
+import AllRecipeSectionSkeleton from "@/components/AllRecipeSectionSkeleton";
 import AllRecipeSectionWrapper from "@/components/AllRecipeSectionWrapper";
 import { CategorySelector } from "@/components/CategorySelector";
 import Footer from "@/components/Footer";
 import HeroSection from "@/components/HeroSection";
 import KeywordsWrapper from "@/components/KeywordsWrapper";
+import PopularRecipeSectionSkeleton from "@/components/PopularRecipeSectionSkeleton";
 import PopularRecipeSectionWrapper from "@/components/PopularRecipeSectionWrapper";
 import RecipeSearchbar from "@/components/RecipeSearchbar";
 import RecipesFilter from "@/components/RecipesFilter";
-import Spinner from "@/components/Spinner";
 import { Suspense } from "react";
 
 type SearchParams = Promise<{ [category: string]: string | undefined }>;
@@ -29,9 +30,15 @@ export default async function Page({
       <HeroSection />
 
       <section className="scroll-mt-16" id="popular-recipes">
-        <Suspense fallback={<Spinner />}>
-          <PopularRecipeSectionWrapper />
-        </Suspense>
+        <div className="max-w-7xl px-4 mx-auto py-10">
+          <h2 className="text-primary text-2xl lg:text-4xl font-semibold">
+            Most Popular
+          </h2>
+
+          <Suspense fallback={<PopularRecipeSectionSkeleton />}>
+            <PopularRecipeSectionWrapper />
+          </Suspense>
+        </div>
       </section>
 
       <section
@@ -49,7 +56,7 @@ export default async function Page({
 
         <RecipesFilter />
 
-        <Suspense fallback={<Spinner />} key={curKey}>
+        <Suspense fallback={<AllRecipeSectionSkeleton />} key={curKey}>
           <AllRecipeSectionWrapper
             category={category}
             query={query}

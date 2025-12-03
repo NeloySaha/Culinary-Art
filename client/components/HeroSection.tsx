@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { ArrowDown, Pencil } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import Img from "./Img";
 
 export default function HeroSection() {
   const [mounted, setMounted] = useState(false);
@@ -99,55 +100,61 @@ export default function HeroSection() {
 
                 {/* Top left img - circle */}
                 <div className="absolute left-[10%] top-[15%] z-20 h-[135px] w-[135px] overflow-hidden rounded-full border-4 border-background shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-xl">
-                  <img
+                  <Img
                     src="https://images.unsplash.com/photo-1482049016688-2d3e1b311543?q=80&w=1010&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
                     alt="Recipe 1"
                     className="h-full w-full object-cover"
+                    skeletonClassName="h-full w-full"
                   />
                 </div>
 
                 {/* Top right img - rounded rectangle with rotation */}
                 <div className="absolute right-[5%] top-[10%] z-20 h-[160px] w-[120px] rotate-6 overflow-hidden rounded-xl border-4 border-background shadow-lg transition-all duration-300 hover:-rotate-2 hover:scale-105">
-                  <img
+                  <Img
                     src="https://images.unsplash.com/photo-1569718212165-3a8278d5f624?q=80&w=1160&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
                     alt="Recipe 2"
                     className="h-full w-full object-cover"
+                    skeletonClassName="h-full w-full"
                   />
                 </div>
 
                 {/* Bottom left img - rounded rectangle with negative rotation */}
                 <div className="absolute bottom-[10%] left-[5%] z-20 h-[150px] w-[120px] -rotate-12 overflow-hidden rounded-xl border-4 border-background shadow-lg transition-all duration-300 hover:rotate-0 hover:scale-105">
-                  <img
+                  <Img
                     src="https://images.unsplash.com/photo-1559742811-822873691df8?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
                     alt="Recipe 3"
                     className="h-full w-full object-cover"
+                    skeletonClassName="h-full w-full"
                   />
                 </div>
 
                 {/* Bottom right img - circle */}
                 <div className="absolute bottom-[15%] right-[7%] z-20 h-[150px] w-[150px] overflow-hidden rounded-full border-4 border-background shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-xl">
-                  <img
+                  <Img
                     src="https://plus.unsplash.com/premium_photo-1669687759693-52ba5f9fa7a8?q=80&w=988&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
                     alt="Recipe 4"
                     className="h-full w-full object-cover"
+                    skeletonClassName="h-full w-full"
                   />
                 </div>
 
                 {/* Middle right img - square with rounded corners */}
                 <div className="absolute right-[25%] top-[80%] z-30 h-[140px] w-[110px] -rotate-6 overflow-hidden rounded-lg border-4 border-background shadow-lg transition-all duration-300 hover:rotate-0 hover:scale-110">
-                  <img
+                  <Img
                     src="https://images.unsplash.com/photo-1574484284002-952d92456975?q=80&w=987&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
                     alt="Recipe 5"
                     className="h-full w-full object-cover"
+                    skeletonClassName="h-full w-full"
                   />
                 </div>
 
                 {/* Middle left img - vertical rectangle */}
                 <div className="absolute left-[25%] top-[5%] z-30 h-[140px] w-[115px] rotate-12 overflow-hidden rounded-lg border-4 border-background shadow-lg transition-all duration-300 hover:rotate-0 hover:scale-110">
-                  <img
+                  <Img
                     src="https://images.unsplash.com/photo-1614707267537-b85aaf00c4b7?q=80&w=987&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
                     alt="Recipe 6"
                     className="h-full w-full object-cover"
+                    skeletonClassName="h-full w-full"
                   />
                 </div>
               </div>
@@ -155,20 +162,6 @@ export default function HeroSection() {
           </div>
         </div>
       </div>
-
-      {/* CSS for hexagon clip path */}
-      <style jsx>{`
-        .clip-hexagon {
-          clip-path: polygon(
-            50% 0%,
-            100% 25%,
-            100% 75%,
-            50% 100%,
-            0% 75%,
-            0% 25%
-          );
-        }
-      `}</style>
     </section>
   );
 }

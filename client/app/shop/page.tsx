@@ -1,10 +1,11 @@
 import { Suspense } from "react";
 
 import Footer from "@/components/Footer";
+import Pagination from "@/components/Pagination";
 import ProductFilter from "@/components/ProductFilter";
 import ProductGrid from "@/components/ProductGrid";
+import ProductGridSkeleton from "@/components/ProductGridSkeleton";
 import ProductSearchbar from "@/components/ProductSearchbar";
-import Spinner from "@/components/Spinner";
 import { getFilterData, getFilteredProducts } from "@/lib/actions";
 
 type SearchParams = Promise<{
@@ -25,6 +26,7 @@ export default async function Page({
   // Get filter data (categories and price range)
   const searchParamsData = await searchParams;
   const filterData = await getFilterData();
+  const { products, pagination } = await getFilteredProducts(searchParamsData);
 
   return (
     <div>
@@ -57,10 +59,18 @@ export default async function Page({
             <div className="flex-1">
               <Suspense
                 key={`${searchParamsData.category}.${searchParamsData.inStock}.${searchParamsData.maxPrice}.${searchParamsData.minPrice}.${searchParamsData.page}.${searchParamsData.search}.${searchParamsData.sort}`}
-                fallback={<Spinner />}
+                fallback={<ProductGridSkeleton />}
               >
                 <ProductsWithFilters searchParams={searchParams} />
               </Suspense>
+
+              {products.length > 0 && (
+                <Pagination
+                  totalData={pagination.totalData}
+                  page={pagination.page}
+                  totalPages={pagination.totalPages}
+                />
+              )}
             </div>
           </div>
         </div>
@@ -79,6 +89,7 @@ async function ProductsWithFilters({
 }) {
   const searchParamsData = await searchParams;
   const { products, pagination } = await getFilteredProducts(searchParamsData);
+  const { totalData } = pagination;
 
-  return <ProductGrid products={products} pagination={pagination} />;
+  return <ProductGrid products={products} totalData={totalData} />;
 }

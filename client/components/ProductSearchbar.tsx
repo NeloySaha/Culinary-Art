@@ -22,7 +22,7 @@ export default function ProductSearchbar() {
     params.set("search", Query);
 
     router.push(currentPath + "?" + params.toString() + "#view-products", {
-      scroll: true,
+      scroll: false,
     });
   };
 

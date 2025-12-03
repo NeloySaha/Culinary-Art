@@ -6,31 +6,31 @@ import {
 } from "@/components/ui/card";
 import { Recipe } from "@/lib/types";
 import { Clock, Eye, Heart, MessageCircle, Users } from "lucide-react";
+import Link from "next/link";
+import Img from "./Img";
 import { Badge } from "./ui/badge";
 import { Button } from "./ui/button";
 import { Progress } from "./ui/progress";
-import Link from "next/link";
 
 export default function RecipeCard({ recipe }: { recipe: Recipe }) {
   return (
     <Card className="flex flex-col gap-1">
       <CardHeader className="relative">
-        <Badge
-          className="absolute top-2 right-8 uppercase"
-          variant={"secondary"}
-        >
+        <Badge className="absolute top-2 right-8 uppercase z-10 bg-amber-300 text-foreground rounded-full">
           {recipe.category}
         </Badge>
 
-        <img
-          src={
-            recipe.imageUrl.startsWith("/")
-              ? `${process.env.NEXT_PUBLIC_API}${recipe.imageUrl}`
-              : recipe.imageUrl
-          }
-          alt="food"
-          className="object-cover w-full h-56 rounded-lg"
-        />
+        <div className="w-full h-56 rounded-lg border overflow-hidden">
+          <Img
+            src={
+              recipe.imageUrl.startsWith("/")
+                ? `${process.env.NEXT_PUBLIC_API}${recipe.imageUrl}`
+                : recipe.imageUrl
+            }
+            alt={`${recipe.name} image`}
+            className="object-cover w-full h-56 rounded-lg"
+          />
+        </div>
       </CardHeader>
 
       <CardContent className="space-y-2">

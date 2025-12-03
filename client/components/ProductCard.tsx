@@ -22,6 +22,7 @@ import {
   increaseItemQuantity,
 } from "@/reducers/cart/cartSlice";
 import { Separator } from "./ui/separator";
+import Img from "./Img";
 
 type Props = {
   product: Product;
@@ -50,15 +51,15 @@ export default function ProductCard({ product }: Props) {
           {product.category}
         </Badge>
 
-        <div className="overflow-hidden rounded-lg border">
-          <img
+        <div className="overflow-hidden w-full h-56 rounded-lg border">
+          <Img
             src={
               product.imageUrl.startsWith("/")
                 ? `${process.env.NEXT_PUBLIC_API}${product.imageUrl}`
                 : product.imageUrl
             }
-            alt="food"
-            className="object-cover w-full h-56  group-hover:scale-105 transition-all duration-300"
+            alt={`${product.name} image`}
+            className="object-cover w-full h-56 group-hover:scale-105 transition-all duration-300"
           />
         </div>
       </CardHeader>

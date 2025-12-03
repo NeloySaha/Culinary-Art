@@ -16,6 +16,7 @@ import {
 import { ChevronLeft, Minus, Plus, ShoppingCart, Trash } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import Img from "./Img";
 
 export default function ProductDetail({ product }: { product: Product }) {
   const currentCartItemIds = useAppSelector(getCartItemIds);
@@ -48,15 +49,18 @@ export default function ProductDetail({ product }: { product: Product }) {
       </Link>
 
       <div className="grid md:grid-cols-2 gap-8 ">
-        <img
-          src={
-            product.imageUrl.startsWith("/")
-              ? `${process.env.NEXT_PUBLIC_API}${product.imageUrl}`
-              : product.imageUrl
-          }
-          alt={product.name}
-          className="object-cover h-96 w-full rounded-lg border"
-        />
+        <div className="h-96 w-full rounded-lg border overflow-hidden">
+          <Img
+            src={
+              product.imageUrl.startsWith("/")
+                ? `${process.env.NEXT_PUBLIC_API}${product.imageUrl}`
+                : product.imageUrl
+            }
+            alt={`${product.name} image`}
+            className="object-cover h-96 w-full rounded-lg border"
+            skeletonClassName="h-96 w-full rounded-lg"
+          />
+        </div>
 
         <div className="space-y-6">
           <div>
