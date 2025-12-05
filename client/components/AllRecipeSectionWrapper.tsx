@@ -101,6 +101,7 @@ export default async function AllRecipeSectionWrapper({
         totalData={allRecipesData.data.length}
         totalPages={allRecipesData.totalPages}
         page={allRecipesData.page}
+        sectionId="#view-recipes"
       />
     </>
   );

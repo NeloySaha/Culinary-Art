@@ -3,6 +3,7 @@ import AllRecipeSectionWrapper from "@/components/AllRecipeSectionWrapper";
 import { CategorySelector } from "@/components/CategorySelector";
 import Footer from "@/components/Footer";
 import HeroSection from "@/components/HeroSection";
+import KeywordsFilterSkeleton from "@/components/KeywordsFilterSkeleton";
 import KeywordsWrapper from "@/components/KeywordsWrapper";
 import PopularRecipeSectionSkeleton from "@/components/PopularRecipeSectionSkeleton";
 import PopularRecipeSectionWrapper from "@/components/PopularRecipeSectionWrapper";
@@ -52,11 +53,14 @@ export default async function Page({
           <RecipeSearchbar />
           <CategorySelector />
         </div>
-        <KeywordsWrapper />
+
+        <Suspense fallback={<KeywordsFilterSkeleton />}>
+          <KeywordsWrapper />
+        </Suspense>
 
         <RecipesFilter />
 
-        <Suspense fallback={<AllRecipeSectionSkeleton />} key={curKey}>
+        <Suspense key={curKey} fallback={<AllRecipeSectionSkeleton />}>
           <AllRecipeSectionWrapper
             category={category}
             query={query}

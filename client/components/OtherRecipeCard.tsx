@@ -1,5 +1,5 @@
 "use client";
-import { Clock, Eye, Users } from "lucide-react";
+import { Clock, Eye, Heart, MessageCircle, Users } from "lucide-react";
 import Link from "next/link";
 
 import { Recipe } from "@/lib/types";
@@ -10,6 +10,7 @@ import { toast } from "sonner";
 import { Badge } from "./ui/badge";
 import { Button } from "./ui/button";
 import { Card, CardContent, CardFooter } from "./ui/card";
+import Img from "./Img";
 
 type Props = {
   recipe: Recipe;
@@ -53,30 +54,33 @@ export default function OtherRecipeCard({ recipe }: Props) {
 
   return (
     <Card>
-      <CardContent className="flex items-start space-y-0 space-x-4">
-        <div className="sm:w-28">
-          <img
-            src={
-              recipe.imageUrl.startsWith("/")
-                ? `${process.env.NEXT_PUBLIC_API}${recipe.imageUrl}`
-                : recipe.imageUrl
-            }
-            alt={recipe.name}
-            className={`rounded-md object-cover w-24 h-24`}
-          />
+      <CardContent className="flex space-y-0 space-x-4">
+        <div className="relative">
+          <Badge className="absolute top-1 left-1 uppercase z-10 bg-amber-300 text-foreground rounded-full text-xs">
+            {recipe.category}
+          </Badge>
+          <div className="w-24 h-24">
+            <Img
+              src={
+                recipe.imageUrl.startsWith("/")
+                  ? `${process.env.NEXT_PUBLIC_API}${recipe.imageUrl}`
+                  : recipe.imageUrl
+              }
+              alt={`${recipe.name} image`}
+              className={`rounded-md object-cover w-24 h-24`}
+              skeletonClassName="w-24 h-24"
+            />
+          </div>
         </div>
-        <div className="flex-grow w-full">
+
+        <div className="min-h-24 flex flex-col w-full">
           <div className="flex justify-between items-center">
-            <h3 className={"tracking-wide text-lg font-semibold"}>
+            <h3 className={"tracking-wide text-sm font-semibold text-wrap"}>
               {recipe.name}
             </h3>
           </div>
 
-          <Badge className="uppercase" variant={"outline"}>
-            {recipe.category}
-          </Badge>
-
-          <div className="flex gap-4 text-sm  justify-between mt-4">
+          <div className="text-xs flex gap-4 mt-2">
             <div className="flex items-center gap-1">
               <Clock className="w-4 h-4 text-primary" />
               <span>{recipe.time}</span>
@@ -87,61 +91,38 @@ export default function OtherRecipeCard({ recipe }: Props) {
             </div>
           </div>
 
-          {/* <div className="mt-2 flex justify-end sm:items-center space-y-2 sm:space-y-0 items-center">
-          <div className="flex gap-2">
-            
-            <Button asChild variant={"outline"}>
-              <Link href={`/user/manage-recipes/edit/${recipe._id}`}>
-                <Pencil className="w-4 h-4" /> Edit
+          <div className="flex justify-end items-center gap-3 mt-auto ">
+            <div className="flex items-center gap-1">
+              <Heart className="h-4 w-4  text-primary/75" />
+              <p className="text-xs">
+                {recipe.likedUsers.length}
+                {/* <span className="text-xs text-muted-foreground font-normal ml-1">
+              / 5
+            </span> */}
+              </p>
+            </div>
+
+            <div className="flex items-center gap-1">
+              <MessageCircle className="h-4 w-4  text-primary/75" />
+              <p className="text-xs">
+                {recipe.comments?.length ?? 0}
+                {/* <span className="text-xs text-muted-foreground font-normal ml-1">
+              / 5
+            </span> */}
+              </p>
+            </div>
+            <Button
+              asChild
+              className="w-[140px] rounded-full text-xs"
+              size={"sm"}
+            >
+              <Link href={`/view-recipe/${recipe._id}`}>
+                <Eye className="w-4 h-4" /> View
               </Link>
             </Button>
-
-            <AlertDialog>
-              <AlertDialogTrigger asChild>
-                <Button variant={"destructive"}>
-                  <Trash className="w-4 h-4" /> Delete
-                </Button>
-              </AlertDialogTrigger>
-              <AlertDialogContent>
-                <AlertDialogHeader>
-                  <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-                  <AlertDialogDescription>
-                    This action cannot be undone. This will permanently delete
-                    this recipe.
-                  </AlertDialogDescription>
-                </AlertDialogHeader>
-                <AlertDialogFooter>
-                  <AlertDialogCancel>No</AlertDialogCancel>
-                  <AlertDialogAction
-                    className="bg-red-500 text-slate-100 hover:bg-red-400"
-                    onClick={() => startTransition(handleDelete)}
-                    disabled={isPending}
-                  >
-                    {isPending ? (
-                      <>
-                        <span>Deleting</span>
-                        <span className="animate-spin">
-                          <Loader2 className="h-4 w-4" />
-                        </span>
-                      </>
-                    ) : (
-                      "Yes"
-                    )}
-                  </AlertDialogAction>
-                </AlertDialogFooter>
-              </AlertDialogContent>
-            </AlertDialog>
           </div>
-        </div> */}
         </div>
       </CardContent>
-      <CardFooter>
-        <Button asChild variant={"outline"} className="w-full">
-          <Link href={`/view-recipe/${recipe._id}`}>
-            <Eye className="w-4 h-4" /> View
-          </Link>
-        </Button>
-      </CardFooter>
     </Card>
   );
 }

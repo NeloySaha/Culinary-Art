@@ -31,6 +31,7 @@ import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import { toast } from "sonner";
 import { Progress } from "./ui/progress";
+import Img from "./Img";
 
 type Props = {
   recipe: RecipePublicView;
@@ -178,8 +179,8 @@ export default function RecipeDetails({ recipe, user }: Props) {
   return (
     <div className="space-y-6 mb-16">
       {/* Hero Section */}
-      <div className="relative rounded-xl overflow-hidden">
-        <img
+      <div className="relative w-full h-[400px] rounded-xl overflow-hidden bg-amber-200">
+        <Img
           src={
             recipe.imageUrl.startsWith("/")
               ? `${process.env.NEXT_PUBLIC_API}${recipe.imageUrl}`
@@ -187,6 +188,7 @@ export default function RecipeDetails({ recipe, user }: Props) {
           }
           alt={recipe.name}
           className="object-cover w-full h-[400px]"
+          skeletonClassName="w-full h-[400px]"
         />
 
         <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex flex-col justify-end p-6">

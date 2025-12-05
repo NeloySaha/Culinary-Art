@@ -1,7 +1,7 @@
 import { Skeleton } from "@/components/ui/skeleton";
 import ProductCardSkeleton from "./ProductCardSkeleton";
 
-export default function ProductGridSkeleton() {
+export default function ProductsWithFiltersSkeleton() {
   const skeletonItems = Array.from({ length: 12 });
 
   return (
@@ -12,8 +12,16 @@ export default function ProductGridSkeleton() {
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {skeletonItems.map((_, index) => (
-          <ProductCardSkeleton key={`Productskeleton-${index}`} />
+          <ProductCardSkeleton key={`productSkeleton-${index}`} />
         ))}
+      </div>
+
+      <div className="flex items-center justify-center gap-2 mt-8">
+        <Skeleton className="h-8 w-8" />
+        <Skeleton className="h-8 w-8" />
+        <Skeleton className="h-8 w-8" />
+        <Skeleton className="h-8 w-8" />
+        <Skeleton className="h-8 w-8" />
       </div>
     </div>
   );

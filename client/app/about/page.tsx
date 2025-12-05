@@ -11,6 +11,7 @@ import {
   Users,
 } from "lucide-react"; // Icons for feature cards
 import Link from "next/link"; // For the CTA button
+import { Suspense } from "react";
 
 export default function AboutUsPage() {
   const websiteName = "Culinary Art";
@@ -136,7 +137,9 @@ export default function AboutUsPage() {
         </section>
       </div>
 
-      <Footer />
+      <Suspense>
+        <Footer />
+      </Suspense>
     </div>
   );
 }

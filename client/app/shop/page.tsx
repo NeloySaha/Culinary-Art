@@ -1,12 +1,12 @@
 import { Suspense } from "react";
 
 import Footer from "@/components/Footer";
-import Pagination from "@/components/Pagination";
-import ProductFilter from "@/components/ProductFilter";
+import ProductFilterSkeleton from "@/components/ProductFilterSkeleton";
+import ProductFilterWrapper from "@/components/ProductFilterWrapper";
 import ProductGrid from "@/components/ProductGrid";
-import ProductGridSkeleton from "@/components/ProductGridSkeleton";
 import ProductSearchbar from "@/components/ProductSearchbar";
-import { getFilterData, getFilteredProducts } from "@/lib/actions";
+import ProductsWithFiltersSkeleton from "@/components/ProductsWithFiltersSkeleton";
+import { getFilteredProducts } from "@/lib/actions";
 
 type SearchParams = Promise<{
   category?: string;
@@ -25,8 +25,6 @@ export default async function Page({
 }) {
   // Get filter data (categories and price range)
   const searchParamsData = await searchParams;
-  const filterData = await getFilterData();
-  const { products, pagination } = await getFilteredProducts(searchParamsData);
 
   return (
     <div>
@@ -48,29 +46,20 @@ export default async function Page({
             {/* Filters sidebar */}
             <div className="w-full md:w-72 shrink-0">
               <div className="space-y-6">
-                <ProductFilter
-                  categories={filterData.categories}
-                  priceRange={filterData.priceRange}
-                />
+                <Suspense fallback={<ProductFilterSkeleton />}>
+                  <ProductFilterWrapper />
+                </Suspense>
               </div>
             </div>
 
             {/* Products grid with suspense boundary for streaming */}
-            <div className="flex-1">
+            <div className="flex-1 scroll-mt-20" id="view-products">
               <Suspense
                 key={`${searchParamsData.category}.${searchParamsData.inStock}.${searchParamsData.maxPrice}.${searchParamsData.minPrice}.${searchParamsData.page}.${searchParamsData.search}.${searchParamsData.sort}`}
-                fallback={<ProductGridSkeleton />}
+                fallback={<ProductsWithFiltersSkeleton />}
               >
                 <ProductsWithFilters searchParams={searchParams} />
               </Suspense>
-
-              {products.length > 0 && (
-                <Pagination
-                  totalData={pagination.totalData}
-                  page={pagination.page}
-                  totalPages={pagination.totalPages}
-                />
-              )}
             </div>
           </div>
         </div>
@@ -89,7 +78,6 @@ async function ProductsWithFilters({
 }) {
   const searchParamsData = await searchParams;
   const { products, pagination } = await getFilteredProducts(searchParamsData);
-  const { totalData } = pagination;
 
-  return <ProductGrid products={products} totalData={totalData} />;
+  return <ProductGrid products={products} pagination={pagination} />;
 }

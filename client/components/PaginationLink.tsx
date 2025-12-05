@@ -6,11 +6,13 @@ import { Button } from "./ui/button";
 interface PaginationLinkProps extends React.HTMLAttributes<HTMLAnchorElement> {
   page: number | null;
   isActive?: boolean;
+  sectionId?: string;
 }
 export default function PaginationLink({
   page,
   isActive,
   children,
+  sectionId = "",
 }: PaginationLinkProps) {
   const searchParams = useSearchParams();
   const currentPath = usePathname();
@@ -19,7 +21,9 @@ export default function PaginationLink({
   const handleGoToPage = () => {
     const params = new URLSearchParams(searchParams);
     params.set("page", `${page}`);
-    router.push(currentPath + "?" + params.toString(), { scroll: false });
+    router.push(currentPath + "?" + params.toString() + sectionId, {
+      scroll: true,
+    });
   };
 
   if (!page) {

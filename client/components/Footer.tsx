@@ -4,6 +4,7 @@ import Link from "next/link";
 import { getSession } from "@/lib/actions";
 import { JWTPayload } from "jose";
 import FooterClientNav from "./FooterClientNav";
+import { Suspense } from "react";
 
 export default async function Footer() {
   const session = await getSession();
