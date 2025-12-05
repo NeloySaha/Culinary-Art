@@ -5,7 +5,7 @@ import { Suspense } from "react";
 function Page() {
   return (
     <div className="max-w-6xl">
-      <h2 className="text-4xl font-semibold text-primary mb-6">
+      <h2 className="text-2xl lg:text-4xl font-semibold text-primary mb-6">
         Your Liked Recipes
       </h2>
 

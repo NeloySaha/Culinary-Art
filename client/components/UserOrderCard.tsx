@@ -93,14 +93,14 @@ export default function UserOrderCard({ order }: { order: Order }) {
         <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-2">
           <div>
             <CardTitle className="text-base sm:text-lg flex items-center">
-              <Hash className="h-5 w-5 mr-1.5 text-primary flex-shrink-0" />
+              <Hash className="h-5 w-5 mr-1.5 text-primary shrink-0" />
               Order ID:{" "}
               <span className="font-mono text-sm sm:text-base ml-1 tracking-tight truncate">
                 {_id.slice(-10)}
               </span>
             </CardTitle>
             <CardDescription className="text-xs sm:text-sm mt-1 flex items-center">
-              <CalendarDays className="h-4 w-4 mr-1.5 text-muted-foreground flex-shrink-0" />
+              <CalendarDays className="h-4 w-4 mr-1.5 text-muted-foreground shrink-0" />
               {formattedDate}, {formattedTime}
             </CardDescription>
           </div>

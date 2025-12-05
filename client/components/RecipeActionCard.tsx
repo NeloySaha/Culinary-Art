@@ -21,6 +21,7 @@ import { toast } from "sonner";
 import { Badge } from "./ui/badge";
 import { Button } from "./ui/button";
 import { Card } from "./ui/card";
+import Img from "./Img";
 
 type Props = {
   recipe: Recipe;
@@ -63,24 +64,28 @@ export default function RecipeActionCard({ recipe }: Props) {
   }
 
   return (
-    <Card className="flex flex-col sm:flex-row items-start sm:space-y-0 sm:space-x-4 p-4 rounded-lg shadow-sm">
-      <div className="w-full sm:w-28">
-        <img
+    <Card className="flex flex-col sm:flex-row gap-3 sm:space-y-0 p-4 rounded-lg shadow-sm">
+      <div className="w-full sm:w-24 h-48 sm:h-24">
+        <Img
           src={
             recipe.imageUrl.startsWith("/")
               ? `${process.env.NEXT_PUBLIC_API}${recipe.imageUrl}`
               : recipe.imageUrl
           }
-          alt={recipe.name}
+          alt={`${recipe.name} image`}
           className={`rounded-md object-cover w-full sm:w-24 h-48 sm:h-24`}
+          skeletonClassName="rounded-md w-full sm:w-24 h-48 sm:h-24"
         />
       </div>
-      <div className="flex-grow w-full">
+      <div className="flex-1">
         <div className="flex justify-between items-center">
-          <h3 className={"tracking-wide text-lg font-semibold"}>
+          <h3 className={"tracking-wide text-base lg:text-lg font-semibold"}>
             {recipe.name}
           </h3>
-          <Badge className="uppercase" variant={"outline"}>
+          <Badge
+            className="uppercase bg-amber-300 text-foreground rounded-full"
+            variant={"outline"}
+          >
             {recipe.category}
           </Badge>
         </div>
